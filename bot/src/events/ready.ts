@@ -12,19 +12,14 @@ const event = {
 
         const commands: any[] = [];
 
-        const foldersPath = join(__dirname, "..", 'commands');
-        const commandFolders = readdirSync(foldersPath);
-
-        for (const folder of commandFolders) {
-            const commandsPath = join(foldersPath, folder);
-            const commandFiles = readdirSync(commandsPath);
-            for (const file of commandFiles) {
-                const filePath = join(commandsPath, file);
-                const command = require(filePath);
-                if ('data' in command.default && 'execute' in command.default) {
-                    client.commands.set(command.default.data.name, command);
-                    commands.push(command.default.data.toJSON());
-                }
+        const commandsPath = join(__dirname, "..", 'commands');
+        const commandFiles = readdirSync(commandsPath);
+        for (const file of commandFiles) {
+            const filePath = join(commandsPath, file);
+            const command = require(filePath);
+            if ('data' in command.default && 'execute' in command.default) {
+                client.commands.set(command.default.data.name, command);
+                commands.push(command.default.data.toJSON());
             }
         }
 

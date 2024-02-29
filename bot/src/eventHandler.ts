@@ -1,8 +1,9 @@
 import { readdir } from "fs";
 import { join } from "path";
 
-export default class EventHandler {
+module.exports = class EventHandler {
     client: any;
+
     constructor(client: any) {
         this.client = client;
     }

@@ -34,18 +34,18 @@ const event = {
         
             const button = client.buttons.get(interaction.customId);
             try {
-                button.execute(interaction, client);
+                button.default.execute(interaction, client);
             } catch (err) {
                 if (err) console.error(err);
                 interaction.reply({
-                content: "An error occurred while trying to execute this button.",
-                ephemeral: true,
+                    content: "An error occurred while trying to execute this button.",
+                    ephemeral: true,
                 });
             }
             } else if (interaction.isSelectMenu()) {
-            const button = client.buttons.get(interaction.customId);
-            if (button) return button.execute(interaction, client);
-            }*/
+                const button = client.buttons.get(interaction.customId);
+                if (button) return button.default.execute(interaction, client);
+            }
     }
 }
 
