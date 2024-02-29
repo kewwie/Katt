@@ -13,10 +13,10 @@ module.exports = class EventHandler {
 
             for (let file of files) {
                 const event = require(join(__dirname, "events/", file));
-                if (event.once) {
-                    this.client.once(event.config.name, (...args: any) => event.config.execute(this.client, ...args));
+                if (event.default.once) {
+                    this.client.once(event.default.name, (...args: any) => event.default.execute(...args, this.client));
                 } else {
-                    this.client.on(event.config.name, (...args: any) => event.config.execute(this.client, ...args));
+                    this.client.on(event.default.name, (...args: any) => event.default.execute(...args, this.client));
                 }
             }
         });

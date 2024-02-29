@@ -3,8 +3,9 @@ import { join } from "path";
 import { readdirSync } from "fs";
 import { REST, Routes } from "discord.js";
 import { env } from "../env";
+import { Event } from "../types/event";
 
-export const config = {
+const event: Event = {
     name: "ready",
     once: true,
     async execute(client: KiwiClient) {
@@ -21,11 +22,9 @@ export const config = {
             for (const file of commandFiles) {
                 const filePath = join(commandsPath, file);
                 const command = require(filePath);
-                if ('config' in command && 'execute' in command) {
-                    client.commands.set(command.data.name, command);
-                    commands.push(command.data.toJSON());
-                } else {
-                    console.log(`[WARNING] The command at ${filePath} is missing a required "config" or "execute" property.`);
+                if ('data' in command.config && 'execute' in command.config) {
+                    client.commands.set(command.config.data.name, command);
+                    commands.push(command.config.data.toJSON());
                 }
             }
         }
@@ -48,3 +47,5 @@ export const config = {
         })();
     }
 }
+
+export default event;
