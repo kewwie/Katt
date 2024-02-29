@@ -13,7 +13,7 @@ module.exports = class EventHandler {
         for (let file of files) {
             const event = require("./events/" + file);
             const eventName = file.split('.')[0];
-            this.client.on(eventName, event.bind(null, this.client));
+            this.client.on(eventName, event.execute().bind(null, this.client));
         }
         });
     }

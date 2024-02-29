@@ -11,8 +11,8 @@ export default {
             } catch (err) {
                 if (err) console.error(err);
                 interaction.reply({
-                content: "An error occurred while executing that command.",
-                ephemeral: true,
+                    content: "An error occurred while executing that command.",
+                    ephemeral: true,
                 });
             }
             } else if (interaction.isAutocomplete()) {

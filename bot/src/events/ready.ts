@@ -27,7 +27,7 @@ export default {
                 }
             }
         }
-        
+
         const rest = new REST().setToken(env.CLIENT_TOKEN);
 
         (async () => {
