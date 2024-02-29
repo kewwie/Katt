@@ -5,11 +5,12 @@ import {
 } from "discord.js";
 
 const EventHandler = require("./eventLoader");
-//const ButtonHandler = require("./buttonHandler");
+const ButtonHandler = require("./buttonHandler");
 
 export class KiwiClient extends Client {
+    public events: Collection<string, any>;
     public commands: Collection<string, any>;
-    public events: Collection<string, Event>;
+    public buttons: Collection<string, any>;
 
     constructor() {
         super({
@@ -23,13 +24,14 @@ export class KiwiClient extends Client {
 
         this.commands = new Collection();
         this.events = new Collection();
+        this.buttons = new Collection();
         
         // Event Loader
         let eventHandler = new EventHandler(this);
         eventHandler.load();
 
         // Button Loader
-        //this.buttonHandler = new ButtonHandler(this);
-        //this.buttonHandler.load();
+        let buttonHandler = new ButtonHandler(this);
+        buttonHandler.load();
     }
 };

@@ -1,7 +1,7 @@
 import { readdir } from "fs";
 import { join } from "path";
 
-module.exports = class EventHandler {
+export default class EventHandler {
     client: any;
     constructor(client: any) {
         this.client = client;
@@ -14,9 +14,9 @@ module.exports = class EventHandler {
             for (let file of files) {
                 const event = require(join(__dirname, "events/", file));
                 if (event.default.once) {
-                    this.client.once(event.default.name, (...args: any) => event.default.execute(...args, this.client));
+                    this.client.once(event.default.name, (...args: any) => event.default.execute(this.client, ...args));
                 } else {
-                    this.client.on(event.default.name, (...args: any) => event.default.execute(...args, this.client));
+                    this.client.on(event.default.name, (...args: any) => event.default.execute(this.client, ...args));
                 }
             }
         });

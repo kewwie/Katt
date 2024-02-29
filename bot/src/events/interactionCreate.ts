@@ -1,14 +1,13 @@
 import { KiwiClient } from "../client";
 import { Interaction } from "discord.js";
-import { Event } from "../types/event";
 
-const event: Event = {
+const event = {
     name: "interactionCreate",
     once: false,
     async execute(client: KiwiClient, interaction: Interaction) {
         if (interaction.isChatInputCommand()) {
             const command = client.commands.get(interaction.commandName);
-            if (!command.default) return;
+            if (!command) return;
             try {
                 command.default.execute(interaction, client);
             } catch (err) {
@@ -21,7 +20,7 @@ const event: Event = {
             } else if (interaction.isAutocomplete()) {
                 const command = client.commands.get(interaction.commandName);
         
-                if (!command.default) {
+                if (!command) {
                     console.error(`No command matching ${interaction.commandName} was found.`);
                     return;
                 }
@@ -31,7 +30,7 @@ const event: Event = {
                 } catch (error) {
                     console.error(error);
                 }
-            } /*else if (interaction.isButton()) {
+            } else if (interaction.isButton()) {
         
             const button = client.buttons.get(interaction.customId);
             try {

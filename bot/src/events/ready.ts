@@ -3,9 +3,8 @@ import { join } from "path";
 import { readdirSync } from "fs";
 import { REST, Routes } from "discord.js";
 import { env } from "../env";
-import { Event } from "../types/event";
 
-const event: Event = {
+const event = {
     name: "ready",
     once: true,
     async execute(client: KiwiClient) {
@@ -22,9 +21,9 @@ const event: Event = {
             for (const file of commandFiles) {
                 const filePath = join(commandsPath, file);
                 const command = require(filePath);
-                if ('data' in command.config && 'execute' in command.config) {
-                    client.commands.set(command.config.data.name, command);
-                    commands.push(command.config.data.toJSON());
+                if ('data' in command.default && 'execute' in command.default) {
+                    client.commands.set(command.default.data.name, command);
+                    commands.push(command.default.data.toJSON());
                 }
             }
         }
