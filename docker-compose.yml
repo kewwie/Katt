@@ -1,0 +1,70 @@
+version: "3"
+name: "kewwiebot"
+
+services:
+  nginx:
+    container_name: nginx
+    restart: unless-stopped
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      args:
+        - DOMAIN=${DOMAIN:?}
+        - PORT=${PORT:?}
+    ports:
+      - "${PORT:?}:${PORT:?}"
+    volumes:
+      - ./nginx:/levels/nginx
+    depends_on:
+      - frontend
+      - backend
+      
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:?}
+      MYSQL_DATABASE: levels
+      MYSQL_USER: levels
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD:?}
+    ports:
+      - "${DATABASE_PORT:?}:${DATABASE_PORT:?}"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  migrate:
+    container_name: migrate
+    build:
+      context: .
+      dockerfile: ./backend/.docker/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: ["npm", "run", "migrate:run"]
+
+  frontend:
+    container_name: frontend
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./frontend/.docker/Dockerfile
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    command: ["npm", "run", "start"]
+
+  backend:
+    container_name: backend
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./backend/.docker/Dockerfile
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    command: ["npm", "run", "start"]
