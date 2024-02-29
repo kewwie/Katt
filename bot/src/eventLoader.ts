@@ -8,14 +8,17 @@ module.exports = class EventHandler {
     }
 
     load() {
-        readdir("/events/", (err: any, files: any) => {
-        if (err) return console.error(err);
+        readdir(join(__dirname, "events"), (err: any, files: any) => {
+            if (err) return console.error(err);
 
-        for (let file of files) {
-            const event = require(join(__dirname, "events") + file);
-            const eventName = file.split('.')[0];
-            this.client.on(eventName, event.execute().bind(null, this.client));
-        }
+            for (let file of files) {
+                const event = require(join(__dirname, "events/", file));
+                if (event.once) {
+                    this.client.once(event.config.name, (...args: any) => event.config.execute(this.client, ...args));
+                } else {
+                    this.client.on(event.config.name, (...args: any) => event.config.execute(this.client, ...args));
+                }
+            }
         });
     }
 };

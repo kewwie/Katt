@@ -4,7 +4,9 @@ import { readdirSync } from "fs";
 import { REST, Routes } from "discord.js";
 import { env } from "../env";
 
-export default {
+export const config = {
+    name: "ready",
+    once: true,
     async execute(client: KiwiClient) {
         console.log(`${client.user?.username} is Online`);
 

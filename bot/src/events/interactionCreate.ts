@@ -1,7 +1,9 @@
 import { KiwiClient } from "../client";
 import { Interaction } from "discord.js";
 
-export default {
+export const config = {
+    name: "interactionCreate",
+    once: false,
     async execute(client: KiwiClient, interaction: Interaction) {
         if (interaction.isChatInputCommand()) {
             const command = client.commands.get(interaction.commandName);
