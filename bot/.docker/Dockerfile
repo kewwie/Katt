@@ -2,7 +2,7 @@ FROM node:20
 USER node
 
 COPY --chown=node:node .env /app/bot/.env
-COPY --chown=node:node ./backend /app/bot
+COPY --chown=node:node ./bot /app/bot
 
 WORKDIR /app/bot
 
