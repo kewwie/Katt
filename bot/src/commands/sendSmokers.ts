@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
+import { SlashCommandBuilder, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } from "discord.js";
 import { KiwiClient } from "../client";
 
 const command = {
@@ -15,7 +15,23 @@ const command = {
 	async execute(interaction: any, client: KiwiClient) {
 
 	// add an option where you make a list with all names you want and add a "," inbetween them to make it work
-		await interaction.reply('Made by K3wwie');
+		const confirm = new ButtonBuilder()
+			.setCustomId('confirm')
+			.setLabel('Confirm Ban')
+			.setStyle(ButtonStyle.Danger);
+
+		const cancel = new ButtonBuilder()
+			.setCustomId('cancel')
+			.setLabel('Cancel')
+			.setStyle(ButtonStyle.Secondary);
+
+		const row = new ActionRowBuilder()
+			.addComponents(cancel, confirm);
+
+		await interaction.reply({
+			content: `Hej Hej`,
+			components: [row],
+		});
 	},
 }
 
