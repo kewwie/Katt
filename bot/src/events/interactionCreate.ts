@@ -31,8 +31,9 @@ const event = {
                     console.error(error);
                 }
             } else if (interaction.isButton()) {
-        
-            const button = client.buttons.get(interaction.customId);
+    
+            const buttonId = (interaction.customId).split("_")[0];
+            const button = client.buttons.get(buttonId);
             try {
                 button.default.execute(interaction, client);
             } catch (err) {
