@@ -2,15 +2,14 @@ import { SlashCommandBuilder, PermissionFlagsBits, ButtonBuilder, ButtonStyle, A
 import { KiwiClient } from "../client";
 
 const command = {
-    data: new SlashCommandBuilder()
-		.setName('sendSmokers')
-		.setDescription('Send the list for smokers')
-		.addStringOption((option: any) =>
-			option.setName('input')
-				.setDescription('The input to echo back')
-				.setDescription('The member to ban')
-				.setRequired(true))
-		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
+	data: new SlashCommandBuilder()
+	.setName('sendSmockers')
+	.setDescription('adding soon ig')
+	/*.addStringOption(option =>
+		option
+			.setName('users')
+			.setDescription('The reason for banning'))
+	.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)*/,
 
 	async execute(interaction: any, client: KiwiClient) {
 
@@ -29,7 +28,7 @@ const command = {
 			.addComponents(cancel, confirm);
 
 		await interaction.reply({
-			content: `Hej Hej`,
+			content: "Hej",
 			components: [row],
 		});
 	},

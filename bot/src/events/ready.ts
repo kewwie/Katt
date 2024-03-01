@@ -10,7 +10,7 @@ const event = {
     async execute(client: KiwiClient) {
         console.log(`${client.user?.username} is Online`);
 
-        const commands: any[] = [];
+        const commands: any = [];
 
         const commandsPath = join(__dirname, "..", 'commands');
         const commandFiles = readdirSync(commandsPath);
@@ -23,18 +23,21 @@ const event = {
             }
         }
 
-        const rest = new REST().setToken(env.CLIENT_TOKEN);
+        console.log(101100101);
+
+        //const rest = new REST().setToken(env.CLIENT_TOKEN);
+        console.log(2);
 
         (async () => {
             try {
                 console.log(`Started refreshing ${client.commands.size} application (/) commands.`);
 
-                const data: any = await rest.put(
+                /*const data: any = await rest.put(
                     Routes.applicationGuildCommands(env.CLIENT_ID, "1097941244027609139"),
                     { body: commands },
-                );
+                );*/
 
-                console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+                //console.log(`Successfully reloaded ${data.length} application (/) commands.`);
             } catch (error) {
                 console.error(error);
             }

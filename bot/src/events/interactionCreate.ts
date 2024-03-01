@@ -6,6 +6,7 @@ const event = {
     once: false,
     async execute(client: KiwiClient, interaction: Interaction) {
         if (interaction.isChatInputCommand()) {
+            console.log(1)
             const command = client.commands.get(interaction.commandName);
             if (!command) return;
             try {
