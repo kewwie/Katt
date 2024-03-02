@@ -6,4 +6,4 @@ COPY --chown=node:node ./bot /kewwiebot/bot
 
 WORKDIR /kewwiebot/bot
 
-RUN npm install && npm run build
+RUN npm install
