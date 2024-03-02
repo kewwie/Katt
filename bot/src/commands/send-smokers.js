@@ -10,7 +10,7 @@ const {
 
 module.exports = {
 	data: new SlashCommandBuilder()
-	.setName('sendsmockers')
+	.setName('send-smockers')
 	.setDescription('Make a list that u can move a user down')
 	.addStringOption(option =>
 		option
@@ -34,7 +34,7 @@ module.exports = {
 
 	    for (let user of users) {
 			var button = new ButtonBuilder()
-				.setCustomId('updatesmoker_' + user)
+				.setCustomId('update-smoker_' + user)
 				.setLabel(user)
 				.setStyle(ButtonStyle.Primary);
 
@@ -45,18 +45,23 @@ module.exports = {
 		var rows = [];
 
 
-		for (var i = 0; i < buttons.length; i += 5) {
+		for (var i = 0; i < buttons.length; i += 3) {
 			rows.push(
 				new ActionRowBuilder()
 					.addComponents(
-						buttons.slice(i, (i + 5))
+						buttons.slice(i, (i + 3))
 					)
 			);
 		}
 
 		await interaction.reply({
+			content: "List has been created",
+			ephemeral: true
+		});
+
+		await interaction.channel.send({
 			content: userText,
 			components: rows,
-		});
+		})
 	},
 }

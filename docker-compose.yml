@@ -8,8 +8,8 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:?}
-      MYSQL_DATABASE: kewwiebot
-      MYSQL_USER: kewwiebot
+      MYSQL_DATABASE: kewwie
+      MYSQL_USER: kewwie
       MYSQL_PASSWORD: ${DATABASE_PASSWORD:?}
     ports:
       - "${DATABASE_PORT:?}:${DATABASE_PORT:?}"
@@ -20,10 +20,23 @@ services:
       timeout: 20s
       retries: 10
 
+  migrate:
+    container_name: migrate
+    build:
+      context: .
+      dockerfile: ./bot/.docker/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: ["npm", "run", "migrate:run"]
+
   bot:
     container_name: bot
     restart: unless-stopped
     build:
       context: .
       dockerfile: ./bot/.docker/Dockerfile
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
     command: ["npm", "run", "start"]
