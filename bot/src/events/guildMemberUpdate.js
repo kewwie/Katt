@@ -14,7 +14,12 @@ module.exports = {
         console.log("newMemer")
         if (oldMember.nickname !== newMember.nickname) {
             var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${newMember.id}' AND guildId = '${newMember.guild.id}'`);
-            console.log(exist);
+            console.log(exist[0]);
+            if (exist[0].length > 0) {
+                console.log("update");
+            } else {
+                await Database.query(`INSERT INTO nicknames (userId, guildId, nickname) VALUES ('${newMember.id}', '${newMember.guild.id}', '${newMember.nickname}')`);
+            }
         }
     }
 }
