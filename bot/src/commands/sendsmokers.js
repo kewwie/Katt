@@ -11,7 +11,7 @@ const {
 module.exports = {
 	data: new SlashCommandBuilder()
 	.setName('sendsmockers')
-	.setDescription('adding soon ig')
+	.setDescription('Make a list that u can move a user down')
 	.addStringOption(option =>
 		option
 			.setName('users')
