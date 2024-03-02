@@ -1,17 +1,16 @@
-import { readdirSync } from "fs";
-import { join } from "path";
+const { readdirSync } = require("fs");
+const { join } = require("path");
 
 module.exports = class ButtonHandler {
-    client: any;
 
-    constructor(client: any) {
+    constructor(client) {
         this.client = client;
     }
 
     load() {
         for (let file of readdirSync(join(__dirname, "buttons"))) {
             const button = require(join(__dirname, "buttons/", file));
-            this.client.buttons.set(button.default.data.name, button);
+            this.client.buttons.set(button.data.id, button);
         }
     }
   };

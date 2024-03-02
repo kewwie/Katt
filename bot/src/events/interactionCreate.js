@@ -1,16 +1,13 @@
-import { KiwiClient } from "../client";
-import { Interaction } from "discord.js";
 
-const event = {
+module.exports = {
     name: "interactionCreate",
     once: false,
-    async execute(client: KiwiClient, interaction: Interaction) {
+    async execute(client, interaction) {
         if (interaction.isChatInputCommand()) {
-            console.log(1)
             const command = client.commands.get(interaction.commandName);
             if (!command) return;
             try {
-                command.default.execute(interaction, client);
+                command.execute(interaction, client);
             } catch (err) {
                 if (err) console.error(err);
                 interaction.reply({
@@ -27,7 +24,7 @@ const event = {
                 }
         
                 try {
-                    await command.default.autocomplete(interaction);
+                    await command.autocomplete(interaction);
                 } catch (error) {
                     console.error(error);
                 }
@@ -35,8 +32,9 @@ const event = {
     
             const buttonId = (interaction.customId).split("_")[0];
             const button = client.buttons.get(buttonId);
+            console.log(buttonId)
             try {
-                button.default.execute(interaction, client);
+                button.execute(interaction, client);
             } catch (err) {
                 if (err) console.error(err);
                 interaction.reply({
@@ -46,9 +44,7 @@ const event = {
             }
             } else if (interaction.isSelectMenu()) {
                 const button = client.buttons.get(interaction.customId);
-                if (button) return button.default.execute(interaction, client);
+                if (button) return button.execute(interaction, client);
             }
     }
 }
-
-export default event;

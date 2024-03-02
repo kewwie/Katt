@@ -1,20 +1,13 @@
-import {
+const {
     Client,
     GatewayIntentBits,
     Collection,
-} from "discord.js";
+} = require("discord.js");
 
 const EventHandler = require("./eventHandler");
 const ButtonHandler = require("./buttonHandler");
 
-export class KiwiClient extends Client {
-    public events: Collection<string, any>;
-    public commands: Collection<string, any>;
-    public buttons: Collection<string, any>;
-
-    public eventHandler: any;
-    public buttonHandler: any;
-
+module.exports.KiwiClient = class KiwiClient extends Client {
     constructor() {
         super({
             intents: [
