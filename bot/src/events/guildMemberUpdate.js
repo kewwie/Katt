@@ -2,7 +2,7 @@ const { Events, GuildMember } = require("discord.js");
 const Database = require("../data/database");
 
 module.exports = {
-    name: Events.GuildMemberUpdate,
+    name: "guildMemberUpdate",
 
     /**
     * 
@@ -11,8 +11,12 @@ module.exports = {
     * @param {GuildMember} newMember
     */
     async execute(client, oldMember, newMember) {
+        console.log("newMemer")
         if (oldMember.nickname !== newMember.nickname) {
-            var exist = Database.query(`SELECT * FROM nicknames WHERE userId = '${newMember.id}' AND guildId = '${newMember.guild.id}`);
+            await Database.authenticate();
+            var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${newMember.id}' AND guildId = '${newMember.guild.id}`);
+
+            await Database.close();
             console.log(exist);
         }
     }
