@@ -1,14 +1,9 @@
 {
-  "name": "@kewwiebot/bot",
+  "name": "@kewwie/bot",
   "version": "1.0.0",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
-    "typeorm": "npx typeorm",
-    "migrate:create": "npm run typeorm -- migration:create",
-    "migrate:generate": "npm run typeorm -- migration:generate -d src/data/datasource.js",
-    "migrate:run": "npm run typeorm -- migration:run -d src/data/datasource.js",
-    "migrate:revert": "npm run typeorm -- migration:revert -d src/data/datasource.js"
+    "start": "node src/index.js"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
@@ -16,7 +11,7 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
-    "mysql2": "^3.9.2",
-    "typeorm": "^0.3.20"
+    "knex": "^3.0.1",
+    "mysql2": "^3.9.2"
   }
 }

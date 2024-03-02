@@ -3,3 +3,5 @@ const { env } = require("./env");
 
 const client = new KiwiClient();
 client.login(env.CLIENT_TOKEN);
+
+const { Database } = require("./database");

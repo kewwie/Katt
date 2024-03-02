@@ -17,18 +17,8 @@ services:
       - ./mysql:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 20s
+      timeout: 15s
       retries: 10
-
-  migrate:
-    container_name: migrate
-    build:
-      context: .
-      dockerfile: ./bot/.docker/Dockerfile
-    depends_on:
-      mysql:
-        condition: service_healthy
-    command: ["npm", "run", "migrate:run"]
 
   bot:
     container_name: bot
@@ -37,6 +27,6 @@ services:
       context: .
       dockerfile: ./bot/.docker/Dockerfile
     depends_on:
-      migrate:
-        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
     command: ["npm", "run", "start"]
