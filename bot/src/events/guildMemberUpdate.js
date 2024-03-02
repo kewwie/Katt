@@ -13,10 +13,7 @@ module.exports = {
     async execute(client, oldMember, newMember) {
         console.log("newMemer")
         if (oldMember.nickname !== newMember.nickname) {
-            await Database.authenticate();
             var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${newMember.id}' AND guildId = '${newMember.guild.id}`);
-
-            await Database.close();
             console.log(exist);
         }
     }
