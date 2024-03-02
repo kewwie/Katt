@@ -7,6 +7,7 @@ const {
 	Interaction,
 	Client
 } = require("discord.js");
+const Database = require("../data/database");
 
 module.exports = {
 	data: new SlashCommandBuilder()
