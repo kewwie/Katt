@@ -11,8 +11,14 @@ const Database = require("../data/database");
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('save-nicknames')
-		.setDescription('Saves all nicknames for all users to the database')	
+		.setName('save-nickname')
+		.setDescription('Saves the nickname for a user to the database')
+		.addUserOption(option =>
+            option
+                .setName('user')
+                .setDescription('The user to save the nickname for')
+                .setRequired(true)
+		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 	/**
@@ -21,19 +27,19 @@ module.exports = {
     * @param {Client} client
     */
 	async execute(interaction, client) {
-		for (var user of interaction.guild.members.cache.values()) {
-			if (user.nickname) {
-				var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`);
-				if (exist[0].length > 0) {
-					await Database.query(`UPDATE nicknames SET nickname = '${user.nickname}' WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`);
-				} else {
-					await Database.query(`INSERT INTO nicknames (userId, guildId, nickname) VALUES ('${user.id}', '${user.guild.id}', '${user.nickname}')`);
-				}
+		var user = interaction.options.getUser("user");
+
+		if (user.nickname) {
+			var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`);
+			if (exist[0].length > 0) {
+				await Database.query(`UPDATE nicknames SET nickname = '${user.nickname}' WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`);
+			} else {
+				await Database.query(`INSERT INTO nicknames (userId, guildId, nickname) VALUES ('${user.id}', '${user.guild.id}', '${user.nickname}')`);
 			}
 		}
 
 		await interaction.reply({
-			content: "Saved everyone's nickname",
+			content: `Saved ${user.username}'s nickname`,
 			ephemeral: true
 		});
 	},

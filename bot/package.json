@@ -6,10 +6,10 @@
     "start": "node src/index.js"
   },
   "devDependencies": {
+    "discord.js": "^14.14.1",
     "nodemon": "^3.0.1"
   },
   "dependencies": {
-    "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "knex": "^3.0.1",
     "mysql2": "^3.9.2",
