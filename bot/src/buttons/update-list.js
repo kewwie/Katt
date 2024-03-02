@@ -3,7 +3,7 @@ const { env } = require("../env");
 
 module.exports = {
     data: {
-        id: "update-smoker",
+        id: "update-list",
     },
     /**
     * 

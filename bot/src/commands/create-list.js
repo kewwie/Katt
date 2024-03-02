@@ -10,7 +10,7 @@ const {
 
 module.exports = {
 	data: new SlashCommandBuilder()
-	.setName('send-smockers')
+	.setName('create-list')
 	.setDescription('Make a list that u can move a user down')
 	.addStringOption(option =>
 		option
@@ -34,7 +34,7 @@ module.exports = {
 
 	    for (let user of users) {
 			var button = new ButtonBuilder()
-				.setCustomId('update-smoker_' + user)
+				.setCustomId('update-list_' + user)
 				.setLabel(user)
 				.setStyle(ButtonStyle.Primary);
 
