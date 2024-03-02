@@ -1,5 +1,5 @@
 {
-  "name": "@kewwiebot/bot",
+  "name": "@kewwie/bot",
   "version": "1.0.0",
   "scripts": {
     "dev": "nodemon src/index.js",
@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "discord.js": "^14.14.1",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "knex": "^3.0.1",
+    "mysql2": "^3.9.2",
+    "sequelize": "^6.37.1"
   }
 }

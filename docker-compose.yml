@@ -1,5 +1,5 @@
 version: "3"
-name: "kewwiebot"
+name: "kewwie"
 
 services: 
   mysql:
@@ -8,8 +8,8 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:?}
-      MYSQL_DATABASE: kewwiebot
-      MYSQL_USER: kewwiebot
+      MYSQL_DATABASE: kewwie
+      MYSQL_USER: kewwie
       MYSQL_PASSWORD: ${DATABASE_PASSWORD:?}
     ports:
       - "${DATABASE_PORT:?}:${DATABASE_PORT:?}"
@@ -17,7 +17,7 @@ services:
       - ./mysql:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 20s
+      timeout: 15s
       retries: 10
 
   bot:
@@ -26,4 +26,7 @@ services:
     build:
       context: .
       dockerfile: ./bot/.docker/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
     command: ["npm", "run", "start"]

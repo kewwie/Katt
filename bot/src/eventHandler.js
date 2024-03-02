@@ -16,6 +16,7 @@ module.exports = class EventHandler {
                     this.client.once(event.name, (...args) => event.execute(this.client, ...args));
                 } else {
                     this.client.on(event.name, (...args) => event.execute(this.client, ...args));
+                    //this.client.on("guildMemberUpdate", () => console.log("new event"));
                 }
             }
         });
