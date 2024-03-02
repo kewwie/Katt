@@ -8,8 +8,8 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:?}
-      MYSQL_DATABASE: levels
-      MYSQL_USER: levels
+      MYSQL_DATABASE: kewwiebot
+      MYSQL_USER: kewwiebot
       MYSQL_PASSWORD: ${DATABASE_PASSWORD:?}
     ports:
       - "${DATABASE_PORT:?}:${DATABASE_PORT:?}"
