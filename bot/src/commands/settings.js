@@ -50,7 +50,7 @@ module.exports = {
         if (exist[0].length > 0) {
             await Database.query(`UPDATE servers SET ${option} = '${value}' WHERE guildId = '${interaction.guildId}'`);
         } else {
-            await Database.query(`INSERT INTO servers (guildId, ${interaction.guildId}) VALUES ('${option}', '${value}')`);
+            await Database.query(`INSERT INTO servers (guildId, ${option}) VALUES ('${interaction.guildId}', '${value}')`);
         }
 	
 
