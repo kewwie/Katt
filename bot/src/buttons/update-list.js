@@ -25,7 +25,11 @@ module.exports = {
         
         interaction.update({ content });
 
-        var log = await interaction.guild.channels.cache.get(env.SMOKER_LOGS);
-		await log.send(`<@${interaction.user.id}> has moved down **${userToMove}**`);
+        var channelId = await Database.query(`SELECT logsChannel FROM server WHERE guildId = '${member.guild.id}'`);
+        if (channelId[0].length > 0) {
+
+            var log = await interaction.guild.channels.cache.get(channelId[0][0].logsChannel);
+            await log.send(`<@${interaction.user.id}> has moved down **${userToMove}**`);
+        }
     }
 }
