@@ -25,7 +25,7 @@ module.exports = {
         
         interaction.update({ content });
 
-        var channelId = await Database.query(`SELECT logsChannel FROM server WHERE guildId = '${member.guild.id}'`);
+        var channelId = await Database.query(`SELECT logsChannel FROM server WHERE guildId = '${interaction.guildId}'`);
         if (channelId[0].length > 0) {
 
             var log = await interaction.guild.channels.cache.get(channelId[0][0].logsChannel);
