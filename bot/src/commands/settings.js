@@ -7,8 +7,6 @@ const {
 	Interaction,
 	Client
 } = require("discord.js");
-const { env } = require("../env");
-const axios = require("axios");
 const Database = require("../data/database");
 
 module.exports = {

@@ -1,5 +1,5 @@
 const { Interaction, Client } = require("discord.js");
-const { env } = require("../env");
+const Database = require("../data/database");
 
 module.exports = {
     data: {
