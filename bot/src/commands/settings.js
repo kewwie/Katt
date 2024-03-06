@@ -13,22 +13,24 @@ const Database = require("../data/database");
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('verification-settings')
-		.setDescription('yeet')
+		.setName('settings')
+		.setDescription('Change the settings for your server')
 		.addStringOption(option => 
             option
                 .setName('option')
+                .setDescription('Select the option you want to change')
                 .addChoices(
-                    { name: 'Verification Logs', value: 'verification_logs' },
-                    { name: 'Verification Role', value: 'verification_role' },
-                    { name: 'Verification Admin', value: 'verification_admin' },
-                    { name: "Verification Pending Channel", value: "verification_pending_channel" }
+                    { name: 'Logs', value: 'logsChannel' },
+                    { name: 'Verified Role', value: 'verifiedRole' },
+                    { name: 'Verification Admin', value: 'verificationAdmin' },
+                    { name: "Pending Verification Channel", value: "pendingChannel" }
                 )
                 .setRequired(true)
         )
         .addStringOption(option => 
             option
                 .setName('value')
+                .setDescription('What value should the option be')
                 .setRequired(true),
         ),
 
@@ -41,28 +43,17 @@ module.exports = {
 
         var option = interaction.options.getString("option");
         var value = interaction.options.getString("value");
-        var type = "";
-
-        if (option === "verification_logs") {
-            type = "logsChannel";
-        } else if (option === "verification_role") {
-            type = "verifiedRole";
-        } else if (option === "verification_admin") {
-            type = "adminRole";
-        } else if  (option === "verification_pending_channel") {
-            type = "pendingChannel";
-        }
 
         var exist = await Database.query(`SELECT * FROM verification WHERE guildId = '${interaction.guildId}'`);
         if (exist[0].length > 0) {
-            await Database.query(`UPDATE verification SET ${type} = '${value}' WHERE guildId = '${interaction.guildId}'`);
+            await Database.query(`UPDATE verification SET ${option} = '${value}' WHERE guildId = '${interaction.guildId}'`);
         } else {
-            await Database.query(`INSERT INTO verification (guildId, ${type}) VALUES ('${interaction.guildId}', '${value}')`);
+            await Database.query(`INSERT INTO verification (guildId, ${interaction.guildId}) VALUES ('${option}', '${value}')`);
         }
 	
 
 		await interaction.reply({
-			content: `Rank Valorant Check`,
+			content: `Updated Settings for ${interaction.guild.name}`,
 			ephemeral: true
 		});
 	},
