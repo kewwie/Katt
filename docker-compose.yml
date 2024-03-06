@@ -14,7 +14,7 @@ services:
     ports:
       - "${DATABASE_PORT:?}:${DATABASE_PORT:?}"
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./mysql/data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 15s
