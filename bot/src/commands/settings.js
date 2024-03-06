@@ -44,11 +44,13 @@ module.exports = {
         var option = interaction.options.getString("option");
         var value = interaction.options.getString("value");
 
-        var exist = await Database.query(`SELECT * FROM verification WHERE guildId = '${interaction.guildId}'`);
+        value = value.substring(2, value.length - 1);
+
+        var exist = await Database.query(`SELECT * FROM servers WHERE guildId = '${interaction.guildId}'`);
         if (exist[0].length > 0) {
-            await Database.query(`UPDATE verification SET ${option} = '${value}' WHERE guildId = '${interaction.guildId}'`);
+            await Database.query(`UPDATE servers SET ${option} = '${value}' WHERE guildId = '${interaction.guildId}'`);
         } else {
-            await Database.query(`INSERT INTO verification (guildId, ${interaction.guildId}) VALUES ('${option}', '${value}')`);
+            await Database.query(`INSERT INTO servers (guildId, ${interaction.guildId}) VALUES ('${option}', '${value}')`);
         }
 	
 
