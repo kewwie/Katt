@@ -27,16 +27,22 @@ module.exports = {
             var pendingChannel = await member.guild.channels.fetch(servers[0][0].pendingChannel);
 
             var acceptButton = new ButtonBuilder()
-				.setCustomId('accept_' + member.user.id)
+				.setCustomId('accept-member_' + member.user.id)
 				.setLabel("Accept")
 				.setStyle(ButtonStyle.Success);
 
             var ignoreButton = new ButtonBuilder()
-				.setCustomId('ignore_' + member.user.id)
+				.setCustomId('ignore-member_' + member.user.id)
 				.setLabel("Ignore")
 				.setStyle(ButtonStyle.Danger);
 
-            await pendingChannel.send(member.user.username);
+            var row = new ActionRowBuilder()
+                .addComponents([acceptButton, ignoreButton])
+
+            await pendingChannel.send({
+                content: member.user.username,
+                components: [row]
+            });
         }
     }
 }
