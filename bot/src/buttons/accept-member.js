@@ -15,16 +15,18 @@ module.exports = {
         
         var member = await interaction.guild.members.fetch(memberId);
 
-        // Add role
+        var servers = await Database.query(`SELECT verificationAdmin, logsChannel, verifiedRole FROM servers WHERE guildId = '${interaction.guildId}'`);
 
-        
+        if (servers[0][0].verificationAdmin && interaction.member.roles.cache.has(servers[0][0].verificationAdmin)) {
 
+            await member.roles.add(servers[0][0].verificationAdmin);
+            
 
-        var channelId = await Database.query(`SELECT logsChannel FROM servers WHERE guildId = '${interaction.guildId}'`);
-        if (channelId[0].length > 0) {
+            if (servers[0][0].logsChannel) {
 
-            var log = await interaction.guild.channels.cache.get(channelId[0][0].logsChannel);
-            await log.send(`<@${interaction.user.id}> has moved down **${userToMove}**`);
+                var log = await interaction.guild.channels.cache.get(servers[0][0].logsChannel);
+                await log.send(`<@${interaction.user.id}> has moved down **${userToMove}**`);
+            }
         }
     }
 }

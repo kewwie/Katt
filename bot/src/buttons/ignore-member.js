@@ -11,25 +11,21 @@ module.exports = {
     * @param {Client} client
     */
     async execute(interaction, client) {
-        var userToMove = interaction.customId.split("_")[1];
-        var users = interaction.message.content.split("\n");
+        var memberId = interaction.customId.split("_")[1];
+        var member = await interaction.guild.members.fetch(memberId);
 
-        let index = users.indexOf(userToMove);
-    
-        if (index !== -1) {
-            users.splice(index, 1);
-            users.push(userToMove);
-        }
-        
-        var content = users.join("\n");
-        
-        interaction.update({ content });
+        var servers = await Database.query(`SELECT verificationAdmin, logsChannel, verifiedRole FROM servers WHERE guildId = '${interaction.guildId}'`);
 
-        var channelId = await Database.query(`SELECT logsChannel FROM servers WHERE guildId = '${interaction.guildId}'`);
-        if (channelId[0].length > 0) {
+        if (servers[0][0].verificationAdmin && interaction.member.roles.cache.has(servers[0][0].verificationAdmin)) {
 
-            var log = await interaction.guild.channels.cache.get(channelId[0][0].logsChannel);
-            await log.send(`<@${interaction.user.id}> has moved down **${userToMove}**`);
+            await member.roles.add(servers[0][0].verificationAdmin);
+            
+
+            if (servers[0][0].logsChannel) {
+
+                var log = await interaction.guild.channels.cache.get(servers[0][0].logsChannel);
+                await log.send(`<@${interaction.user.id}> has moved down **${userToMove}**`);
+            }
         }
     }
 }
