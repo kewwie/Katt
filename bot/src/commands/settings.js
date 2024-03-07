@@ -43,7 +43,7 @@ module.exports = {
         var value = interaction.options.getString("value");
 
         value = value.substring(2, value.length - 1);
-        if ("&" in value) {
+        if (value.includes("&")) {
             value = value.substring(1, value.length);
         }
 
