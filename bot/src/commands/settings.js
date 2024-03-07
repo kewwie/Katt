@@ -43,6 +43,9 @@ module.exports = {
         var value = interaction.options.getString("value");
 
         value = value.substring(2, value.length - 1);
+        if ("&" in value) {
+            value = value.substring(1, value.length);
+        }
 
         var exist = await Database.query(`SELECT * FROM servers WHERE guildId = '${interaction.guildId}'`);
         if (exist[0].length > 0) {
