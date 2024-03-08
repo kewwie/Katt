@@ -20,7 +20,7 @@ module.exports = {
             }
         }
 
-        var userRoles = await Database.query(`SELECT roleId FROM userRoles WHERE guildId = '${newMember.guildId}' AND userId = '${newMember.id}'`);
+        var userRoles = await Database.query(`SELECT roleId FROM userRoles WHERE guildId = '${newMember.guild.id}' AND userId = '${newMember.id}'`);
         console.log(userRoles)
 
         if (oldMember.roles.cache.size > newMember.roles.cache.size) {
