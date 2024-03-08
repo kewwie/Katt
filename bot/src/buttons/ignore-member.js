@@ -19,6 +19,8 @@ module.exports = {
         if (servers[0][0].verificationAdmin && interaction.member.roles.cache.has(servers[0][0].verificationAdmin)) {
             await member.kick("Denied");
 
+            await member.send(`You have been denied!\n\n${interaction.guild.invites.cache.first().url}`)
+
             if (servers[0][0].logsChannel) {
 
                 var log = await interaction.guild.channels.cache.get(servers[0][0].logsChannel);
