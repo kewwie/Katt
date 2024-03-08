@@ -28,17 +28,18 @@ module.exports = {
     * @param {Client} client
     */
 	async execute(interaction, client) {
-		var user = interaction.options.getUser("user");
+		var member = interaction.options.getMember("user");
 
-        for (var role of user.roles.cache) {
-            var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${user.id}' AND guildId = '${user.guild.id}' AND roleId = '${role.id}'`);
+        for (var role of member.roles.cache) {
+            console.log(role)
+            var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${member.user.id}' AND guildId = '${member.guild.id}' AND roleId = '${role.id}'`);
             if (!exist[0].length > 0) {
-                await Database.query(`INSERT INTO userRoles (userId, guildId, roleId) VALUES ('${user.id}', '${user.guild.id}', '${role.id}')`);
+                await Database.query(`INSERT INTO userRoles (userId, guildId, roleId) VALUES ('${member.user.id}', '${member.guild.id}', '${role.id}')`);
             }
         }
 
 		await interaction.reply({
-			content: `Saved **${user.username}**'s roles`,
+			content: `Saved **${member.user.username}**'s roles`,
 			ephemeral: true
 		});
 	},
