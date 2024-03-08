@@ -39,7 +39,7 @@ module.exports = {
 		}
 
 		await interaction.reply({
-			content: `Saved ${user.username}'s nickname`,
+			content: `Saved **${user.username}**'s nickname`,
 			ephemeral: true
 		});
 	},
