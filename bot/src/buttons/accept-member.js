@@ -1,4 +1,4 @@
-const { Interaction, Client } = require("discord.js");
+const { Interaction, Client, EmbedBuilder } = require("discord.js");
 const Database = require("../data/database");
 
 module.exports = {
@@ -25,8 +25,27 @@ module.exports = {
                 if (servers[0][0].logsChannel) {
 
                     var log = await interaction.guild.channels.cache.get(servers[0][0].logsChannel);
+
+                    var addedRoles = []
+                    for (var role of member.roles.cache.sort((a, b) => b.rawPosition - a.rawPosition)) {
+                        addedRoles.push(role.name)
+                    }
+
+                    console.log(addedRoles)
+
+                    var em = new EmbedBuilder()
+                        .setAuthor({
+                            name: member.user.username,
+                            iconURL: member.user.iconURL,
+                            url: `https://discord.com/users/${member.user.id}`
+                        })
+                        .addFields(
+                            { name: "Verfied By", value: interaction.member.user.username },
+                            { name: "Roles", value: addedRoles}
+                        )
+
                     await log.send({
-                        content: "Verified or smmth ig"
+                        embeds: [em]
                     });
                 }
             }

@@ -17,10 +17,6 @@ module.exports = {
         var servers = await Database.query(`SELECT verificationAdmin, logsChannel, verifiedRole FROM servers WHERE guildId = '${interaction.guildId}'`);
 
         if (servers[0][0].verificationAdmin && interaction.member.roles.cache.has(servers[0][0].verificationAdmin)) {
-
-            await member.roles.add(servers[0][0].verificationAdmin);
-            
-
             if (servers[0][0].logsChannel) {
 
                 var log = await interaction.guild.channels.cache.get(servers[0][0].logsChannel);
