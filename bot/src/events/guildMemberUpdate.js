@@ -19,5 +19,22 @@ module.exports = {
                 await Database.query(`INSERT INTO nicknames (userId, guildId, nickname) VALUES ('${newMember.id}', '${newMember.guild.id}', '${newMember.nickname}')`);
             }
         }
+
+        var userRoles = await Database.query(`SELECT role FROM userRoles WHERE guildId = '${newMember.guildId}' AND userId = '${newMember.id}'`);
+        console.log(userRoles)
+
+        if (oldMember.roles.cache.size > newMember.roles.cache.size) {
+            oldMember.roles.cache.forEach(role => {
+                if (!newMember.roles.cache.has(role.id)) {
+                    Database.query(`DELETE FROM userRoles WHERE userId = '${newMember.id}' AND guildId = '${newMember.guild.id}' AND roleId = '${role.id}'`);
+                }
+            });
+        } else if (oldMember.roles.cache.size < newMember.roles.cache.size) {
+            newMember.roles.cache.forEach(role => {
+                if (!oldMember.roles.cache.has(role.id)) {
+                    Database.query(`INSERT INTO userRoles (userId, guildId, roleId) values ('${newMember.id}', '${newMember.guild.id}', '${role.id}')`)
+                }
+            });
+        }
     }
 }

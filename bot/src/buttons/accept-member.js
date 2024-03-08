@@ -26,23 +26,22 @@ module.exports = {
 
                     var log = await interaction.guild.channels.cache.get(servers[0][0].logsChannel);
 
-                    var addedRoles = []
-                    for (var role of member.roles.cache.sort((a, b) => b.rawPosition - a.rawPosition)) {
-                        addedRoles.push(role.name)
-                    }
-
-                    console.log(addedRoles)
+                    var addedRoles = member.roles.cache
+                        .filter((roles) => roles.id !== interaction.guildId)
+                        .sort((a, b) => b.rawPosition - a.rawPosition)
+                        .map((role) => role.name);
 
                     var em = new EmbedBuilder()
                         .setAuthor({
                             name: member.user.username,
-                            iconURL: member.user.iconURL,
+                            iconURL: member.user.avatarURL(),
                             url: `https://discord.com/users/${member.user.id}`
                         })
                         .addFields(
                             { name: "Verfied By", value: interaction.member.user.username },
-                            { name: "Roles", value: addedRoles}
+                            { name: "Roles", value: addedRoles.join(", ")}
                         )
+                        .setColor(0x90EE90)
 
                     await log.send({
                         embeds: [em]
