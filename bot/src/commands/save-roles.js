@@ -30,13 +30,12 @@ module.exports = {
 	async execute(interaction, client) {
 		var member = interaction.options.getMember("user");
 
-        for (var role of member.roles.cache) {
-            console.log(role)
+        member.roles.cache.forEach(async (role) => {
             var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${member.user.id}' AND guildId = '${member.guild.id}' AND roleId = '${role.id}'`);
             if (!exist[0].length > 0) {
-                await Database.query(`INSERT INTO userRoles (userId, guildId, roleId) VALUES ('${member.user.id}', '${member.guild.id}', '${role.id}')`);
+                Database.query(`INSERT INTO userRoles (userId, guildId, roleId) VALUES ('${member.user.id}', '${member.guild.id}', '${role.id}')`);
             }
-        }
+        });
 
 		await interaction.reply({
 			content: `Saved **${member.user.username}**'s roles`,
