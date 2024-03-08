@@ -26,19 +26,19 @@ module.exports = {
 
         var servers = await Database.query(`SELECT pendingChannel, verificationAdmin FROM servers WHERE guildId = '${member.guild.id}'`, { plain: true, logging: false });
 
-		if (servers && servers.pendingChannel) { // If pending channel exist
+		if (servers.pendingChannel) {
             var pendingChannel = await member.guild.channels.fetch(servers.pendingChannel);
 
             var adminPing;
             if (servers.verificationAdmin) {
-                adminPing = `<@${servers.verificationAdmin}>`;
+                adminPing = `<@&${servers.verificationAdmin}>`;
             }
 
             var em = new EmbedBuilder()
                 .setTitle(member.user.username + "#" + member.user.discriminator)
                 .setThumbnail(member.user.avatarURL())
                 .setFields(
-                    { name: "Mention", value: `<@&${member.user.id}>`},
+                    { name: "Mention", value: `<@${member.user.id}>`},
                     { name: "Created", value: member.user.createdAt.toDateString() }
                 )
                 .setColor(0xADD8E6);
