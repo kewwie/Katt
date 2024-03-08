@@ -21,12 +21,16 @@ module.exports = {
 
             if (servers[0][0].verifiedRole) {
                 var userRoles = await Database.query(`SELECT roleId FROM userRoles WHERE guildId = '${member.guild.id}' AND userId = '${member.user.id}'`);
-                for (var role of userRoles[0][0]) {
-                    await member.roles.add(role.roleId);
+        
+                if (userRoles[0][0]) {
+                    for (var role of userRoles[0]) {
+                        if (role.roleId !== servers[0][0].verifiedRole) {
+                            await member.roles.add(role.roleId)
+                        }
+                    }
                 }
-                if (!(await interaction.guild.members.fetch(memberId)).roles.cache.has(servers[0][0].verifiedRole)) {
-                    await member.roles.add(servers[0][0].verifiedRole);
-                }
+                
+                await member.roles.add(servers[0][0].verifiedRole);
         
                 if (servers[0][0].logsChannel) {
 
@@ -44,7 +48,7 @@ module.exports = {
                             url: `https://discord.com/users/${member.user.id}`
                         })
                         .addFields(
-                            { name: "Verfied By", value: interaction.member.user.username },
+                            { name: "Verified By", value: interaction.member.user.username },
                             { name: "Roles", value: addedRoles.join(", ")}
                         )
                         .setColor(0x90EE90)
