@@ -11,6 +11,7 @@ module.exports = {
     * @param {Client} client
     */
     async execute(interaction, client) {
+        interaction.deferUpdate();
         var memberId = interaction.customId.split("_")[1];
         
         var member = await interaction.guild.members.fetch(memberId);
@@ -29,8 +30,9 @@ module.exports = {
                         }
                     }
                 }
-                
+
                 await member.roles.add(servers[0][0].verifiedRole);
+                await interaction.message.delete();
         
                 if (servers[0][0].logsChannel) {
 
