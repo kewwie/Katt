@@ -3,6 +3,7 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
+    EmbedBuilder,
 	Client,
     GuildMember
 } = require("discord.js");
@@ -22,9 +23,22 @@ module.exports = {
             await member.setNickname(nickname[0][0].nickname);
         }
 
-        var servers = await Database.query(`SELECT pendingChannel FROM servers WHERE guildId = '${member.guild.id}'`);
+        var servers = await Database.query(`SELECT pendingChannel, verificationAdmin FROM servers WHERE guildId = '${member.guild.id}'`);
 		if ((servers[0][0].pendingChannel).length > 0) { // If pending channel exist
             var pendingChannel = await member.guild.channels.fetch(servers[0][0].pendingChannel);
+
+            var adminPing;
+            if ((servers[0][0].verificationAdmin).length > 0) {
+                adminPing = `<@${servers[0][0].verificationAdmin}>`;
+            }
+
+            var em = new EmbedBuilder()
+                .setTitle(member.user.username + member.user.discriminator)
+                .setThumbnail(member.user.avatarURL())
+                .setFields(
+                    { name: "Mention", value: `<@${member.user.id}>`},
+                    { name: "Created", value: member.user.createdAt.toUTCString() }
+                )
 
             var acceptButton = new ButtonBuilder()
 				.setCustomId('accept-member_' + member.user.id)
@@ -40,7 +54,8 @@ module.exports = {
                 .addComponents([acceptButton, ignoreButton])
 
             await pendingChannel.send({
-                content: member.user.username,
+                content: adminPing,
+                embeds: [em],
                 components: [row]
             });
         }
