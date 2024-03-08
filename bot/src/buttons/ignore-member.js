@@ -1,4 +1,4 @@
-const { Interaction, Client } = require("discord.js");
+const { Interaction, Client, EmbedBuilder } = require("discord.js");
 const Database = require("../data/database");
 
 module.exports = {
@@ -17,9 +17,10 @@ module.exports = {
         var servers = await Database.query(`SELECT verificationAdmin, logsChannel, verifiedRole FROM servers WHERE guildId = '${interaction.guildId}'`);
 
         if (servers[0][0].verificationAdmin && interaction.member.roles.cache.has(servers[0][0].verificationAdmin)) {
-            await member.kick("Denied");
 
-            await member.send(`You have been denied!\n\n${interaction.guild.invites.cache.first().url}`)
+            await member.send(`You have been **denied** from **${interaction.guild.name}**`)
+            await member.kick("Denied");
+            await interaction.message.delete();
 
             if (servers[0][0].logsChannel) {
 
