@@ -20,7 +20,13 @@ module.exports = {
         if (servers[0][0].verificationAdmin && interaction.member.roles.cache.has(servers[0][0].verificationAdmin)) {
 
             if (servers[0][0].verifiedRole) {
-                await member.roles.add(servers[0][0].verifiedRole);
+                var userRoles = await Database.query(`SELECT roleId FROM userRoles WHERE guildId = '${member.guild.id}' AND userId = '${newMember.id}'`);
+                for (var role of userRoles[0][0]) {
+                    await member.roles.add(role.roleId);
+                }
+                if (!(await interaction.guild.members.fetch(memberId)).roles.cache.has(servers[0][0].verifiedRole)) {
+                    await member.roles.add(servers[0][0].verifiedRole);
+                }
         
                 if (servers[0][0].logsChannel) {
 
