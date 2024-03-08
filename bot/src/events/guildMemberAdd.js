@@ -33,12 +33,13 @@ module.exports = {
             }
 
             var em = new EmbedBuilder()
-                .setTitle(member.user.username + member.user.discriminator)
+                .setTitle(member.user.username + "#" + member.user.discriminator)
                 .setThumbnail(member.user.avatarURL())
                 .setFields(
                     { name: "Mention", value: `<@${member.user.id}>`},
                     { name: "Created", value: member.user.createdAt.toUTCString() }
                 )
+                .setColor(0xADD8E6);
 
             var acceptButton = new ButtonBuilder()
 				.setCustomId('accept-member_' + member.user.id)
