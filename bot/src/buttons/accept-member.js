@@ -16,27 +16,29 @@ module.exports = {
         
         var member = await interaction.guild.members.fetch(memberId);
 
-        var servers = await Database.query(`SELECT verificationAdmin, logsChannel, verifiedRole FROM servers WHERE guildId = '${interaction.guildId}'`);
+        var servers = await Database.query(`SELECT verificationAdmin, logsChannel, verifiedRole FROM servers WHERE guildId = '${interaction.guildId}'`, { plain: true, logging: false });
 
-        if (servers[0][0].verificationAdmin && interaction.member.roles.cache.has(servers[0][0].verificationAdmin)) {
+        if (servers.verificationAdmin && interaction.member.roles.cache.has(servers.verificationAdmin)) {
 
-            if (servers[0][0].verifiedRole) {
-                var userRoles = await Database.query(`SELECT roleId FROM userRoles WHERE guildId = '${member.guild.id}' AND userId = '${member.user.id}'`);
+            if (servers.verifiedRole) {
+                var userRoles = await Database.query(`SELECT roleId FROM userRoles WHERE guildId = '${member.guild.id}' AND userId = '${member.user.id}'`, { plain: true, logging: false });
+
+                console.log(userRoles);
         
-                if (userRoles[0][0]) {
-                    for (var role of userRoles[0]) {
-                        if (role.roleId !== servers[0][0].verifiedRole) {
+                if (userRoles) {
+                    for (var role of userRoles) {
+                        if (role.roleId !== servers.verifiedRole) {
                             await member.roles.add(role.roleId)
                         }
                     }
                 }
 
-                await member.roles.add(servers[0][0].verifiedRole);
+                await member.roles.add(servers.verifiedRole);
                 await interaction.message.delete();
         
-                if (servers[0][0].logsChannel) {
+                if (servers.logsChannel) {
 
-                    var log = await interaction.guild.channels.cache.get(servers[0][0].logsChannel);
+                    var log = await interaction.guild.channels.cache.get(servers.logsChannel);
 
                     var addedRoles = member.roles.cache
                         .filter((roles) => roles.id !== interaction.guildId)

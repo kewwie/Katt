@@ -15,17 +15,17 @@ module.exports = {
         var memberId = interaction.customId.split("_")[1];
         var member = await interaction.guild.members.fetch(memberId);
 
-        var servers = await Database.query(`SELECT verificationAdmin, logsChannel, verifiedRole FROM servers WHERE guildId = '${interaction.guildId}'`);
+        var servers = await Database.query(`SELECT verificationAdmin, logsChannel, verifiedRole FROM servers WHERE guildId = '${interaction.guildId}'`, { plain: true, logging: false });
 
-        if (servers[0][0].verificationAdmin && interaction.member.roles.cache.has(servers[0][0].verificationAdmin)) {
+        if (servers.verificationAdmin && interaction.member.roles.cache.has(servers.verificationAdmin)) {
 
             await member.send(`You have been **denied** from **${interaction.guild.name}**`)
             await member.kick("Denied");
             await interaction.message.delete();
 
-            if (servers[0][0].logsChannel) {
+            if (servers.logsChannel) {
 
-                var log = await interaction.guild.channels.cache.get(servers[0][0].logsChannel);
+                var log = await interaction.guild.channels.cache.get(servers.logsChannel);
                 var em = new EmbedBuilder()
                     .setAuthor({
                         name: member.user.username,
