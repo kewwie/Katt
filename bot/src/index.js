@@ -9,5 +9,5 @@ client.login(env.CLIENT_TOKEN);
     await Database.query("CREATE TABLE IF NOT EXISTS nicknames (userId VARCHAR(100) PRIMARY KEY, guildId VARCHAR(100), nickname VARCHAR(100) NULL)");
     await Database.query("CREATE TABLE IF NOT EXISTS verified (userId VARCHAR(100) PRIMARY KEY, guildId VARCHAR(100), type VARCHAR(25) NULL, byUser VARCHAR(100) NULL, autoVerify BOOLEAN NULL)");
     await Database.query("CREATE TABLE IF NOT EXISTS servers (guildId VARCHAR(100) PRIMARY KEY, verifiedRole VARCHAR(100) NULL, logsChannel VARCHAR(100) NULL, pendingChannel VARCHAR(100) NULL, verificationAdmin VARCHAR(100) NULL)");
-    await Database.query("CREATE TABLE IF NOT EXISTS userRoles (id INT PRIMARY KEY AUTO_INCREMENT, userId INT, guildId INT, roleId INT NULL)")
+    await Database.query("CREATE TABLE IF NOT EXISTS userRoles (id INT PRIMARY KEY AUTO_INCREMENT, userId VARCHAR(100), guildId VARCHAR(100), roleId VARCHAR(100))")
 })();
