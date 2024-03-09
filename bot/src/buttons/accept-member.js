@@ -37,6 +37,7 @@ module.exports = {
                 }
 
                 await member.roles.add(servers.verifiedRole);
+                await member.send(`You have been **verified** in **${interaction.guild.name}**`)
                 await interaction.message.delete();
         
                 if (servers.logsChannel) {
@@ -49,13 +50,11 @@ module.exports = {
                         .map((role) => role.name);
 
                     var em = new EmbedBuilder()
-                        .setAuthor({
-                            name: member.user.username,
-                            iconURL: member.user.avatarURL(),
-                            url: `https://discord.com/users/${member.user.id}`
-                        })
+                        .setTitle(member.user.username + "#" + member.user.discriminator)
+                        .setThumbnail(member.user.avatarURL())
                         .addFields(
-                            { name: "Verified By", value: interaction.member.user.username },
+                            { name: "Mention", value: `<@${member.user.id}>` },
+                            { name: "Verified By", value: `<@${interaction.member.id}>` },
                             { name: "Roles", value: addedRoles.join(", ")}
                         )
                         .setColor(0x90EE90)

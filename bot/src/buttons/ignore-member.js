@@ -27,12 +27,10 @@ module.exports = {
 
                 var log = await interaction.guild.channels.cache.get(servers.logsChannel);
                 var em = new EmbedBuilder()
-                    .setAuthor({
-                        name: member.user.username,
-                        iconURL: member.user.avatarURL(),
-                        url: `https://discord.com/users/${member.user.id}`
-                    })
+                    .setTitle(member.user.username + "#" + member.user.discriminator)
+                    .setThumbnail(member.user.avatarURL())
                     .addFields(
+                        { name: "Mention", value: `<@${member.user.id}>` },
                         { name: "Denied By", value: interaction.member.user.username },
                         { name: "Action", value: "Kicked" }
                     )
