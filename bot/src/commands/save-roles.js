@@ -32,7 +32,7 @@ module.exports = {
 
         member.roles.cache.forEach(async (role) => {
 			if (role.name === "@everyone") return;
-            var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${member.user.id}' AND guildId = '${member.guild.id}' AND roleId = '${role.id}'`, { plain: false, logging: false });
+            var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${member.user.id}' AND guildId = '${member.guild.id}' AND roleId = '${role.id}'`, { plain: true, logging: false });
             if (!exist) {
                 Database.query(`INSERT INTO userRoles (userId, guildId, roleId) VALUES ('${member.user.id}', '${member.guild.id}', '${role.id}')`, { logging: false });
             }

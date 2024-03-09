@@ -48,7 +48,8 @@ module.exports = {
             value = value.substring(1, value.length);
         }
 
-        var exist = await Database.query(`SELECT * FROM servers WHERE guildId = '${interaction.guildId}'`, { plain: false, logging: false });
+        var exist = await Database.query(`SELECT * FROM servers WHERE guildId = '${interaction.guildId}'`, { plain: true, logging: false });
+        console.log(exist)
         if (exist) {
             await Database.query(`UPDATE servers SET ${option} = '${value}' WHERE guildId = '${interaction.guildId}'`, { logging: false });
         } else {

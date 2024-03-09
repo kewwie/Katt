@@ -17,7 +17,7 @@ module.exports = {
     * @param {GuildMember} member
     */
     async execute(client, member) {
-        var nicknames = await Database.query(`SELECT nickname FROM nicknames WHERE userId = '${member.id}' AND guildId = '${member.guild.id}'`, { plain: false, logging: false });
+        var nicknames = await Database.query(`SELECT nickname FROM nicknames WHERE userId = '${member.id}' AND guildId = '${member.guild.id}'`, { plain: true, logging: false });
         if (nicknames) {
             await member.setNickname(nicknames.nickname);
         }

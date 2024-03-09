@@ -30,7 +30,7 @@ module.exports = {
 		var user = interaction.options.getUser("user");
 
 		if (user.nickname) {
-			var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`, { plain: false, logging: false });
+			var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`, { plain: true, logging: false });
 			if (exist) {
 				await Database.query(`UPDATE nicknames SET nickname = '${user.nickname}' WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`, { logging: false });
 			} else {

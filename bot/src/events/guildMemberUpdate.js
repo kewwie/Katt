@@ -12,7 +12,7 @@ module.exports = {
     */
     async execute(client, oldMember, newMember) {
         if (oldMember.nickname !== newMember.nickname) {
-            var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${newMember.id}' AND guildId = '${newMember.guild.id}'`, { plain: false, logging: false });
+            var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${newMember.id}' AND guildId = '${newMember.guild.id}'`, { plain: true, logging: false });
             if (exist) {
                 await Database.query(`UPDATE nicknames SET nickname = '${newMember.nickname}' WHERE userId = '${newMember.id}' AND guildId = '${newMember.guild.id}'`, { logging: false });
             } else {
@@ -30,7 +30,7 @@ module.exports = {
             newMember.roles.cache.forEach(async role => {
                 if (!oldMember.roles.cache.has(role.id)) {
                     if (role.name !== "@everyone") {
-                        var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${newMember.user.id}' AND guildId = '${newMember.guild.id}' AND roleId = '${role.id}'`, { plain: false, logging: false });
+                        var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${newMember.user.id}' AND guildId = '${newMember.guild.id}' AND roleId = '${role.id}'`, { plain: true, logging: false });
                         if (!exist) {
                             Database.query(`INSERT INTO userRoles (userId, guildId, roleId) values ('${newMember.id}', '${newMember.guild.id}', '${role.id}')`, { logging: false })
                         }
