@@ -7,7 +7,6 @@ const {
 	Client,
     GuildMember
 } = require("discord.js");
-const { QueryTypes } = require('sequelize');
 const Database = require("../data/database");
 
 module.exports = {
