@@ -32,7 +32,7 @@ module.exports = {
     
             const buttonId = (interaction.customId).split("_")[0];
             const button = client.buttons.get(buttonId);
-            console.log(buttonId)
+        
             try {
                 button.execute(interaction, client);
             } catch (err) {
