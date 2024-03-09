@@ -31,8 +31,8 @@ module.exports = {
 		var member = interaction.options.getMember("user");
 
         member.roles.cache.forEach(async (role) => {
-            var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${member.user.id}' AND guildId = '${member.guild.id}' AND roleId = '${role.id}'`);
-            if (!exist[0].length > 0) {
+            var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${member.user.id}' AND guildId = '${member.guild.id}' AND roleId = '${role.id}'`, { plain: false, logging: false });
+            if (!exist) {
                 Database.query(`INSERT INTO userRoles (userId, guildId, roleId) VALUES ('${member.user.id}', '${member.guild.id}', '${role.id}')`);
             }
         });
