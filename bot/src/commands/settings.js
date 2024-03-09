@@ -47,11 +47,11 @@ module.exports = {
             value = value.substring(1, value.length);
         }
 
-        var exist = await Database.query(`SELECT * FROM servers WHERE guildId = '${interaction.guildId}'`);
-        if (exist[0].length > 0) {
-            await Database.query(`UPDATE servers SET ${option} = '${value}' WHERE guildId = '${interaction.guildId}'`);
+        var exist = await Database.query(`SELECT * FROM servers WHERE guildId = '${interaction.guildId}'`, { plain: false, logging: false });
+        if (exist) {
+            await Database.query(`UPDATE servers SET ${option} = '${value}' WHERE guildId = '${interaction.guildId}'`, { logging: false });
         } else {
-            await Database.query(`INSERT INTO servers (guildId, ${option}) VALUES ('${interaction.guildId}', '${value}')`);
+            await Database.query(`INSERT INTO servers (guildId, ${option}) VALUES ('${interaction.guildId}', '${value}')`, { logging: false });
         }
 	
 
