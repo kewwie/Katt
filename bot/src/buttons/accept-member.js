@@ -29,8 +29,8 @@ module.exports = {
                 if (userRoles) {
                     for (var role of userRoles) {
                         if (interaction.guild.roles.cache.find(x => x.id === role.roleId)) {
-                            if (role.roleId === interaction.guildId) break;
-                            if (role.roleId === servers.verifiedRole) break;
+                            if (role.roleId === interaction.guildId) continue;
+                            if (role.roleId === servers.verifiedRole) continue;
                             await member.roles.add(role.roleId)
                         }
                     }
