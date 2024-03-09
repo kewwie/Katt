@@ -1,4 +1,5 @@
 const { Interaction, Client, EmbedBuilder } = require("discord.js");
+const { QueryTypes } = require('sequelize');
 const Database = require("../data/database");
 
 module.exports = {
@@ -21,14 +22,16 @@ module.exports = {
         if (servers.verificationAdmin && interaction.member.roles.cache.has(servers.verificationAdmin)) {
 
             if (servers.verifiedRole) {
-                var userRoles = await Database.query(`SELECT roleId FROM userRoles WHERE guildId = '${member.guild.id}' AND userId = '${member.user.id}'`, { plain: true, logging: false });
+                var userRoles = await Database.query(`SELECT roleId FROM userRoles WHERE guildId = '${member.guild.id}' AND userId = '${member.user.id}'`, { plain: false, logging: false, type: QueryTypes.SELECT });
 
                 console.log(userRoles);
         
                 if (userRoles) {
                     for (var role of userRoles) {
-                        if (role.roleId !== servers.verifiedRole) {
-                            await member.roles.add(role.roleId)
+                        if (interaction.guild.roles.cache.find(x => x.id === role.roleId)) {
+                            if (role.roleId !== servers.verifiedRole) {
+                                await member.roles.add(role.roleId)
+                            }
                         }
                     }
                 }
