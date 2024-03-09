@@ -31,7 +31,7 @@ module.exports = {
                     .setThumbnail(member.user.avatarURL())
                     .addFields(
                         { name: "Mention", value: `<@${member.user.id}>` },
-                        { name: "Denied By", value: interaction.member.user.username },
+                        { name: "Denied By", value: `<@${interaction.member.id}>` },
                         { name: "Action", value: "Kicked" }
                     )
                     .setColor(0xFF474D)

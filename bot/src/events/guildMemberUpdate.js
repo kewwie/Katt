@@ -1,4 +1,4 @@
-const { Events, GuildMember } = require("discord.js");
+const { Client, GuildMember } = require("discord.js");
 const Database = require("../data/database");
 
 module.exports = {

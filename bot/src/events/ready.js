@@ -1,11 +1,22 @@
 const { join } = require("path");
 const { readdirSync } = require("fs");
-const { REST, Routes } = require("discord.js");
+const { 
+    REST,
+    Routes,
+    Interaction,
+    Client
+} = require("discord.js");
 const { env } = require("../env");
 
 module.exports = {
     name: "ready",
     once: true,
+
+    /**
+    * 
+    * @param {Client} client
+    * @param {Interaction} interaction
+    */
     async execute(client) {
         console.log(`${client.user?.username} is Online`);
 

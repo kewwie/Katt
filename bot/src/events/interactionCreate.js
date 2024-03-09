@@ -1,7 +1,16 @@
+const {
+	Interaction,
+	Client
+} = require("discord.js");
 
 module.exports = {
     name: "interactionCreate",
-    once: false,
+
+    /**
+    * 
+    * @param {Client} client
+    * @param {Interaction} interaction
+    */
     async execute(client, interaction) {
         if (interaction.isChatInputCommand()) {
             const command = client.commands.get(interaction.commandName);

@@ -29,8 +29,9 @@ module.exports = {
             option
                 .setName('value')
                 .setDescription('What value should the option be')
-                .setRequired(true),
-        ),
+                .setRequired(true)
+        )
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 	/**
     * 
