@@ -39,6 +39,8 @@ module.exports = {
                 await member.roles.add(servers.verifiedRole);
                 await member.send(`You have been **verified** in **${interaction.guild.name}**`)
                 await interaction.message.delete();
+
+                Database.query(`INSERT INTO verified (userId, guildId, dateTime, byUser) VALUES ('${member.user.id}', '${member.guild.id}', '${new Date().toISOString()}', '${interaction.member.id}')`, { logging: false });
         
                 if (servers.logsChannel) {
 
