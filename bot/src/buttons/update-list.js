@@ -25,10 +25,10 @@ module.exports = {
         
         interaction.update({ content });
 
-        var channelId = await Database.query(`SELECT logsChannel FROM servers WHERE guildId = '${interaction.guildId}'`);
-        if (channelId[0].length > 0) {
+        var servers = await Database.query(`SELECT logsChannel FROM servers WHERE guildId = '${interaction.guildId}'`, { plain: true, logging: false });
+        if (servers.logsChannel) {
 
-            var log = await interaction.guild.channels.cache.get(channelId[0][0].logsChannel);
+            var log = await interaction.guild.channels.cache.get(servers.logsChannel);
             await log.send(`<@${interaction.user.id}> has moved down **${userToMove}**`);
         }
     }
