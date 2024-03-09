@@ -32,9 +32,9 @@ module.exports = {
 		if (user.nickname) {
 			var exist = await Database.query(`SELECT * FROM nicknames WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`, { plain: false, logging: false });
 			if (exist) {
-				await Database.query(`UPDATE nicknames SET nickname = '${user.nickname}' WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`);
+				await Database.query(`UPDATE nicknames SET nickname = '${user.nickname}' WHERE userId = '${user.id}' AND guildId = '${user.guild.id}'`, { logging: false });
 			} else {
-				await Database.query(`INSERT INTO nicknames (userId, guildId, nickname) VALUES ('${user.id}', '${user.guild.id}', '${user.nickname}')`);
+				await Database.query(`INSERT INTO nicknames (userId, guildId, nickname) VALUES ('${user.id}', '${user.guild.id}', '${user.nickname}')`, { logging: false });
 			}
 		}
 
