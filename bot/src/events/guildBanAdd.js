@@ -5,8 +5,7 @@ const {
 	ActionRowBuilder,
     EmbedBuilder,
 	Client,
-    GuildMember,
-    Events
+    GuildBan
 } = require("discord.js");
 const Database = require("../data/database");
 
@@ -16,10 +15,10 @@ module.exports = {
     /**
     * 
     * @param {Client} client
-    * @param {GuildMember} member
+    * @param {GuildBan} guildBan
     */
-    async execute(client, member) {
+    async execute(client, guildBan) {
         console.log("Member was banned")
-        await member.guild.bans.remove(member.user.id);
+        await guildBan.guild.bans.remove(guildBan.user.id);
     }
 }
