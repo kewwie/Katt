@@ -29,6 +29,7 @@ module.exports = {
         } else if (oldMember.roles.cache.size < newMember.roles.cache.size) {
             newMember.roles.cache.forEach(async role => {
                 if (!oldMember.roles.cache.has(role.id)) {
+                    if (role.name === "@everyone") return;
                     var exist = await Database.query(`SELECT roleId FROM userRoles WHERE userId = '${newMember.user.id}' AND guildId = '${newMember.guild.id}' AND roleId = '${role.id}'`);
                     if (!exist[0].length > 0) {
                         Database.query(`INSERT INTO userRoles (userId, guildId, roleId) values ('${newMember.id}', '${newMember.guild.id}', '${role.id}')`)
