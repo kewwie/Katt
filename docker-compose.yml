@@ -27,6 +27,6 @@ services:
       context: .
       dockerfile: ./bot/.docker/Dockerfile
     depends_on:
-      db:
+      mysql:
         condition: service_healthy
     command: ["npm", "run", "start"]
