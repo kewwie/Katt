@@ -2,9 +2,9 @@ version: "3"
 name: "kewwie"
 
 services: 
-  database:
+  db:
     image: mysql:8
-    container_name: database
+    container_name: db
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:?}
