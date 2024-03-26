@@ -7,7 +7,7 @@ module.exports.env = {
     CLIENT_SECRET: process.env.CLIENT_SECRET,
     CLIENT_TOKEN: process.env.CLIENT_TOKEN,
     
-    DB_HOST: "localhost",
+    DB_HOST: "mysql",
     DB_PORT: process.env.DATABASE_PORT,
     DB_NAME: "kewwie",
     DB_USER: "root",
