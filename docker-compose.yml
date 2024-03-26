@@ -4,7 +4,7 @@ name: "kewwie"
 services: 
   database:
     image: mysql:8
-    container_name: mysql
+    container_name: database
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:?}
