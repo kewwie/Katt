@@ -1,6 +1,6 @@
 const { env } = require("../env");
 const { Sequelize } = require('sequelize');
-import * as path from "path"
+//import * as path from "path"
 
 const Database = new Sequelize({
     
