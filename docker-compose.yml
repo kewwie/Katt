@@ -2,7 +2,7 @@ version: "3"
 name: "kewwie"
 
 services: 
-  mysql:
+  database:
     image: mysql:8
     container_name: mysql
     restart: unless-stopped
