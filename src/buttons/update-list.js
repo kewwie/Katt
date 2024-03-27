@@ -29,7 +29,7 @@ module.exports = {
         if (servers.logsChannel) {
 
             var log = await interaction.guild.channels.cache.get(servers.logsChannel);
-            await log.send(`<@${interaction.user.id}> has moved down **${userToMove}**`);
+            await log.send(`<@${interaction.user.id}> has moved down **${userToMove}** in [list](${interaction.message.url})`);
         }
     }
 }
