@@ -1,5 +1,5 @@
 const { Interaction, Client, EmbedBuilder } = require("discord.js");
-const Database = require("../data/database");
+const { env } = require("../env");
 
 module.exports = {
     data: {
@@ -15,31 +15,27 @@ module.exports = {
         var memberId = interaction.customId.split("_")[1];
         var member = await interaction.guild.members.fetch(memberId);
 
-        var servers = await Database.query(`SELECT verificationAdmin, logsChannel, verifiedRole FROM servers WHERE guildId = '${interaction.guildId}'`, { plain: true, logging: false });
+        await member.send(`You have been **denied** from **${interaction.guild.name}**`)
+        await member.kick("Denied");
+        await interaction.message.delete();
 
-        if (servers.verificationAdmin && interaction.member.roles.cache.has(servers.verificationAdmin)) {
+        if (env.LOGS_CHANNEL) {
 
-            await member.send(`You have been **denied** from **${interaction.guild.name}**`)
-            await member.kick("Denied");
-            await interaction.message.delete();
+            var log = await interaction.guild.channels.cache.get(env.LOGS_CHANNEL);
+            var em = new EmbedBuilder()
+                .setTitle(member.user.username + "#" + member.user.discriminator)
+                .setThumbnail(member.user.avatarURL())
+                .addFields(
+                    { name: "Mention", value: `<@${member.user.id}>` },
+                    { name: "Denied By", value: `<@${interaction.member.id}>` },
+                    { name: "Action", value: "Kicked" }
+                )
+                .setColor(0xFF474D)
 
-            if (servers.logsChannel) {
-
-                var log = await interaction.guild.channels.cache.get(servers.logsChannel);
-                var em = new EmbedBuilder()
-                    .setTitle(member.user.username + "#" + member.user.discriminator)
-                    .setThumbnail(member.user.avatarURL())
-                    .addFields(
-                        { name: "Mention", value: `<@${member.user.id}>` },
-                        { name: "Denied By", value: `<@${interaction.member.id}>` },
-                        { name: "Action", value: "Kicked" }
-                    )
-                    .setColor(0xFF474D)
-
-                await log.send({
-                    embeds: [em]
-                });
-            }
+            await log.send({
+                embeds: [em]
+            });
         }
+
     }
 }

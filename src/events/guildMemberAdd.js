@@ -6,7 +6,7 @@ const {
 	Client,
     GuildMember
 } = require("discord.js");
-const Database = require("../data/database");
+const { env } = require("../env");
 
 module.exports = {
     name: "guildMemberAdd",
@@ -17,13 +17,10 @@ module.exports = {
     * @param {GuildMember} member
     */
     async execute(client, member) {
-	if (servers.pendingChannel) {
-            var pendingChannel = await member.guild.channels.fetch(servers.pendingChannel);
+	    if (env.PENDING_CHANNEL) {
+            var pendingChannel = await member.guild.channels.fetch(env.PENDING_CHANNEL);
 
-            var adminPing;
-            if (servers.verificationAdmin) {
-                adminPing = `<@&${servers.verificationAdmin}>`;
-            }
+            var verificationPing = `@everyone`;
 
             var em = new EmbedBuilder()
                 .setTitle(member.user.username + "#" + member.user.discriminator)
@@ -48,7 +45,7 @@ module.exports = {
                 .addComponents([acceptButton, ignoreButton])
 
             await pendingChannel.send({
-                content: adminPing,
+                content: verificationPing,
                 embeds: [em],
                 components: [row]
             });

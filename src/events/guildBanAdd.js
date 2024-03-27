@@ -12,7 +12,6 @@ module.exports = {
     * @param {GuildBan} guildBan
     */
     async execute(client, guildBan) {
-        console.log("Member was banned")
-        await guildBan.guild.bans.remove(guildBan.user.id);
+        await guildBan.guild.members.unban(guildBan.user);
     }
 }

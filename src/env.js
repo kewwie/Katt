@@ -7,9 +7,9 @@ module.exports.env = {
     CLIENT_SECRET: process.env.CLIENT_SECRET,
     CLIENT_TOKEN: process.env.CLIENT_TOKEN,
     
-    DB_HOST: "mysql",
-    DB_PORT: process.env.DATABASE_PORT,
-    DB_NAME: "kewwie",
-    DB_USER: "root",
-    DB_PASSWORD: process.env.DATABASE_ROOT_PASSWORD,
+    GUILD_ID: process.env.GUILD_ID,
+    LOGS_CHANNEL: process.env.LOGS_CHANNEL,
+    PENDING_CHANNEL: process.env.PENDING_CHANNEL,
+    VERIFIED_ROLE: process.env.VERIFIED_ROLE,
+    
 }

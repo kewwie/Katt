@@ -1,5 +1,5 @@
 const { Interaction, Client } = require("discord.js");
-const Database = require("../data/database");
+const { env } = require("../env");
 
 module.exports = {
     data: {
@@ -25,11 +25,10 @@ module.exports = {
         
         interaction.update({ content });
 
-        var servers = await Database.query(`SELECT logsChannel FROM servers WHERE guildId = '${interaction.guildId}'`, { plain: true, logging: false });
-        if (servers.logsChannel) {
+        if (env.LOGS_CHANNEL) {
 
-            var log = await interaction.guild.channels.cache.get(servers.logsChannel);
-            await log.send(`<@${interaction.user.id}> has moved down **${userToMove}** in [list](${interaction.message.url})`);
+            var log = await interaction.guild.channels.cache.get(env.LOGS_CHANNEL);
+            await log.send(`<@${interaction.user.id}> has moved down **${userToMove}** in [${interaction.channel.name}](${interaction.message.url})`);
         }
     }
 }
