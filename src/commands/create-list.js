@@ -18,7 +18,7 @@ module.exports = {
 			.setDescription('Example: Kewi,Soja,Timjan')
 			.setRequired(true)
 	)		
-	.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+	.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
 
 	/**
     * 
