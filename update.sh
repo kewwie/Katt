@@ -1,5 +1,3 @@
-docker stop kewwieapp
-docker rm kewwieapp
 
 git pull
 
