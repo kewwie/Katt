@@ -17,14 +17,7 @@ module.exports = {
     * @param {GuildMember} member
     */
     async execute(client, member) {
-        var nicknames = await Database.query(`SELECT nickname FROM nicknames WHERE userId = '${member.id}' AND guildId = '${member.guild.id}'`, { plain: true, logging: false });
-        if (nicknames) {
-            await member.setNickname(nicknames.nickname);
-        }
-
-        var servers = await Database.query(`SELECT pendingChannel, verificationAdmin FROM servers WHERE guildId = '${member.guild.id}'`, { plain: true, logging: false });
-
-		if (servers.pendingChannel) {
+	if (servers.pendingChannel) {
             var pendingChannel = await member.guild.channels.fetch(servers.pendingChannel);
 
             var adminPing;
