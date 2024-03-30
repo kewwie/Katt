@@ -18,7 +18,11 @@ module.exports = {
 
         if (env.VERIFIED_ROLE) {
             await member.roles.add(env.VERIFIED_ROLE);
-            await member.send(`You have been **verified** in **${interaction.guild.name}**`)
+            try {
+                await member.send(`You have been **verified** in **${interaction.guild.name}**`);
+            } catch (e) {
+                console.log(e);
+            }
             await interaction.message.delete();
     
             if (env.LOGS_CHANNEL) {

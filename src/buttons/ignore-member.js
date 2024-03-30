@@ -15,7 +15,11 @@ module.exports = {
         var memberId = interaction.customId.split("_")[1];
         var member = await interaction.guild.members.fetch(memberId);
 
-        await member.send(`You have been **denied** from **${interaction.guild.name}**`)
+        try {
+            await member.send(`You have been **denied** from **${interaction.guild.name}**`)
+        } catch (e) {
+            console.log(e);
+        }
         await member.kick("Denied");
         await interaction.message.delete();
 
