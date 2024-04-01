@@ -33,6 +33,7 @@ module.exports = {
 		var userText = "";
 
 	    for (let user of users) {
+			if (!user) break;
 			var button = new ButtonBuilder()
 				.setCustomId('update-list_' + user)
 				.setLabel(user)
