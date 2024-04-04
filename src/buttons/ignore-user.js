@@ -3,7 +3,7 @@ const { env } = require("../env");
 
 module.exports = {
     data: {
-        id: "ignore-member",
+        id: "ignore-user",
     },
     /**
     * 

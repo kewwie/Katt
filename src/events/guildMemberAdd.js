@@ -32,26 +32,29 @@ module.exports = {
                 .setColor(0xADD8E6);
 
             var acceptGuestButton = new ButtonBuilder()
-				.setCustomId('accept-member_guest_' + member.user.id)
-				.setLabel("Accept")
+				.setCustomId('accept-user_guest_' + member.user.id)
+				.setLabel("Accept as Guest")
 				.setStyle(ButtonStyle.Success);
             var acceptMemberButton = new ButtonBuilder()
-				.setCustomId('accept-member_member_' + member.user.id)
-				.setLabel("Accept")
-				.setStyle(ButtonStyle.Success);
+				.setCustomId('accept-user_member_' + member.user.id)
+				.setLabel("Accept as Member")
+				.setStyle(ButtonStyle.Primary);
 
             var ignoreButton = new ButtonBuilder()
-				.setCustomId('ignore-member_' + member.user.id)
-				.setLabel("Ignore")
+				.setCustomId('ignore-user_' + member.user.id)
+				.setLabel("Ignore User")
 				.setStyle(ButtonStyle.Danger);
 
             var row = new ActionRowBuilder()
-                .addComponents([acceptGuestButton, acceptMemberButton, ignoreButton])
+                .addComponents([acceptGuestButton, acceptMemberButton])
+            
+            var row2 = new ActionRowBuilder()
+                .addComponents([ignoreButton])
 
             await pendingChannel.send({
                 content: verificationPing,
                 embeds: [em],
-                components: [row]
+                components: [row, row2]
             });
         }
     }

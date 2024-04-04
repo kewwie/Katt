@@ -3,7 +3,7 @@ const { env } = require("../env");
 
 module.exports = {
     data: {
-        id: "accept-member",
+        id: "accept-user",
     },
     /**
     * 
@@ -16,20 +16,18 @@ module.exports = {
         var memberId = interaction.customId.split("_")[2];
         
         var member = await interaction.guild.members.fetch(memberId);
-        var roleId;
 
-        switch (type) {
-            case "guest":
-                roleId = env.GUEST_ROLE;
-                break;
-            case "member":
-                roleId = env.MEMEBER_ROLE;
-                break;
-        }
-
-        if (roleId) {
-            await member.roles.add(roleId);
+        if (type) {
             try {
+                switch (type) {
+                    case "guest":
+                        await member.roles.add(env.GUEST_ROLE);
+                        break;
+                    case "member":
+                        await member.roles.add(env.GUEST_ROLE);
+                        await member.roles.add(env.MEMBER_ROLE);
+                        break;
+                }
                 await member.send(`You have been **verified** in **${interaction.guild.name}**`);
             } catch (e) {
                 console.log(e);

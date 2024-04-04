@@ -10,6 +10,6 @@ module.exports.env = {
     GUILD_ID: process.env.GUILD_ID,
     LOGS_CHANNEL: process.env.LOGS_CHANNEL,
     PENDING_CHANNEL: process.env.PENDING_CHANNEL,
-    VERIFIED_ROLE: process.env.VERIFIED_ROLE,
-    
+    GUEST_ROLE: process.env.GUEST_ROLE,
+    MEMBER_ROLE: process.env.MEMBER_ROLE,
 }
