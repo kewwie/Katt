@@ -12,12 +12,23 @@ module.exports = {
     */
     async execute(interaction, client) {
         interaction.deferUpdate();
-        var memberId = interaction.customId.split("_")[1];
+        var type = interaction.customId.split("_")[1];
+        var memberId = interaction.customId.split("_")[2];
         
         var member = await interaction.guild.members.fetch(memberId);
+        var roleId;
 
-        if (env.VERIFIED_ROLE) {
-            await member.roles.add(env.VERIFIED_ROLE);
+        switch (type) {
+            case "guest":
+                roleId = env.GUEST_ROLE;
+                break;
+            case "member":
+                roleId = env.MEMEBER_ROLE;
+                break;
+        }
+
+        if (roleId) {
+            await member.roles.add(roleId);
             try {
                 await member.send(`You have been **verified** in **${interaction.guild.name}**`);
             } catch (e) {

@@ -31,8 +31,12 @@ module.exports = {
                 )
                 .setColor(0xADD8E6);
 
-            var acceptButton = new ButtonBuilder()
-				.setCustomId('accept-member_' + member.user.id)
+            var acceptGuestButton = new ButtonBuilder()
+				.setCustomId('accept-member_guest_' + member.user.id)
+				.setLabel("Accept")
+				.setStyle(ButtonStyle.Success);
+            var acceptMemberButton = new ButtonBuilder()
+				.setCustomId('accept-member_member_' + member.user.id)
 				.setLabel("Accept")
 				.setStyle(ButtonStyle.Success);
 
@@ -42,7 +46,7 @@ module.exports = {
 				.setStyle(ButtonStyle.Danger);
 
             var row = new ActionRowBuilder()
-                .addComponents([acceptButton, ignoreButton])
+                .addComponents([acceptGuestButton, acceptMemberButton, ignoreButton])
 
             await pendingChannel.send({
                 content: verificationPing,
