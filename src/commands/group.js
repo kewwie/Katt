@@ -16,7 +16,7 @@ const {
 module.exports = {
 	config: {
         name: "group",
-        description: "Test group command",
+        description: "Group Commands",
         type: CommandTypes.CHAT_INPUT,
         default_member_permissions: Permissions.ManageChannels,
         contexts: [SlashCommandContexts.GUILD],
@@ -26,6 +26,19 @@ module.exports = {
                 type: OptionTypes.SUB_COMMAND,
                 name: "create",
                 description: "Create a group",
+                options: [
+                    {
+                        type: OptionTypes.STRING,
+                        name: "name",
+                        description: "Name of the group",
+                        required: true
+                    }
+                ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
+                name: "delete",
+                description: "Delete a group",
                 options: [
                     {
                         type: OptionTypes.STRING,
