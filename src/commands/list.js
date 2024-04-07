@@ -5,7 +5,6 @@ const {
 	Interaction,
 	Client
 } = require("discord.js");
-const { env } = require("../env");
 const { 
 	CommandTypes,
 	SlashCommandContexts,
