@@ -23,7 +23,7 @@ module.exports = {
         integration_types: [IntegrationTypes.GUILD],
         options: [
             {
-                type: OptionTypes.SUB_COMMAND_GROUP,
+                type: OptionTypes.SUB_COMMAND,
                 name: "create",
                 description: "Create a group",
                 options: [

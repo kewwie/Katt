@@ -21,7 +21,7 @@ module.exports = class EventHandler {
         var cmds = new Array();
 
         for (let command of commands) {
-            cmds.push(JSON.stringify(command.config));
+            cmds.push(command.config);
         }
 
         const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
