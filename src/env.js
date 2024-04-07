@@ -13,5 +13,7 @@ module.exports.env = {
     GUEST_ROLE: process.env.GUEST_ROLE,
     MEMBER_ROLE: process.env.MEMBER_ROLE,
 
+    MONGO_URI: process.env.MONGO_URI,
+
     STATUS: process.env.STATUS || null,
 }

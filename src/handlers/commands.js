@@ -16,7 +16,7 @@ module.exports = class EventHandler {
         }
     }
 
-    async register(commands, guild = null) {
+    async register(commands, guildId = null) {
 
         var cmds = new Array();
 
@@ -26,20 +26,17 @@ module.exports = class EventHandler {
 
         const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
 
-        console.log(guild,1 )
-        if (guild) {
+        if (guildId) {
             let data = await rest.put(
-                Routes.applicationGuildCommands(env.CLIENT_ID, env.GUILD_ID),
+                Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
                 { body: cmds }
             )
-            console.log(data,1)
             console.log(`Successfully reloaded ${data.length} guild (/) commands.`);
         } else {
             let data = await rest.put(
                 Routes.applicationCommands(env.CLIENT_ID),
                 { body: cmds }
             )
-
             console.log(`Successfully reloaded ${data.length} (/) commands.`);
         }
     }
