@@ -28,6 +28,13 @@ module.exports = {
                         await member.roles.add(env.MEMBER_ROLE);
                         break;
                 }
+                const groups = await client.database.db("kiwi").collection("groups").find({ guildId: interaction.guildId, members: { $in: [memberId] } }).toArray();
+                for (const group of groups) {
+                    const role = await interaction.guild.roles.cache.find(role => role.id === group.roleId);
+                    if (role) {
+                        await member.roles.add(role);
+                    }
+                }
                 await member.send(`You have been **verified** in **${interaction.guild.name}**`);
             } catch (e) {
                 console.log(e);
