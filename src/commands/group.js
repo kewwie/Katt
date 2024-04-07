@@ -1,6 +1,7 @@
 const {
 	Client,
-    CommandInteraction
+    CommandInteraction,
+    EmbedBuilder
 } = require("discord.js");
 
 const { 
@@ -191,6 +192,19 @@ module.exports = {
                 type: OptionTypes.SUB_COMMAND,
                 name: "list",
                 description: "Lists all groups"
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
+                name: "info",
+                description: "Info about a group",
+                options: [
+                    {
+                        type: OptionTypes.STRING,
+                        name: "name",
+                        description: "Name of the group",
+                        required: true
+                    }
+                ]
             },
             {
                 type: OptionTypes.SUB_COMMAND,
@@ -450,6 +464,31 @@ module.exports = {
                     await interaction.reply(`Groups in this guild: ${groupNames}`);
                 } else {
                     await interaction.reply("There are no groups in this guild.");
+                }
+                break;
+            }
+            case "info": {
+                var name = interaction.options.getString('name');
+                const group = await client.database.db("kiwi").collection("groups").findOne({
+                    name: name,
+                    guildId: interaction.guild.id
+                });
+
+                if (group) {
+                    var em = new EmbedBuilder()
+                        .setTitle("Group " + group.name)
+                        .addFields(
+                            { name: "Owner", value: `<@${group.ownerId}>` },
+                            { name: "Admins", value: group.admins.map(admin => `<@${admin}>`).join(", ") },
+                            { name: "Members", value: group.members.map(member => `<@${member}>`).join(", ") },
+                            { name: "Private", value: group.private ? "Yes" : "No" }
+                        )
+                        .setColor(0x2b2d31)
+                        .setTimestamp();
+
+                    await interaction.reply({ embeds: [em] });
+                } else {
+                    await interaction.reply("Group does not exist.");
                 }
                 break;
             }
