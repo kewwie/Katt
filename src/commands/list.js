@@ -1,24 +1,43 @@
 const {
-	SlashCommandBuilder,
-	PermissionFlagsBits,
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
 	Interaction,
 	Client
 } = require("discord.js");
+const { env } = require("../env");
+const { 
+	CommandTypes,
+	SlashCommandContexts,
+	IntegrationTypes,
+	OptionTypes,
+	Permissions
+} = require("../utils/commandTypes");
 
 module.exports = {
-	data: new SlashCommandBuilder()
-	.setName('create-list')
-	.setDescription('Make a list that u can move a user down')
-	.addStringOption(option =>
-		option
-			.setName('users')
-			.setDescription('Example: Kewi,Soja,Timjan')
-			.setRequired(true)
-	)		
-	.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+	config: {
+        name: "list",
+        description: "List Commands",
+        type: CommandTypes.CHAT_INPUT,
+        default_member_permissions: Permissions.ManageChannels,
+        contexts: [SlashCommandContexts.GUILD],
+        integration_types: [IntegrationTypes.GUILD],
+        options: [
+            {
+                type: OptionTypes.SUB_COMMAND_GROUP,
+                name: "create",
+                description: "Create a list",
+                options: [
+                    {
+                        type: OptionTypes.STRING,
+                        name: "users",
+                        description: "Example: Kewi,Soja,Timjan",
+                        required: true
+                    }
+                ]
+            }
+        ]
+    },
 
 	/**
     * 

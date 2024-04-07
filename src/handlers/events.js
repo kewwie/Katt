@@ -7,11 +7,11 @@ module.exports = class EventHandler {
     }
 
     load() {
-        readdir(join(__dirname, "events"), (err, files) => {
+        readdir(join(__dirname, "..", "events"), (err, files) => {
             if (err) return console.error(err);
 
             for (let file of files) {
-                const event = require(join(__dirname, "events/", file));
+                const event = require(join(__dirname, "..", "events/", file));
                 if (event.once) {
                     this.client.once(event.name, (...args) => event.execute(this.client, ...args));
                 } else {

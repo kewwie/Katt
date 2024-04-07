@@ -12,4 +12,6 @@ module.exports.env = {
     PENDING_CHANNEL: process.env.PENDING_CHANNEL,
     GUEST_ROLE: process.env.GUEST_ROLE,
     MEMBER_ROLE: process.env.MEMBER_ROLE,
+
+    STATUS: process.env.STATUS || null,
 }
