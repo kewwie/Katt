@@ -243,6 +243,7 @@ module.exports = {
                 const role = await interaction.guild.roles.create({
                     name: `Group ${name}`,
                     color:  Math.floor(Math.random() * 16777215).toString(16),
+                    mentionable: true
                 });
 
                 await interaction.member.roles.add(role);
