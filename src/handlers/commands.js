@@ -25,6 +25,7 @@ module.exports = class EventHandler {
         }
 
         const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
+        console.log(guildId)
 
         if (guildId) {
             let data = await rest.put(
