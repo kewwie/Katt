@@ -4,7 +4,7 @@ const {
 } = require("discord.js");
 
 module.exports = {
-    name: "voiceStateUpdate", // VoiceServerUpdate
+    name: "voiceStateUpdate",
 
     /**
     * @param {Client} client
