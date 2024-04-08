@@ -43,13 +43,13 @@ module.exports = {
 	async execute(interaction, client) {
         switch (interaction.options.getSubcommand()) {
             case "activity": {
-                var member = interaction.options.getUser("user") || interaction.member;
+                var member = interaction.options.getMember("user") || interaction.member;
                 if (!member) return interaction.reply("User not found");
                 var voiceActivity = await client.database.db("kiwi").collection("voiceActivity").findOne(
                     { userId: member.id, guildId: interaction.guildId }
                 );
                 if (!voiceActivity || voiceActivity.minutes < 0) return interaction.reply("No voice activity found for this user");
-                interaction.reply(`**${member.username}#${member.discriminator}** has been in voice chat for **${Math.floor(voiceActivity.minutes)}** minutes`);
+                interaction.reply(`**${member.user.username}#${member.user.discriminator}** has been in voice chat for **${Math.floor(voiceActivity.minutes)}** minutes`);
                 break;
             }
         }
