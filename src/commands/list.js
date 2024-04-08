@@ -2,7 +2,7 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
-	Interaction,
+	CommandInteraction,
 	Client
 } = require("discord.js");
 const { 
@@ -40,7 +40,7 @@ module.exports = {
 
 	/**
     * 
-    * @param {Interaction} interaction
+    * @param {CommandInteraction} interaction
     * @param {Client} client
     */
 	async execute(interaction, client) {

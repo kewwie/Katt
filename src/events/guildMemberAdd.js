@@ -17,8 +17,17 @@ module.exports = {
     * @param {GuildMember} member
     */
     async execute(client, member) {
-	    if (env.PENDING_CHANNEL) {
-            var pendingChannel = await member.guild.channels.fetch(env.PENDING_CHANNEL);
+        const guild = await client.database.db("kiwi").collection("guilds").findOne(
+            { guildId: member.guild.id }
+        );
+	    
+        if (guild && guild.pendingChannel) {
+            try {
+                var pendingChannel = await member.guild.channels.fetch(guild.pendingChannel);
+            } catch (e) {
+                console.error("Can not fetch pending channel.");
+                return;
+            }
 
             var verificationPing = `@everyone`;
 
@@ -51,11 +60,15 @@ module.exports = {
             var row2 = new ActionRowBuilder()
                 .addComponents([ignoreButton])
 
-            await pendingChannel.send({
-                content: verificationPing,
-                embeds: [em],
-                components: [row, row2]
-            });
+            try {
+                await pendingChannel.send({
+                    content: verificationPing,
+                    embeds: [em],
+                    components: [row, row2]
+                });
+            } catch (e) {
+                console.error("Can not send message to pending channel.");
+            } 
         }
     }
 }
