@@ -18,7 +18,7 @@ module.exports = {
         if (previousVoice && !newVoiceState.channelId) {
             const minutesSinceLastUpdate = (Date.now() - previousVoice.joinTime) / (1000 * 60);
             
-            await client.database.db("kiwi").collection("minutes").updateOne(
+            await client.database.db("kiwi").collection("voiceActivity").updateOne(
                 { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id },
                 { $inc: { minutes: minutesSinceLastUpdate } },
                 { upsert: true }

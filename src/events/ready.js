@@ -29,7 +29,7 @@ module.exports = {
                 if (vs && vs.joinTime) {
                     let newMinutes = (Date.now() - vs.joinTime) / (1000 * 60);
 
-                    await client.database.db("kiwi").collection("minutes").updateOne(
+                    await client.database.db("kiwi").collection("voiceActivity").updateOne(
                         { userId: voiceState.id, guildId: voiceState.guild.id },
                         { $inc: { minutes: newMinutes } },
                     );
