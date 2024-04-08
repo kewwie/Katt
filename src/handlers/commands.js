@@ -41,4 +41,12 @@ module.exports = class EventHandler {
             console.log(`Successfully reloaded ${data.length} (/) commands.`);
         }
     }
+
+    async unregister(guildId) {
+        const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
+        await rest.put(
+            Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
+            { body: [] }
+        )
+    }
 }
