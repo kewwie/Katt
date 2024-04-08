@@ -12,7 +12,6 @@ module.exports = {
     * @param {VoiceState} newVoiceState
     */
     async execute(client, oldVoiceState, newVoiceState) {
-        console.log("Voice State Update");
         const previousVoice = await client.database.db("kiwi").collection("voiceChannels").findOne(
             { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }
         );
