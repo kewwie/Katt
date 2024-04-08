@@ -8,8 +8,8 @@ module.exports = class ButtonHandler {
     }
 
     load() {
-        for (let file of readdirSync(join(__dirname, "buttons"))) {
-            const button = require(join(__dirname, "buttons/", file));
+        for (let file of readdirSync(join(__dirname, "..", "buttons"))) {
+            const button = require(join(__dirname, "..", "buttons/", file));
             this.client.buttons.set(button.data.id, button);
         }
     }

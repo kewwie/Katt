@@ -1,11 +1,12 @@
 const {
     Client,
     GatewayIntentBits,
-    Collection,
+    Collection
 } = require("discord.js");
 
-const EventHandler = require("./eventHandler");
-const ButtonHandler = require("./buttonHandler");
+const EventHandler = require("./handlers/events");
+const commandHandler = require("./handlers/commands");
+const ButtonHandler = require("./handlers/buttons");
 
 module.exports.KiwiClient = class KiwiClient extends Client {
     constructor() {
@@ -14,7 +15,9 @@ module.exports.KiwiClient = class KiwiClient extends Client {
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMembers,
                 GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.MessageContent
+                GatewayIntentBits.MessageContent,
+                GatewayIntentBits.GuildBans,
+                GatewayIntentBits.GuildVoiceStates,
             ]
         });
 
@@ -25,6 +28,10 @@ module.exports.KiwiClient = class KiwiClient extends Client {
         // Event Loader
         this.eventHandler = new EventHandler(this);
         this.eventHandler.load();
+
+        // Command Loader
+        this.commandHandler = new commandHandler(this);
+        this.commandHandler.load();
 
         // Button Loader
         this.buttonHandler = new ButtonHandler(this);

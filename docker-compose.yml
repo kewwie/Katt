@@ -1,0 +1,11 @@
+version: "3"
+name: "kewwieapp"
+
+services:
+  kewwie-app:
+    container_name: kewwie-app
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./.docker/Dockerfile
+    command: ["npm", "run", "start"]

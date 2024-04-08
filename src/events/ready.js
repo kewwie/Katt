@@ -1,11 +1,4 @@
-const { join } = require("path");
-const { readdirSync } = require("fs");
-const { 
-    REST,
-    Routes,
-    Interaction,
-    Client
-} = require("discord.js");
+const { Client, CommandInteraction } = require("discord.js");
 const { env } = require("../env");
 
 module.exports = {
@@ -15,39 +8,47 @@ module.exports = {
     /**
     * 
     * @param {Client} client
-    * @param {Interaction} interaction
+    * @param {CommandInteraction} interaction
     */
     async execute(client) {
         console.log(`${client.user?.username} is Online`);
 
-        const cmds = [];
-
-        const commandsPath = join(__dirname, "..", 'commands');
-        const commandFiles = readdirSync(commandsPath);
-        for (const file of commandFiles) {
-            const filePath = join(commandsPath, file);
-            const command = require(filePath);
-            if ('data' in command && 'execute' in command) {
-                client.commands.set(command.data.name, command);
-                cmds.push(command.data.toJSON());
-            }
+        if (env.TEST_GUILD) {
+            client.commandHandler.register(client.commands.values(), env.TEST_GUILD);
+        } else {
+            client.commandHandler.register(client.commands.values());
         }
 
-        const rest = new REST().setToken(env.CLIENT_TOKEN);
-        
-        (async () => {
-            try {
-                console.log(`Started refreshing ${cmds.length} application (/) commands.`);
+        for (var guild of client.guilds.cache.values()) {
+            for (var voiceState of guild.voiceStates.cache.values()) {
 
-                const data = await rest.put(
-                    Routes.applicationGuildCommands(env.CLIENT_ID, env.GUILD_ID),
-                    { body: cmds },
+                const vs = await client.database.db("kiwi").collection("voiceChannels").findOne(
+                    { userId: voiceState.id, guildId: voiceState.guild.id }
                 );
 
-                console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-            } catch (error) {
-                console.error(error);
+                if (vs && vs.joinTime) {
+                    let newMinutes = (Date.now() - vs.joinTime) / (1000 * 60);
+
+                    await client.database.db("kiwi").collection("voiceActivity").updateOne(
+                        { userId: voiceState.id, guildId: voiceState.guild.id },
+                        { $inc: { minutes: newMinutes } },
+                    );
+                }
+
+                if (voiceState && voiceState.channelId) {
+                    if (!vs) {
+                        await client.database.db("kiwi").collection("voiceChannels").updateOne(
+                            { userId: voiceState.id, guildId: voiceState.guild.id },
+                            { $set: { joinTime: Date.now() } },
+                            { upsert: true }
+                        );
+                    }
+                } else {
+                    client.database.db("kiwi").collection("voiceChannels").deleteOne(
+                        { userId: voiceState.id, guildId: voiceState.guild.id }
+                    );
+                }
             }
-        })();
+        }
     }
 }

@@ -1,42 +1,33 @@
 const {
-    CommandInteraction,
-    Client,
+	Client,
+    GuildMember,
     EmbedBuilder
 } = require("discord.js");
 
 module.exports = {
-    data: {
-        id: "ignore-user",
-    },
+    name: "guildBlacklistAdd",
+
     /**
     * 
-    * @param {CommandInteraction} interaction
     * @param {Client} client
+    * @param {GuildMember} member
     */
-    async execute(interaction, client) {
-        interaction.deferUpdate();
-        var memberId = interaction.customId.split("_")[1];
-        var member = await interaction.guild.members.fetch(memberId);
-
+    async execute(client, member) {
         try {
+            await member.kick();
+
             const guild = await client.database.db("kiwi").collection("guilds").findOne(
-                { guildId: interaction.guildId }
+                { guildId: member.guild.id }
             );
-
-            if (!guild) return interaction.followUp("This guild is not in the database.");
-            await member.send(`You have been **denied** from **${interaction.guild.name}**`)
-            await member.kick("Denied");
-            await interaction.message.delete();
-
-            if (guild.logsChannel) {
-
+            if (guild && guild.logsChannel) {
                 var log = await interaction.guild.channels.cache.get(guild.logsChannel);
                 var em = new EmbedBuilder()
                     .setTitle(member.user.username + "#" + member.user.discriminator)
                     .setThumbnail(member.user.avatarURL())
+                    .setDescription("User has been blacklisted")
                     .addFields(
                         { name: "Mention", value: `<@${member.user.id}>` },
-                        { name: "Denied By", value: `<@${interaction.member.id}>` },
+                        { name: "Blacklisted By", value: `<@${blacklist.createdBy}>` },
                         { name: "Action", value: "Kicked" }
                     )
                     .setColor(0xFF474D)
@@ -45,9 +36,9 @@ module.exports = {
                     embeds: [em]
                 });
             }
-        } catch (e) {
-            console.log(e);
         }
-
+        catch (e) {
+            console.error("Failed to kick user from the guild.");
+        }
     }
 }

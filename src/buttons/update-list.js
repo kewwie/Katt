@@ -1,4 +1,7 @@
-const { Interaction, Client } = require("discord.js");
+const {
+    CommandInteraction,
+    Client
+} = require("discord.js");
 const { env } = require("../env");
 
 module.exports = {
@@ -7,7 +10,7 @@ module.exports = {
     },
     /**
     * 
-    * @param {Interaction} interaction
+    * @param {CommandInteraction} interaction
     * @param {Client} client
     */
     async execute(interaction, client) {
@@ -25,10 +28,17 @@ module.exports = {
         
         interaction.update({ content });
 
-        if (env.LOGS_CHANNEL) {
+        const guild = await client.database.db("kiwi").collection("guilds").findOne(
+            { guildId: interaction.guildId }
+        );
 
-            var log = await interaction.guild.channels.cache.get(env.LOGS_CHANNEL);
-            await log.send(`<@${interaction.user.id}> has moved down **${userToMove}** in [${interaction.channel.name}](${interaction.message.url})`);
+        if (guild && guild.logsChannel) {
+            try {
+                var log = await interaction.guild.channels.cache.get(guild.logsChannel);
+                await log.send(`<@${interaction.user.id}> has moved down **${userToMove}** in [${interaction.channel.name}](${interaction.message.url})`);
+            } catch (e) {
+                console.error("Can not fetch logs channel.");
+            }
         }
     }
 }
