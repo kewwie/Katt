@@ -16,6 +16,7 @@ module.exports = {
         for (let guild of client.guilds.cache.values()) {
             await client.commandHandler.unregister(guild.id);
         }
+        //await client.commandHandler.unregister();
 
         if (env.TEST_GUILD) {
             await client.commandHandler.register(client.commands.values(), env.TEST_GUILD);

@@ -41,11 +41,19 @@ module.exports = class EventHandler {
         }
     }
 
-    async unregister(guildId) {
+    async unregister(guildId = null) {
         const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
-        await rest.put(
-            Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
-            { body: [] }
-        )
+
+        if (guildId) {
+            await rest.put(
+                Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
+                { body: [] }
+            )
+        } else {
+            await rest.put(
+                Routes.applicationCommands(env.CLIENT_ID),
+                { body: [] }
+            )
+        }
     }
 }
