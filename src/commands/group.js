@@ -36,6 +36,11 @@ module.exports = {
             },
             {
                 type: OptionTypes.SUB_COMMAND,
+                name: "sync",
+                description: "Sync all group roles with the database",
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
                 name: "join",
                 description: "Join a group",
                 options: [
@@ -261,6 +266,22 @@ module.exports = {
                 await interaction.reply(`Group ${name} has been created.`);
                 break;
             }
+            case "sync": {
+                const groups = await client.database.db("kiwi").collection("groups").find({ guildId: interaction.guild.id }).toArray();
+                for (const group of groups) {
+                    const role = await interaction.guild.roles.cache.find(role => role.id === group.roleId);
+                    if (role) {
+                        for (const member of group.members) {
+                            const isMember = interaction.guild.members.cache.has(member);
+                            if (isMember) {
+                                await interaction.guild.members.cache.get(member).roles.add(role);
+                            }
+                        }
+                    }
+                }
+                await interaction.reply("Groups have been synced.");
+                break;
+            }
             case "join": {
                 var name = interaction.options.getString('name');
                 const group = await client.database.db("kiwi").collection("groups").findOne({
@@ -278,6 +299,7 @@ module.exports = {
                         { name: name, guildId: interaction.guild.id },
                         { $addToSet: { members: interaction.member.id } }
                     );
+                    client.emit("groupJoin", interaction.member, group);
                     await interaction.reply(`You have joined the group ${name}.`);
                 } else {
                     await interaction.reply("Group does not exist.");
@@ -298,6 +320,7 @@ module.exports = {
                             { name: name, guildId: interaction.guild.id },
                             { $pull: { members: interaction.member.id } }
                         );
+                        client.emit("groupLeave", interaction.member, group);
                         await interaction.reply(`You have left the group ${name}.`);
                     } else {
                         await interaction.reply(`You are not a member of the group ${name}.`);
@@ -318,11 +341,7 @@ module.exports = {
 
                 if (group && group.admins.includes(interaction.member.id)) {
                     if (!group.members.includes(user.id)) {
-                        group.members.push(user.id);
-                        await client.database.db("kiwi").collection("groups").updateOne(
-                            { _id: group._id },
-                            { $set: { members: group.members } }
-                        );
+                        client.emit("groupJoin", interaction.member, group);
                         await interaction.reply(`User ${user.username} has been added to group ${name}.`);
                     } else {
                         await interaction.reply(`User ${user.username} is already a member of group ${name}.`);
@@ -343,11 +362,7 @@ module.exports = {
 
                 if (group && group.admins.includes(interaction.member.id)) {
                     if (group.members.includes(user.id)) {
-                        group.members = group.members.filter(member => member !== user.id);
-                        await client.database.db("kiwi").collection("groups").updateOne(
-                            { _id: group._id },
-                            { $set: { members: group.members } }
-                        );
+                        client.emit("groupLeave", interaction.member, group);
                         await interaction.reply(`User ${user.username} has been removed from group ${name}.`);
                     } else {
                         await interaction.reply(`User ${user.username} is not a member of group ${name}.`);
