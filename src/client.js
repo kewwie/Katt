@@ -1,7 +1,7 @@
 const {
     Client,
     GatewayIntentBits,
-    Collection,
+    Collection
 } = require("discord.js");
 
 const EventHandler = require("./handlers/events");
@@ -15,7 +15,9 @@ module.exports.KiwiClient = class KiwiClient extends Client {
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMembers,
                 GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.MessageContent
+                GatewayIntentBits.MessageContent,
+                GatewayIntentBits.GuildBans,
+                GatewayIntentBits.GuildVoiceStates,
             ]
         });
 
