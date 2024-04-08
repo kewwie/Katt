@@ -14,13 +14,13 @@ module.exports = {
         console.log(`${client.user?.username} is Online`);
 
         for (let guild of client.guilds.cache.values()) {
-            client.commandHandler.unregister(guild.id);
+            await client.commandHandler.unregister(guild.id);
         }
 
         if (env.TEST_GUILD) {
-            client.commandHandler.register(client.commands.values(), env.TEST_GUILD);
+            await client.commandHandler.register(client.commands.values(), env.TEST_GUILD);
         } else {
-            client.commandHandler.register(client.commands.values());
+            await client.commandHandler.register(client.commands.values());
         }
 
         for (var guild of client.guilds.cache.values()) {
