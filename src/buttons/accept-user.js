@@ -27,11 +27,15 @@ module.exports = {
             if (guild && type) {
                 client.emit("guildMemberVerify", member, type, interaction.user.id);
 
-                await member.send(`You have been **verified** in **${interaction.guild.name}**`);
                 await interaction.message.delete();
+                try {
+                    await member.send(`You have been **verified** in **${interaction.guild.name}**`);
+                } catch (error) {
+                    console.error("Failed to send message to user");
+                }
             }
         } catch (error) {
-            console.log("Failed to message user.")
+            console.error(error);
         }
     }
 }
