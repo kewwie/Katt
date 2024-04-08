@@ -14,7 +14,11 @@ module.exports = {
     */
     async execute(client, member) {
         try {
-            await member.kick();
+            try {
+                await member.kick();
+            } catch (e) {
+                console.error("Failed to kick user from the guild.");
+            }
 
             const guild = await client.database.db("kiwi").collection("guilds").findOne(
                 { guildId: member.guild.id }
