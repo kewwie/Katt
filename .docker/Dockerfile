@@ -7,4 +7,3 @@ VOLUME /kewwie
 WORKDIR /kewwie
 
 RUN npm install
-CMD ["npm", "run", "start"]
