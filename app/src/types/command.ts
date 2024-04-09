@@ -92,7 +92,7 @@ export interface Command {
         integration_types: IntegrationTypes[];
         options?: CommandOption[];
     };
-    execute: (interaction: CommandInteraction, client: KiwiClient) => void;
+    execute: (interaction: CommandInteraction, client: KiwiClient) => Promise<void>;
 }
 
 export interface CommandOption {

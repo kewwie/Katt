@@ -1,12 +1,12 @@
-import {
-    ButtonInteraction
-} from "discord.js";
-import { env } from "../env";
+import { ButtonInteraction } from "discord.js";
 import { KiwiClient } from "../client";
+import { Button, ButtonStyles, ComponentTypes } from "../types/component";
 
-module.exports = {
-    data: {
-        id: "update-list",
+export const button: Button = {
+    config: {
+        custom_id: "update-list_",
+        type: ComponentTypes.Button,
+        style: ButtonStyles.Primary,
     },
     /**
     * 

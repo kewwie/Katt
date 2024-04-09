@@ -3,7 +3,7 @@ import { KiwiClient } from "../client";
 const { readdirSync } = require("fs");
 const { join } = require("path");
 
-export class ButtonHandler {
+export class ComponentHandler {
     private client: KiwiClient;
 
     constructor(client: KiwiClient) {
@@ -16,4 +16,4 @@ export class ButtonHandler {
             this.client.buttons.set(button.data.id, button);
         }
     }
-  };
+};

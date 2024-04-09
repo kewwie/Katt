@@ -9,7 +9,7 @@ import { MongoClient } from "mongodb";
 
 import { EventHandler } from "./handlers/events";
 import { CommandHandler } from "./handlers/commands";
-import { ButtonHandler } from "./handlers/buttons";
+import { ComponentHandler } from "./handlers/component";
 import { RiotAPI } from "./handlers/riotApi";
 import { Command } from "./types/command";
 import { Event } from "./types/event";
@@ -25,7 +25,7 @@ export class KiwiClient extends Client {
     public buttons: Collection<string, unknown>;
     public eventHandler: EventHandler;
     public commandHandler: CommandHandler;
-    public buttonHandler: ButtonHandler;
+    public componentHandler: ComponentHandler;
     public riotApi: RiotAPI;
 
     constructor() {
@@ -64,8 +64,8 @@ export class KiwiClient extends Client {
         this.commandHandler.load();
 
         // Button Loader
-        this.buttonHandler = new ButtonHandler(this);
-        this.buttonHandler.load();
+        this.componentHandler = new ComponentHandler(this);
+        this.componentHandler.load();
 
         // RiotAPI
         this.riotApi = new RiotAPI();

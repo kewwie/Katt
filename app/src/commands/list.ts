@@ -1,17 +1,18 @@
-const {
+import {
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
 	CommandInteraction,
-	Client
-} = require("discord.js");
-const { 
+} from "discord.js";
+
+import { KiwiClient } from "../client";
+import { 
 	CommandTypes,
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes,
 	Permissions
-} = require("../utils/commandTypes");
+} from "../types/command";
 
 module.exports = {
 	config: {
@@ -43,7 +44,7 @@ module.exports = {
     * @param {CommandInteraction} interaction
     * @param {Client} client
     */
-	async execute(interaction, client) {
+	async execute(interaction: CommandInteraction, client: KiwiClient) {
 		var usersString = interaction.options.getString('users');
 		var users = usersString.split(",");
 
