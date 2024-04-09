@@ -4,7 +4,7 @@ const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
 const { env } = require("../env");
 
-module.exports = class EventHandler {
+module.exports = class CommandsHandler {
     constructor(client) {
         this.client = client;
     }

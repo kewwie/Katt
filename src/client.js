@@ -7,6 +7,7 @@ const {
 const EventHandler = require("./handlers/events");
 const commandHandler = require("./handlers/commands");
 const ButtonHandler = require("./handlers/buttons");
+const RiotApi = require("./handlers/riotApi");
 
 module.exports.KiwiClient = class KiwiClient extends Client {
     constructor() {
@@ -20,6 +21,14 @@ module.exports.KiwiClient = class KiwiClient extends Client {
                 GatewayIntentBits.GuildVoiceStates,
             ]
         });
+
+        this.embed = {
+            color: "#2b2d31"
+        }
+
+        this.getAvatarUrl = function (user) {
+            return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`;
+        }
 
         this.commands = new Collection();
         this.events = new Collection();
@@ -36,5 +45,8 @@ module.exports.KiwiClient = class KiwiClient extends Client {
         // Button Loader
         this.buttonHandler = new ButtonHandler(this);
         this.buttonHandler.load();
+
+        // RiotAPI
+        this.riotApi = new RiotApi();
     }
 };
