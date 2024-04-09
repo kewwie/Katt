@@ -1,8 +1,8 @@
-const {
-    CommandInteraction,
-    Client
-} = require("discord.js");
-const { env } = require("../env");
+import {
+    ButtonInteraction
+} from "discord.js";
+import { env } from "../env";
+import { KiwiClient } from "../client";
 
 module.exports = {
     data: {
@@ -10,10 +10,10 @@ module.exports = {
     },
     /**
     * 
-    * @param {CommandInteraction} interaction
+    * @param {ButtonInteraction} interaction
     * @param {Client} client
     */
-    async execute(interaction, client) {
+    async execute(interaction: ButtonInteraction, client: KiwiClient) {
         var userToMove = interaction.customId.split("_")[1];
         var users = interaction.message.content.split("\n");
 
@@ -33,11 +33,9 @@ module.exports = {
         );
 
         if (guild && guild.logsChannel) {
-            try {
-                var log = await interaction.guild.channels.cache.get(guild.logsChannel);
-                await log.send(`<@${interaction.user.id}> has moved down **${userToMove}** in [${interaction.channel.name}](${interaction.message.url})`);
-            } catch (e) {
-                console.error("Can not fetch logs channel.");
+            var log = await interaction.guild?.channels.cache.get(guild.logsChannel);
+            if (log && log.type === 'GUILD_TEXT') {
+                await log.send(`<@${interaction.user.id}> has moved down **${userToMove}** in [${interaction.channel?.name}](${interaction.message.url})`);
             }
         }
     }

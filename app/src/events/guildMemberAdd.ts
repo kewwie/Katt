@@ -1,12 +1,12 @@
-const {
+import {
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
     EmbedBuilder,
 	Client,
     GuildMember
-} = require("discord.js");
-const { env } = require("../env");
+} from "discord.js";
+import { env } from "../env";
 
 module.exports = {
     name: "guildMemberAdd",
