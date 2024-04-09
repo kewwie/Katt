@@ -1,11 +1,19 @@
-const { join } = require("path");
-const { readdirSync } = require("fs");
-const { REST } = require("@discordjs/rest");
-const { Routes } = require("discord-api-types/v10");
-const { env } = require("../env");
+import { join } from"path";
+import { readdirSync } from "fs";
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v10";
+import { env } from "../env";
+import { KiwiClient } from "../client";
+import { Command } from "../types/command";
 
-module.exports = class CommandsHandler {
-    constructor(client) {
+interface GuildCmdResponse {
+
+}
+
+export class CommandHandler {
+    private client: KiwiClient;
+    
+    constructor(client: KiwiClient) {
         this.client = client;
     }
 
@@ -16,7 +24,7 @@ module.exports = class CommandsHandler {
         }
     }
 
-    async register(commands, guildId = null) {
+    async register(commands: Command[], guildId?: string | null) {
 
         var cmds = new Array();
 
@@ -27,13 +35,14 @@ module.exports = class CommandsHandler {
         const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
 
         if (guildId) {
-            let data = await rest.put(
+            let data: any = await rest.put(
                 Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
                 { body: cmds }
             )
+            console.log(data)
             console.log(`Successfully reloaded ${data.length} guild (/) commands.`);
         } else {
-            let data = await rest.put(
+            let data: any = await rest.put(
                 Routes.applicationCommands(env.CLIENT_ID),
                 { body: cmds }
             )
@@ -41,7 +50,7 @@ module.exports = class CommandsHandler {
         }
     }
 
-    async unregister(guildId = null) {
+    async unregister(guildId?: string | null) {
         const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
 
         if (guildId) {

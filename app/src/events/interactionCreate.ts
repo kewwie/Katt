@@ -1,17 +1,16 @@
-const {
-	Interaction,
-	Client
-} = require("discord.js");
+import { KiwiClient } from "../client";
+import { Command } from "../types/command";
+import { Event, Events } from "../types/event";
 
-module.exports = {
-    name: "interactionCreate",
+export const event: Event = {
+    name: Events.interactionCreate,
 
     /**
     * 
-    * @param {Client} client
-    * @param {Interaction} interaction
+    * @param {KiwiClient} client
+    * @param {any} interaction
     */
-    async execute(client, interaction) {
+    async execute(client: KiwiClient, interaction: any) {
         if (interaction.isChatInputCommand()) {
             const command = client.commands.get(interaction.commandName);
             if (!command) return;
@@ -32,11 +31,11 @@ module.exports = {
                     return;
                 }
         
-                try {
+                /*try {
                     await command.autocomplete(interaction);
                 } catch (error) {
                     console.error(error);
-                }
+                }*/
             } else if (interaction.isButton()) {
     
             const buttonId = (interaction.customId).split("_")[0];

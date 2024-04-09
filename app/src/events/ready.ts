@@ -1,16 +1,19 @@
-const { Client, CommandInteraction } = require("discord.js");
-const { env } = require("../env");
+import { CommandInteraction } from "discord.js";
+import { KiwiClient } from "../client";
+import { Events } from "../types/event";
+import { env } from "../env";
+
 
 module.exports = {
-    name: "ready",
+    name: Events.ready,
     once: true,
 
     /**
     * 
-    * @param {Client} client
+    * @param {KiwiClient} client
     * @param {CommandInteraction} interaction
     */
-    async execute(client) {
+    async execute(client: KiwiClient) {
         console.log(`${client.user?.username} is Online`);
 
         for (let guild of client.guilds.cache.values()) {
@@ -19,9 +22,9 @@ module.exports = {
         //await client.commandHandler.unregister();
 
         if (env.TEST_GUILD) {
-            await client.commandHandler.register(client.commands.values(), env.TEST_GUILD);
+            await client.commandHandler.register(Array.from(client.commands.values()), env.TEST_GUILD);
         } else {
-            await client.commandHandler.register(client.commands.values());
+            await client.commandHandler.register(Array.from(client.commands.values()));
         }
 
         for (var guild of client.guilds.cache.values()) {

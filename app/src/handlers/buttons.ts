@@ -1,9 +1,12 @@
+import { KiwiClient } from "../client";
+
 const { readdirSync } = require("fs");
 const { join } = require("path");
 
-module.exports = class ButtonHandler {
+export class ButtonHandler {
+    private client: KiwiClient;
 
-    constructor(client) {
+    constructor(client: KiwiClient) {
         this.client = client;
     }
 

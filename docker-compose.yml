@@ -1,11 +1,11 @@
 version: "3"
-name: "kewwieapp"
+name: "kewi-app"
 
 services:
-  kewwie-app:
-    container_name: kewwie-app
+  app:
+    container_name: app
     restart: unless-stopped
     build:
       context: .
-      dockerfile: ./.docker/Dockerfile
-    command: ["npm", "run", "start"]
+      dockerfile: ./app/.docker/Dockerfile
+    command: [ "npm", "run", "start" ]

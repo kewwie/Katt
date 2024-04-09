@@ -1,17 +1,19 @@
-const {
-	Client,
-    VoiceState
-} = require("discord.js");
+import { KiwiClient } from "../client";
+import { Events, Event } from "../types/event";
 
-module.exports = {
-    name: "voiceStateUpdate",
+import {
+    VoiceState
+} from "discord.js";
+
+export const event: Event = {
+    name: Events.voiceStateUpdate,
 
     /**
-    * @param {Client} client
+    * @param {KiwiClient} client
     * @param {VoiceState} oldVoiceState
     * @param {VoiceState} newVoiceState
     */
-    async execute(client, oldVoiceState, newVoiceState) {
+    async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
         const previousVoice = await client.database.db("kiwi").collection("voiceChannels").findOne(
             { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }
         );

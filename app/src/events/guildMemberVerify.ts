@@ -1,19 +1,22 @@
-const {
-	Client,
+import { KiwiClient } from "../client";
+import { Event, Events } from "../types/event";
+
+
+import {
     GuildMember,
     EmbedBuilder
-} = require("discord.js");
+} from "discord.js";
 
-module.exports = {
-    name: "guildMemberVerify",
+export const event: Event = {
+    name: Events.memberVerify,
 
     /**
     * 
-    * @param {Client} client
+    * @param {KiwiClient} client
     * @param {GuildMember} member
     * @param {String} level
     */
-    async execute(client, member, level, by, whitelist = false) {
+    async execute(client: KiwiClient, member: GuildMember, level: string, by: string, whitelist: boolean = false) {
             try {
                 const guilds = await client.database.db("kiwi").collection("guilds").findOne(
                     { guildId: member.guild.id }

@@ -1,10 +1,11 @@
-module.exports = class RiotAPI {
+export class RiotAPI {
+    baseUrl: string;
 
     constructor() {
         this.baseUrl = "https://api.henrikdev.xyz/valorant";
     }
 
-    async fetchApi(url) {
+    async fetchApi(url: string) {
         const res = await fetch(`${this.baseUrl}${url}`);
         const response = await res.json();
         if (response.status === 200) {
@@ -18,22 +19,8 @@ module.exports = class RiotAPI {
      * Gets a user accounts data
      * @param {Object} options
      * @property {String} puuid
-     * 
-     * @returns {Object} User account data
-     * @property {String} puuid
-     * @property {String} region
-     * @property {Number} account_level
-     * @property {String} name
-     * @property {String} tag
-     * @property {Object} card
-     * @property {String} card.small
-     * @property {String} card.large
-     * @property {String} card.wide
-     * @property {String} card.id
-     * @property {String} last_update
-     * @property {Number} last_update_raw
      */
-    async getAccountByPUUID(options) {
+    async getAccountByPUUID(options: { puuid: string; }) {
         if (!options.puuid) return null;
 
         return await this.fetchApi(`/v1/by-puuid/account/${options.puuid}`);
@@ -44,22 +31,8 @@ module.exports = class RiotAPI {
      * @param {Object} options
      * @property {String} name
      * @property {String} tag
-     * 
-     * @returns {Object} User account data
-     * @property {String} puuid
-     * @property {String} region
-     * @property {Number} account_level
-     * @property {String} name
-     * @property {String} tag
-     * @property {Object} card
-     * @property {String} card.small
-     * @property {String} card.large
-     * @property {String} card.wide
-     * @property {String} card.id
-     * @property {String} last_update
-     * @property {Number} last_update_raw
      */
-    async getAccount(options) {
+    async getAccount(options: { name: string; tag: string; }) {
         if (!options.name || !options.tag) return null;
 
         return await this.fetchApi(`/v1/account/${encodeURI(options.name)}/${encodeURI(options.tag)}`);
@@ -71,7 +44,7 @@ module.exports = class RiotAPI {
      * @property {String} region
      * @property {String} puuid
      */
-    async getMMRByPUUID(options) {
+    async getMMRByPUUID(options: { region: string; puuid: string; }) {
         if (!options.puuid) return { status: 400, error: "No puuid provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
@@ -85,7 +58,7 @@ module.exports = class RiotAPI {
      * @property {String} name
      * @property {String} tag
      */
-    async getMMR(options) {
+    async getMMR(options: { region: string; name: string; tag: string; }) {
         if (!options.name || !options.tag) return { status: 400, error: "No name or tag provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
@@ -99,7 +72,7 @@ module.exports = class RiotAPI {
      * @property {String} puuid
      * @property {Number} limit
      */
-    async getMatchesByPUUID(options) {
+    async getMatchesByPUUID(options: { region: string; puuid: string; limit: number; }) {
         if (!options.puuid) return { status: 400, error: "No puuid provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
@@ -116,7 +89,7 @@ module.exports = class RiotAPI {
      * @property {String} tag
      * @property {Number} limit
      */
-    async getMatches(options) {
+    async getMatches(options: { region: string; name: string; tag: string; limit: number; }) {
         if (!options.name || !options.tag) return { status: 400, error: "No puuid provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
