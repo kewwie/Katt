@@ -41,7 +41,7 @@ export const event: Event = {
             const buttonId = (interaction.customId).split("_")[0];
             const button = client.buttons.get(buttonId);
         
-            try {
+            /*try {
                 button.execute(interaction, client);
             } catch (err) {
                 if (err) console.error(err);
@@ -52,7 +52,7 @@ export const event: Event = {
             }
             } else if (interaction.isSelectMenu()) {
                 const button = client.buttons.get(interaction.customId);
-                if (button) return button.execute(interaction, client);
+                if (button) return button.execute(interaction, client);*/
             }
     }
 }

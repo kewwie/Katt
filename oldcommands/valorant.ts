@@ -1,16 +1,16 @@
-const {
+import {
 	CommandInteraction,
     EmbedBuilder
-} = require("discord.js");
+} from "discord.js";
 
-const { KiwiClient } = require("../client");
+import { KiwiClient } from "../client";
 
-const { 
+import { 
 	CommandTypes,
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes
-} = require("../utils/commandTypes");
+} from "../types/command";
 
 module.exports = {
 	config: {
@@ -73,7 +73,7 @@ module.exports = {
     * @param {CommandInteraction} interaction
     * @param {KiwiClient} client
     */
-	async execute(interaction, client) {
+	async execute(interaction: any, client: KiwiClient) {
         switch (interaction.options.getSubcommand()) {
             case "set": {
                 var name = interaction.options.getString("name");

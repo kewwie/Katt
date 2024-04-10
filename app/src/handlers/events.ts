@@ -15,6 +15,7 @@ export class EventHandler {
 
             for (let file of files) {
                 const event = require(join(__dirname, "..", "events/", file));
+                console.log(event)
                 if (event.once) {
                     this.client.once(event.name, (...args: any[]) => event.execute(this.client, ...args));
                 } else {

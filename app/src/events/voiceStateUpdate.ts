@@ -5,6 +5,10 @@ import {
     VoiceState
 } from "discord.js";
 
+import { dataSource } from "../data/datasource";
+import { VoiceChannel } from "../data/entities/VoiceChannel";
+import { VoiceActivity } from "../data/entities/VoiceActivity";
+
 export const event: Event = {
     name: Events.voiceStateUpdate,
 
@@ -14,27 +18,36 @@ export const event: Event = {
     * @param {VoiceState} newVoiceState
     */
     async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
-        const previousVoice = await client.database.db("kiwi").collection("voiceChannels").findOne(
-            { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }
+        const VoiceChannelsDB = await dataSource.getRepository(VoiceChannel)
+        const VoiceActivityDB = await dataSource.getRepository(VoiceActivity)
+
+        var pvs = await VoiceChannelsDB.findOne(
+            { where: { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }}
         );
-        if (previousVoice && !newVoiceState.channelId) {
-            const minutesSinceLastUpdate = (Date.now() - previousVoice.joinTime) / (1000 * 60);
-            
-            await client.database.db("kiwi").collection("voiceActivity").updateOne(
-                { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id },
-                { $inc: { minutes: minutesSinceLastUpdate } },
-                { upsert: true }
+
+        if (pvs && !newVoiceState.channelId) {
+            var pva = await VoiceActivityDB.findOne(
+                { where: { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }}
             );
 
-            await client.database.db("kiwi").collection("voiceChannels").deleteOne(
+            var minutesSinceLastUpdate = (Date.now() - pvs.joinTime) / (1000 * 60);
+            var newMinutes = minutesSinceLastUpdate + pva.minutes;
+            
+            await VoiceActivityDB.upsert({
+                userId: oldVoiceState.id,
+                guildId: oldVoiceState.guild.id,
+                minutes: newMinutes
+            }, ["userId", "guildId"]);
+
+            await VoiceChannelsDB.delete(
                 { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }
-            );   
-        } else if (!oldVoiceState.channelId && newVoiceState.channelId) {
-            await client.database.db("kiwi").collection("voiceChannels").updateOne(
-                { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id },
-                { $set: { joinTime: Date.now() } },
-                { upsert: true }
             );
-        };
+        } else if (!oldVoiceState.channelId && newVoiceState.channelId) {
+            await VoiceChannelsDB.upsert({
+                userId: newVoiceState.id,
+                guildId: newVoiceState.guild.id,
+                joinTime: Date.now()
+            }, ["userId", "guildId"]);
+        }
     }
 }

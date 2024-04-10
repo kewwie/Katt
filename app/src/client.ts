@@ -1,11 +1,9 @@
 import {
     Client,
     GatewayIntentBits,
-    Collection
+    Collection,
+    ColorResolvable
 } from "discord.js";
-import { env } from "./env";
-
-import { MongoClient } from "mongodb";
 
 import { EventHandler } from "./handlers/events";
 import { CommandHandler } from "./handlers/commands";
@@ -15,10 +13,12 @@ import { Command } from "./types/command";
 import { Event } from "./types/event";
 
 export class KiwiClient extends Client {
-    public database: MongoClient;
-    public embed: { color: string; };
+    public embed: { 
+        color: ColorResolvable | null;
+    };
     public getAvatarUrl: (user: {
-        id: string; avatar: string;
+        id: string; 
+        avatar: string;
     }) => string;
     public commands: Collection<string, Command>;
     public events: Collection<string, Event>;
@@ -40,9 +40,6 @@ export class KiwiClient extends Client {
             ]
         });
 
-        this.database = new MongoClient(env.MONGO_URI);
-        this.database.connect();
-
         this.embed = {
             color: "#2b2d31"
         }
@@ -60,8 +57,8 @@ export class KiwiClient extends Client {
         this.eventHandler.load();
 
         // Command Loader
-        this.commandHandler = new CommandHandler(this);
-        this.commandHandler.load();
+        //this.commandHandler = new CommandHandler(this);
+        //this.commandHandler.load();
 
         // Button Loader
         this.componentHandler = new ComponentHandler(this);

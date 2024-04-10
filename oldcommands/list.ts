@@ -45,6 +45,9 @@ module.exports = {
     * @param {Client} client
     */
 	async execute(interaction: CommandInteraction, client: KiwiClient) {
+		console.log(interaction.options.data)
+		// Make fuction to get options
+		/*
 		var usersString = interaction.options.getString('users');
 		var users = usersString.split(",");
 
@@ -82,6 +85,6 @@ module.exports = {
 		await interaction.channel.send({
 			content: userText,
 			components: rows,
-		})
+		})*/
 	},
 }

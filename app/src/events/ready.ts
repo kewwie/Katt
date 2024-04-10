@@ -1,17 +1,19 @@
-import { CommandInteraction } from "discord.js";
 import { KiwiClient } from "../client";
-import { Events } from "../types/event";
+import { Event, Events } from "../types/event";
 import { env } from "../env";
 
+import { dataSource } from "../data/datasource";
+import { VoiceChannel } from "../data/entities/VoiceChannel";
+import { VoiceActivity } from "../data/entities/VoiceActivity";
 
-module.exports = {
+
+export const Ready: Event = {
     name: Events.ready,
     once: true,
 
     /**
     * 
     * @param {KiwiClient} client
-    * @param {CommandInteraction} interaction
     */
     async execute(client: KiwiClient) {
         console.log(`${client.user?.username} is Online`);
@@ -27,33 +29,41 @@ module.exports = {
             await client.commandHandler.register(Array.from(client.commands.values()));
         }
 
+        const VoiceChannelsDB = await dataSource.getRepository(VoiceChannel)
+        const VoiceActivityDB = await dataSource.getRepository(VoiceActivity)
+
+        var vss = await VoiceChannelsDB.find();
+
+        for (var vs of vss) {
+            var voiceState = client.guilds.cache.get(vs.guildId)?.voiceStates.cache.get(vs.userId);
+            if (!voiceState) {
+                await VoiceChannelsDB.delete({ userId: vs.userId, guildId: vs.guildId });
+            }
+        }
+
         for (var guild of client.guilds.cache.values()) {
             for (var voiceState of guild.voiceStates.cache.values()) {
 
-                const vs = await client.database.db("kiwi").collection("voiceChannels").findOne(
-                    { userId: voiceState.id, guildId: voiceState.guild.id }
+                var vs = await VoiceChannelsDB.findOne(
+                    { where: { userId: voiceState.id, guildId: voiceState.guild.id }}
+                );
+
+                var va = await VoiceActivityDB.findOne(
+                    { where: { userId: voiceState.id, guildId: voiceState.guild.id }}
                 );
 
                 if (vs && vs.joinTime) {
-                    let newMinutes = (Date.now() - vs.joinTime) / (1000 * 60);
+                    
+                    let newMinutes = (Date.now() - vs.joinTime) / (1000 * 60) + va.minutes;
 
-                    await client.database.db("kiwi").collection("voiceActivity").updateOne(
+                    await VoiceActivityDB.update(
                         { userId: voiceState.id, guildId: voiceState.guild.id },
-                        { $inc: { minutes: newMinutes } },
+                        { minutes: newMinutes },
                     );
-                }
-
-                if (voiceState && voiceState.channelId) {
-                    if (!vs) {
-                        await client.database.db("kiwi").collection("voiceChannels").updateOne(
-                            { userId: voiceState.id, guildId: voiceState.guild.id },
-                            { $set: { joinTime: Date.now() } },
-                            { upsert: true }
-                        );
-                    }
                 } else {
-                    client.database.db("kiwi").collection("voiceChannels").deleteOne(
-                        { userId: voiceState.id, guildId: voiceState.guild.id }
+                    await VoiceChannelsDB.upsert(
+                        { userId: voiceState.id, guildId: voiceState.guild.id, joinTime: Date.now() },
+                        ["userId", "guildId"]
                     );
                 }
             }

@@ -1,15 +1,15 @@
-const {
-	CommandInteraction,
-	Client
-} = require("discord.js");
+import {
+	CommandInteraction
+} from "discord.js";
 
-const { 
+import { 
 	CommandTypes,
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes,
 	Permissions
-} = require("../utils/commandTypes");
+} from "../types/command";
+import { KiwiClient } from "../client";
 
 module.exports = {
 	config: {
@@ -78,10 +78,12 @@ module.exports = {
 	/**
     * 
     * @param {CommandInteraction} interaction
-    * @param {Client} client
+    * @param {KiwiClient} client
     */
-	async execute(interaction, client) {
-        switch (interaction.options.getSubcommand()) {
+	async execute(interaction: CommandInteraction, client: KiwiClient) {
+        console.log(interaction);
+        // make type interaction
+        /*switch (interaction.options.getSubcommand()) {
             case "logs_channel":
                 client.database.db("kiwi").collection("guilds").updateOne(
                     { guildId: interaction.guildId },
@@ -126,6 +128,6 @@ module.exports = {
                     ephemeral: true
                 });         
                 break;
-        }
+        }*/
 	},
 }

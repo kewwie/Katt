@@ -8,5 +8,9 @@ export const env = {
     CLIENT_TOKEN: process.env.CLIENT_TOKEN as string,
     TEST_GUILD: process.env.TEST_GUILD || null as string | null,
 
-    MONGO_URI: process.env.MONGO_URI as string,
+    DB_HOST: "mysql",
+    DB_PORT: process.env.DATABASE_PORT,
+    DB_USER: "kewiapp",
+    DB_PASSWORD: process.env.DATABASE_PASSWORD,
+    DB_DATABASE: "kewiapp",
 }
