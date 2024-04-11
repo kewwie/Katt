@@ -5,8 +5,7 @@ import { Event } from "./event";
 export interface Plugin {
     config: {
         name: string,
-        description?: string,
-        global?: boolean,
+        description?: string
     },
     commands?: Command[],
     events?: Event[],
