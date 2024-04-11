@@ -15,6 +15,6 @@ export const Verification: Plugin = {
         GuildMemberAdd
     ],
     afterLoad: () => {
-        console.log("Loaded Utility")
+        console.log("Loaded Verification Plugin")
     }
 }
