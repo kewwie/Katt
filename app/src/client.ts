@@ -71,5 +71,6 @@ export class KiwiClient extends Client {
 
         // Load all plugins
         this.PluginManager.loadAll(Plugins)
+        this.PluginManager.registerCommands([...this.commands.values()]);
     }
 };

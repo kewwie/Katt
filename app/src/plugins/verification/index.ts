@@ -4,7 +4,7 @@ import { Whitelist } from "./commands/whitelist";
 
 import { GuildMemberAdd } from "./events/guildMemberAdd";
 
-export const Verification: Plugin = {
+export const VerificationPlugin: Plugin = {
     config: {
         name: "Verification"
     },

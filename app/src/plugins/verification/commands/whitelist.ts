@@ -1,5 +1,5 @@
 import {
-    CommandInteraction
+    ChatInputCommandInteraction
 } from "discord.js";
 
 import { 
@@ -66,10 +66,57 @@ export const Whitelist: Command = {
     },
 
     /**
-    * @param {CommandInteraction} interaction
+    * @param {ChatInputCommandInteraction} interaction
     * @param {KiwiClient} client
     */
-    async execute(interaction: CommandInteraction, client: KiwiClient) {
-        interaction.reply("Whitelist Command")
+    async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
+        switch (interaction.options.getSubcommand()) {
+            case "add": {
+                var user = interaction.options.getUser("user");
+                if (!user) {
+                    interaction.reply("User not found");
+                    return;
+                }
+                /*var whitelist = await client.database.db("kiwi").collection("whitelist").findOne(
+                    { userId: user.id }
+                );
+                if (whitelist) return interaction.reply("User is already whitelisted");
+                await client.database.db("kiwi").collection("whitelist").insertOne(
+                    { 
+                        userId: user.id,
+                        username: user.username,
+                        discriminator: user.discriminator,
+                        createdAt: Date.now(),
+                        createdBy: interaction.user.id,
+                        level: interaction.options.getString("level") || "guest"
+                    }
+                );*/
+                interaction.reply(`**${user.username}#${user.discriminator}** has been whitelisted`);
+                break;
+            }
+            case "remove": {
+                var user = interaction.options.getUser("user");
+                if (!user) {
+                    interaction.reply("User not found");
+                    return;
+                };
+                /*var whitelist = await client.database.db("kiwi").collection("whitelist").findOne(
+                    { userId: user.id }
+                );
+                if (!whitelist) return interaction.reply("User is not whitelisted");
+                await client.database.db("kiwi").collection("whitelist").deleteOne(
+                    { userId: user.id }
+                );*/
+                interaction.reply(`**${user.username}#${user.discriminator}** has been removed from the whitelist`);
+                break;
+            }
+            case "view": {
+                //var whitelist = await client.database.db("kiwi").collection("whitelist").find().toArray();
+                //if (!whitelist) return interaction.reply("No users are whitelisted");
+                //var users = whitelist.map(user => user.userId);
+                //interaction.reply(`Whitelisted Users: ${users.map(userId => `<@${userId}>`).join(", ")}`);
+                break;
+            }
+        }
     }
 }

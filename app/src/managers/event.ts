@@ -1,6 +1,4 @@
 import { KiwiClient } from "../client";
-import { readdir } from "fs";
-import { join } from "path";
 import { Event } from "../types/event";
 
 export class EventManager {

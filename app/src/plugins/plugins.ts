@@ -1,5 +1,7 @@
-import { Verification } from "./verification"
+import { ReadyPlugin } from "./ready"
+import { VerificationPlugin } from "./verification"
 
 export const Plugins = [
-    Verification
+    ReadyPlugin,
+    VerificationPlugin
 ]

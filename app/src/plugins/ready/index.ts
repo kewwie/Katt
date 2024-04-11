@@ -2,7 +2,7 @@ import { Plugin } from "../../types/plugin";
 
 import { Ready } from "./events/ready";
 
-export const Verification: Plugin = {
+export const ReadyPlugin: Plugin = {
     config: {
         name: "Ready"
     },

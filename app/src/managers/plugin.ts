@@ -1,4 +1,6 @@
 import { KiwiClient } from "../client";
+import { Command } from "../types/command";
+import { Events } from "../types/event";
 import { Plugin } from "../types/plugin";
 
 export class PluginManager {
@@ -29,5 +31,10 @@ export class PluginManager {
         for (let plugin of plugins) {
             this.load(plugin);
         }
+    }
+
+    registerCommands(commands: Command[]) {
+        this.client.CommandManager.register(commands);
+        this.client.on(Events.interactionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
     }
 }

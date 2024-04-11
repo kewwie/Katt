@@ -16,6 +16,7 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
+    "@discordjs/rest": "^2.2.0",
     "discord-api-types": "^0.37.79",
     "discord.js": "^14.12.1",
     "dotenv": "^16.4.5",

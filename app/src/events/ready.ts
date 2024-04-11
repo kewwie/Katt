@@ -16,7 +16,7 @@ export const Ready: Event = {
     * @param {KiwiClient} client
     */
     async execute(client: KiwiClient) {
-        console.log(`${client.user?.username} is Online`);
+        /*console.log(`${client.user?.username} is Online`);
 
         for (let guild of client.guilds.cache.values()) {
             await client.commandHandler.unregister(guild.id);
@@ -67,6 +67,6 @@ export const Ready: Event = {
                     );
                 }
             }
-        }
+        }*/
     }
 }
