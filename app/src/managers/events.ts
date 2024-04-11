@@ -1,6 +1,7 @@
 import { KiwiClient } from "../client";
 import { readdir } from "fs";
 import { join } from "path";
+import { Event } from "../types/event";
 
 export class EventHandler {
     private client: KiwiClient;
@@ -15,12 +16,13 @@ export class EventHandler {
 
             for (let file of files) {
                 const event = require(join(__dirname, "..", "events/", file));
-                console.log(event)
+                console.log(event.name)
+                /*
                 if (event.once) {
                     this.client.once(event.name, (...args: any[]) => event.execute(this.client, ...args));
                 } else {
                     this.client.on(event.name, (...args: any[]) => event.execute(this.client, ...args));
-                }
+                }*/
             }
         });
     }

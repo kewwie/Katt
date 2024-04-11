@@ -5,10 +5,12 @@ import {
     ColorResolvable
 } from "discord.js";
 
-import { EventHandler } from "./handlers/events";
-import { CommandHandler } from "./handlers/commands";
-import { ComponentHandler } from "./handlers/component";
-import { RiotAPI } from "./handlers/riotApi";
+import { PluginManager } from "./managers/plugin";
+
+//import { EventHandler } from "./handlers/events";
+//import { CommandHandler } from "./handlers/commands";
+//import { ComponentHandler } from "./handlers/component";
+import { RiotAPI } from "./managers/riotApi";
 import { Command } from "./types/command";
 import { Event } from "./types/event";
 
@@ -23,9 +25,11 @@ export class KiwiClient extends Client {
     public commands: Collection<string, Command>;
     public events: Collection<string, Event>;
     public buttons: Collection<string, unknown>;
-    public eventHandler: EventHandler;
-    public commandHandler: CommandHandler;
-    public componentHandler: ComponentHandler;
+
+    public PluginManager: PluginManager;
+    //public eventHandler: EventHandler;
+    //public commandHandler: CommandHandler;
+    //public componentHandler: ComponentHandler;
     public riotApi: RiotAPI;
 
     constructor() {
@@ -51,18 +55,21 @@ export class KiwiClient extends Client {
         this.commands = new Collection();
         this.events = new Collection();
         this.buttons = new Collection();
+
+        // Plugin Handler
+        this.PluginManager = new PluginManager(this);
         
         // Event Loader
-        this.eventHandler = new EventHandler(this);
-        this.eventHandler.load();
+        //this.eventHandler = new EventHandler(this);
+        //this.eventHandler.load();
 
         // Command Loader
         //this.commandHandler = new CommandHandler(this);
         //this.commandHandler.load();
 
         // Button Loader
-        this.componentHandler = new ComponentHandler(this);
-        this.componentHandler.load();
+        //this.componentHandler = new ComponentHandler(this);
+        //this.componentHandler.load();
 
         // RiotAPI
         this.riotApi = new RiotAPI();
