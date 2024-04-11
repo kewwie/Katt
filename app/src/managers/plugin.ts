@@ -15,11 +15,14 @@ export class PluginManager {
         this.plugins.push(plugin);
 
         if (plugin.commands) {
-            for (let command of plugin.commands) {
-                this.client.commands.set(command.config.name, command);
-            }
-        
+            this.client.CommandManager.load(plugin.commands);
         }
+
+        if (plugin.events) {
+            this.client.EventManager.load(plugin.events);
+        }
+
+        plugin.afterLoad?.(this.client);
     }
     
     loadAll(plugins: Plugin[]) {

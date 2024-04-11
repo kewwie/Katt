@@ -6,11 +6,13 @@ import {
 } from "discord.js";
 
 import { PluginManager } from "./managers/plugin";
+import { Plugins } from "./plugins/plugins";
 
-//import { EventHandler } from "./handlers/events";
-//import { CommandHandler } from "./handlers/commands";
-//import { ComponentHandler } from "./handlers/component";
+import { CommandManager } from "./managers/command";
+import { EventManager } from "./managers/event";
+
 import { RiotAPI } from "./managers/riotApi";
+
 import { Command } from "./types/command";
 import { Event } from "./types/event";
 
@@ -27,10 +29,9 @@ export class KiwiClient extends Client {
     public buttons: Collection<string, unknown>;
 
     public PluginManager: PluginManager;
-    //public eventHandler: EventHandler;
-    //public commandHandler: CommandHandler;
-    //public componentHandler: ComponentHandler;
-    public riotApi: RiotAPI;
+    public CommandManager: CommandManager;
+    public EventManager: EventManager;
+    public RiotApi: RiotAPI;
 
     constructor() {
         super({
@@ -56,22 +57,19 @@ export class KiwiClient extends Client {
         this.events = new Collection();
         this.buttons = new Collection();
 
-        // Plugin Handler
+        // Plugin Manager
         this.PluginManager = new PluginManager(this);
-        
-        // Event Loader
-        //this.eventHandler = new EventHandler(this);
-        //this.eventHandler.load();
 
-        // Command Loader
-        //this.commandHandler = new CommandHandler(this);
-        //this.commandHandler.load();
+        // Command Manager
+        this.CommandManager = new CommandManager(this);
 
-        // Button Loader
-        //this.componentHandler = new ComponentHandler(this);
-        //this.componentHandler.load();
+        // Event Manager
+        this.EventManager = new EventManager(this);
 
         // RiotAPI
-        this.riotApi = new RiotAPI();
+        this.RiotApi = new RiotAPI();
+
+        // Load all plugins
+        this.PluginManager.loadAll(Plugins)
     }
 };

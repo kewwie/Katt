@@ -1,5 +1,6 @@
 import { KiwiClient } from "../client";
 import { Command } from "./command";
+import { Event } from "./event";
 
 export interface Plugin {
     config: {
@@ -8,6 +9,7 @@ export interface Plugin {
         global?: boolean,
     },
     commands?: Command[],
+    events?: Event[],
     beforeLoad?: (client: KiwiClient) => void,
     afterLoad?: (client: KiwiClient) => void,
     beforeUnload?: (client: KiwiClient) => void,

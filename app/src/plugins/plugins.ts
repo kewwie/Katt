@@ -1,5 +1,5 @@
 import { Verification } from "./verification"
 
-export const Plugin = [
+export const Plugins = [
     Verification
 ]
