@@ -18,8 +18,6 @@ export class CommandManager {
     }
 
     async register(commands: Command[], guildId?: string | null) {
-        console.log(guildId)
-
         var cmds = new Array();
 
         for (let command of commands) {
@@ -61,9 +59,6 @@ export class CommandManager {
 
     async onInteraction(interaction: any) {
         if (interaction.isChatInputCommand()) {
-
-            console.log(this.client.commands)
-
             const command = this.client.commands.get(interaction.commandName);
 
             if (!command) return;

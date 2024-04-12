@@ -63,29 +63,26 @@ export const List: Command = {
 				.setButton(UpdateList.config)
 				.setCustomId('update-list_' + user)
 				.setLabel(user)
-				.setStyle(ButtonStyles.Primary);
+				.toJSON();
 
-			buttons.push(button);
+			buttons.push(button); // When pushed to array it just pastes the last button 3 times
 			userText += `${user}\n`
 		}
 
-		var rows = [];
 
+		var rows = [];
+		console.log(buttons)
 
 		for (var i = 0; i < buttons.length; i += 3) {
 			rows.push(
-				new RowBuilder().addComponents(buttons.slice(i, (i + 3)))
+				new RowBuilder().addComponents(buttons.slice(i, (i + 3))).toJSON()
 			);
 		}
 
-		console.log(rows);
-
-		let data: any = await interaction.channel.send({
+		await interaction.channel.send({
 			content: userText,
 			components: rows,
-		})
-
-		console.log(data.rawError.errors, 110101010)
+		});
 
 		await interaction.reply({
 			content: "List has been created",

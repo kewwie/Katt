@@ -3,7 +3,9 @@ import {  ButtonConfig, ButtonStyles, ComponentTypes } from "../types/component"
 export class ButtonBuilder {
     public button: ButtonConfig;
 
-    constructor() {}
+    constructor() {
+        this.button = null;
+    }
 
     public setButton(button: ButtonConfig) {
         this.button = button;
