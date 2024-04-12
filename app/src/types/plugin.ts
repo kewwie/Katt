@@ -1,5 +1,6 @@
 import { KiwiClient } from "../client";
 import { Command } from "./command";
+import { Button } from "./component";
 import { Event } from "./event";
 
 export interface Plugin {
@@ -7,6 +8,7 @@ export interface Plugin {
         name: string,
         description?: string
     },
+    buttons?: Button[],
     commands?: Command[],
     events?: Event[],
     beforeLoad?: (client: KiwiClient) => void,

@@ -3,37 +3,45 @@ import {  ButtonConfig, ButtonStyles, ComponentTypes } from "../types/component"
 export class ButtonBuilder {
     public button: ButtonConfig;
 
-    constructor(button: ButtonConfig) {
+    constructor() {}
+
+    public setButton(button: ButtonConfig) {
         this.button = button;
-
-        if (!this.button.type) this.button.type = ComponentTypes.Button;
+        return this;
     }
 
-    setCustomId(customId: string) {
+    public setCustomId(customId: string) {
         this.button.custom_id = customId;
+        return this;
     }
 
-    setLabel(label: string) {
+    public setLabel(label: string) {
         this.button.label = label;
+        return this;
     }
 
-    setStyle(style: ButtonStyles) {
+    public setStyle(style: ButtonStyles) {
         this.button.style = style;
+        return this;
     }
 
-    setEmoji(emoji: { name?: string; id?: string; animated?: boolean; }) {
+    public setEmoji(emoji: { name?: string; id?: string; animated?: boolean; }) {
         this.button.emoji = emoji;
+        return this;
     }
 
-    setUrl(url: string) {
+    public setUrl(url: string) {
         this.button.url = url;
+        return this;
     }
 
-    setDisabled(disabled: boolean) {
+    public setDisabled(disabled: boolean) {
         this.button.disabled = disabled;
+        return this;
     }
 
-    toJSON() {
+    public toJSON() {
+        this.button.type = ComponentTypes.Button;
         return this.button;
     }
 };

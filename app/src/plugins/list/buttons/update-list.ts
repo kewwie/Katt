@@ -1,15 +1,14 @@
-import { ButtonInteraction, ChannelType } from "discord.js";
-import { KiwiClient } from "../client";
-import { Button, ButtonStyles, ComponentTypes } from "../types/component";
+import { KiwiClient } from "../../../client";
+import { Button, ButtonStyles, ComponentTypes } from "../../../types/component";
 
 export const UpdateList: Button = {
+    name: "update-list",
     config: {
-        type: ComponentTypes.Button,
         style: ButtonStyles.Primary,
     },
     /**
     * 
-    * @param {ButtonInteraction} interaction
+    * @param {any} interaction
     * @param {Client} client
     */
     async execute(interaction: any, client: KiwiClient) {

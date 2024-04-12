@@ -20,6 +20,10 @@ export class PluginManager {
             this.client.CommandManager.load(plugin.commands);
         }
 
+        if (plugin.buttons) {
+            this.client.ComponentManager.loadButtons(plugin.buttons);
+        }
+
         if (plugin.events) {
             this.client.EventManager.load(plugin.events);
         }
@@ -33,8 +37,8 @@ export class PluginManager {
         }
     }
 
-    registerCommands(commands: Command[]) {
-        this.client.CommandManager.register(commands);
+    registerCommands(commands: Command[], guildId?: string | null) {
+        this.client.CommandManager.register(commands, guildId);
         this.client.on(Events.interactionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
     }
 }

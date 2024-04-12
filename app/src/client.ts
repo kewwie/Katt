@@ -5,16 +5,20 @@ import {
     ColorResolvable
 } from "discord.js";
 
+import { env } from "./env";
+
 import { PluginManager } from "./managers/plugin";
 import { Plugins } from "./plugins/plugins";
 
 import { CommandManager } from "./managers/command";
+import { ComponentManager } from "./managers/component";
 import { EventManager } from "./managers/event";
 
 import { RiotAPI } from "./managers/riotApi";
 
 import { Command } from "./types/command";
 import { Event } from "./types/event";
+import { Button } from "./types/component";
 
 export class KiwiClient extends Client {
     public embed: { 
@@ -26,10 +30,11 @@ export class KiwiClient extends Client {
     }) => string;
     public commands: Collection<string, Command>;
     public events: Collection<string, Event>;
-    public buttons: Collection<string, unknown>;
+    public buttons: Collection<string, Button>;
 
     public PluginManager: PluginManager;
     public CommandManager: CommandManager;
+    public ComponentManager: ComponentManager;
     public EventManager: EventManager;
     public RiotApi: RiotAPI;
 
@@ -63,6 +68,9 @@ export class KiwiClient extends Client {
         // Command Manager
         this.CommandManager = new CommandManager(this);
 
+        // Component Manager
+        this.ComponentManager = new ComponentManager(this);
+
         // Event Manager
         this.EventManager = new EventManager(this);
 
@@ -71,6 +79,6 @@ export class KiwiClient extends Client {
 
         // Load all plugins
         this.PluginManager.loadAll(Plugins)
-        this.PluginManager.registerCommands([...this.commands.values()]);
+        this.PluginManager.registerCommands([...this.commands.values()], env.TEST_GUILD);
     }
 };

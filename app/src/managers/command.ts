@@ -18,6 +18,7 @@ export class CommandManager {
     }
 
     async register(commands: Command[], guildId?: string | null) {
+        console.log(guildId)
 
         var cmds = new Array();
 

@@ -11,6 +11,11 @@ export enum ComponentTypes {
     ChannelSelect = 8,
 }
 
+export interface Row {
+    type: ComponentTypes.ActionRow;
+    components: Button[];
+}
+
 export enum ButtonStyles {
     Primary = 1,
     Secondary = 2,
@@ -20,12 +25,13 @@ export enum ButtonStyles {
 }
 
 export interface Button {
-    config:ButtonConfig;
+    name: string;
+    config: ButtonConfig;
     execute: (interaction: any, client: KiwiClient) => void;
 }
 
 export interface ButtonConfig {
-    type: ComponentTypes.Button;
+    type?: ComponentTypes.Button;
     style: ButtonStyles;
     label?: string;
     emoji?: {
