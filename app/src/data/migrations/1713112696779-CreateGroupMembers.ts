@@ -26,6 +26,7 @@ export class CreateGroupMembers1713112696779 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.dropTable("groupMembers");
     }
 
 }
