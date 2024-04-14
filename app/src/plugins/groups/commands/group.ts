@@ -8,14 +8,15 @@ import {
     SlashCommandContexts,
     IntegrationTypes,
     OptionTypes,
-    Permissions
+    Permissions,
+    Command
 } from "../../../types/command";
 import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../data/datasource";
 import { Group } from "../../../data/entities/Group";
 
-module.exports = {
+export const GroupCommand: Command =  {
 	config: {
         name: "group",
         description: "Group Commands",
