@@ -1,8 +1,11 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('groupMembers')
 export class GroupMember {
-    @PrimaryColumn({ type: 'varchar', length: 255 })
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({ type: 'varchar', length: 255 })
     groupId: string;
 
     @Column({ type: 'varchar', length: 255 })

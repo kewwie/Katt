@@ -8,9 +8,15 @@ export class CreateGroupAdmins1713120531101 implements MigrationInterface {
                 name: "groupAdmins",
                 columns: [
                     {
+                        name: "id",
+                        type: "int",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "increment"
+                    },
+                    {
                         name: "groupId",
                         type: "varchar",
-                        isPrimary: true
                     },
                     {
                         name: "userId",

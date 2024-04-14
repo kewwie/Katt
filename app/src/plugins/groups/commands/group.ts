@@ -23,7 +23,7 @@ export const GroupCommand: Command =  {
         name: "group",
         description: "Group Commands",
         type: CommandTypes.CHAT_INPUT,
-        default_member_permissions: Permissions.ManageChannels,
+        default_member_permissions: null,
         contexts: [SlashCommandContexts.GUILD],
         integration_types: [IntegrationTypes.GUILD],
         options: [
@@ -344,6 +344,11 @@ export const GroupCommand: Command =  {
                 });
 
                 if (existingGroup) {
+                    if (existingGroup.ownerId === interaction.user.id) {
+                        await interaction.reply("You cannot leave a group you own.");
+                        return;
+                    }
+
                     const groupMember = await GroupMembersRepository.findOne({ 
                         where: { groupId: existingGroup.groupId, userId: interaction.user.id }
                     });
@@ -373,8 +378,10 @@ export const GroupCommand: Command =  {
                 });
 
                 if (existingGroup) {
-                    if (GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }})) {
-                        if (!GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: member.id }})) {
+                    const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }});
+                    if (groupAdmin) {
+                        const groupMember = await GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: member.id }});
+                        if (!groupMember) {
 
                             await GroupMembersRepository.insert({
                                 groupId: existingGroup.groupId,
@@ -407,16 +414,33 @@ export const GroupCommand: Command =  {
                 });
 
                 if (existingGroup) {
-                    if (GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }})) {
-                        if (!GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: member.id }})) {
-                            await interaction.guild.members.cache.get(member.id).roles.remove(existingGroup.roleId);
-                            await interaction.reply(`User ${user.username} has been removed from group ${name}.`);
-                        } else {
-                            await interaction.reply(`User ${user.username} is not a member of group ${name}.`);
-                        }
-                    } else {
-                        await interaction.reply(`You do not have permission to add members to group ${name}.`);
+                    if (existingGroup.ownerId === interaction.user.id) {
+                        await interaction.reply("You cannot remove the owner of the group.");
+                        return;
                     }
+
+                    const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }});
+                    if (!groupAdmin) {
+                        await interaction.reply(`You do not have permission to add members to group ${name}.`);
+                        return;
+                    }
+
+                    const userGroupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: member.id }});
+                    if (userGroupAdmin && existingGroup.ownerId !== interaction.user.id) {
+                        await interaction.reply(`You cannot remove another group admin.`);
+                        return;
+                    }
+
+                    const groupMember = await GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: member.id }});
+                    if (groupMember) {
+                        await interaction.guild.members.cache.get(member.id).roles.remove(existingGroup.roleId);
+                        await GroupMembersRepository.delete({ groupId: existingGroup.groupId, userId: member.id })
+                        await GroupAdminsRepository.delete({ groupId: existingGroup.groupId, userId: member.id })
+                        await interaction.reply(`User ${user.username} has been removed from group ${name}.`);
+                    } else {
+                        await interaction.reply(`User ${user.username} is not a member of group ${name}.`);
+                    }
+                    
                 } else {
                     await interaction.reply(`Group ${name} does not exist.`);
                 }
