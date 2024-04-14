@@ -1,27 +1,31 @@
 import { Entity, Column, PrimaryColumn, CreateDateColumn, OneToMany } from "typeorm";
 
+import { GroupAdmin } from "./GroupAdmin";
 import { GroupMember } from "./GroupMember";
 
 @Entity("groups")
 export class Group {
-    @PrimaryColumn()
-    groupId: string;
+    @PrimaryColumn({ type: "varchar", length: 255 })
+    groupId: string;;
 
-    @Column()
+    @Column({ type: "varchar", length: 255 })
     name: string;
 
-    @Column()
+    @Column({ type: "varchar", length: 255 })
     guildId: string;
 
-    @Column()
+    @Column({ type: "varchar", length: 255 })
     roleId: string;
 
-    @Column()
+    @Column({ type: "varchar", length: 255 })
     ownerId: string;
 
-    @OneToMany(() => GroupMember, groupMember => groupMember.groupId)
-    members: GroupMember[];
+    @OneToMany(() => GroupAdmin, groupAdmin => groupAdmin.userId)
+    admins: GroupMember[];
 
-    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-    created_at: Date;
+    @OneToMany(() => GroupMember, groupMember => groupMember.userId)
+    members: GroupMember[];
+    
+    @Column({ type: "boolean", default: false })
+    private: boolean;
 }

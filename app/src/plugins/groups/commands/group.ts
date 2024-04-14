@@ -235,14 +235,20 @@ module.exports = {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
+        const GroupRepository = await dataSource.getRepository(Group);
+
         switch (interaction.options.getSubcommand()) {
             case "create": {
                 var name = interaction.options.getString('name');
 
-                const existingGroup = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id
-                });
+                const existingGroup = await GroupRepository.findOne(
+                    {
+                        where: {
+                            guildId: interaction.guild.id,
+                            name: name
+                        }
+                    }
+                )
 
                 if (existingGroup) {
                     await interaction.reply("Group already exists.");
@@ -250,19 +256,20 @@ module.exports = {
                 }
                 const role = await interaction.guild.roles.create({
                     name: `Group ${name}`,
-                    color:  Math.floor(Math.random() * 16777215).toString(16),
+                    color: "Random",
                     mentionable: true
                 });
 
-                await interaction.member.roles.add(role);
+                await interaction.guild.members.cache.get(interaction.member.user.id).roles.add(role);
 
-                await client.database.db("kiwi").collection("groups").insertOne({
+                await GroupRepository.insert({
+                    groupId: String(Date.now() - 1000),
                     name: name,
                     guildId: interaction.guild.id,
                     roleId: role.id,
-                    ownerId: interaction.member.id,
-                    admins: [interaction.member.id],
-                    members: [interaction.member.id],
+                    ownerId: interaction.user.id,
+                    admins: [{ userId: interaction.user.id }],
+                    members: [{ userId: interaction.user.id }],
                     private: false
                 });
 
@@ -270,39 +277,30 @@ module.exports = {
                 break;
             }
             case "sync": {
-                const groups = await client.database.db("kiwi").collection("groups").find({ guildId: interaction.guild.id }).toArray();
-                for (const group of groups) {
-                    const role = await interaction.guild.roles.cache.find(role => role.id === group.roleId);
-                    if (role) {
-                        for (const member of group.members) {
-                            const isMember = interaction.guild.members.cache.has(member);
-                            if (isMember) {
-                                await interaction.guild.members.cache.get(member).roles.add(role);
-                            }
-                        }
-                    }
-                }
                 await interaction.reply("Groups have been synced.");
                 break;
             }
             case "join": {
                 var name = interaction.options.getString('name');
-                const group = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id
+
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
                 });
 
-                if (group) {
-                    if (group.members.includes(interaction.member.id)) {
+                if (existingGroup) {
+                    if (existingGroup.members.some(member => member.userId === interaction.user.id)) {
                         await interaction.reply("You are already a member of this group.");
                         return;
                     }
-                    await interaction.member.roles.add(group.roleId);
-                    await client.database.db("kiwi").collection("groups").updateOne(
+                    await interaction.guild.members.cache.get(interaction.user.id).roles.add(existingGroup.roleId);
+
+                    await GroupRepository.update(
                         { name: name, guildId: interaction.guild.id },
-                        { $addToSet: { members: interaction.member.id } }
+                        { members: [...existingGroup.members, { userId: interaction.user.id }] }
                     );
-                    client.emit("groupJoin", interaction.member, group);
                     await interaction.reply(`You have joined the group ${name}.`);
                 } else {
                     await interaction.reply("Group does not exist.");
@@ -311,19 +309,22 @@ module.exports = {
             }
             case "leave": {
                 var name = interaction.options.getString('name');
-                const group = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id
+
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
                 });
 
-                if (group) {
-                    if (group.members.includes(interaction.member.id)) {
-                        await interaction.member.roles.remove(group.roleId);
-                        await client.database.db("kiwi").collection("groups").updateOne(
+                if (existingGroup) {
+                    if (existingGroup.members.some(member => member.userId === interaction.user.id)) {
+                        await interaction.guild.members.cache.get(interaction.user.id).roles.remove(existingGroup.roleId);
+                        
+                        await GroupRepository.update(
                             { name: name, guildId: interaction.guild.id },
-                            { $pull: { members: interaction.member.id } }
+                            { members: existingGroup.members.filter(member => member.userId !== interaction.user.id) }
                         );
-                        client.emit("groupLeave", interaction.member, group);
                         await interaction.reply(`You have left the group ${name}.`);
                     } else {
                         await interaction.reply(`You are not a member of the group ${name}.`);
@@ -337,42 +338,56 @@ module.exports = {
                 var name = interaction.options.getString('name');
                 var user = interaction.options.getUser('user');
 
-                const group = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
                 });
 
-                if (group && group.admins.includes(interaction.member.id)) {
-                    if (!group.members.includes(user.id)) {
-                        client.emit("groupJoin", interaction.member, group);
-                        await interaction.reply(`User ${user.username} has been added to group ${name}.`);
+                if (existingGroup) {
+                    if (existingGroup.admins.some(admin => admin.userId === interaction.user.id)) {
+                        if (!existingGroup.members.some(member => member.userId === interaction.user.id)) {
+                            await interaction.guild.members.cache.get(member.id).roles.add(existingGroup.roleId);
+                            await interaction.reply(`User ${user.username} has been added to group ${name}.`);
+                        } else {
+                            await interaction.reply(`User ${user.username} is already a member of group ${name}.`);
+                        }
                     } else {
-                        await interaction.reply(`User ${user.username} is already a member of group ${name}.`);
+                        await interaction.reply(`You do not have permission to add members to group ${name}.`);
                     }
                 } else {
-                    await interaction.reply(`You do not have permission to add members to group ${name}.`);
+                    await interaction.reply(`Group ${name} does not exist.`);
                 }
                 break;
             }
             case "remove": {
                 var name = interaction.options.getString('name');
-                var user = interaction.options.getUser('user');
+                var member = interaction.options.getUser('user');
 
-                const group = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
                 });
 
-                if (group && group.admins.includes(interaction.member.id)) {
-                    if (group.members.includes(user.id)) {
-                        client.emit("groupLeave", interaction.member, group);
-                        await interaction.reply(`User ${user.username} has been removed from group ${name}.`);
+                if (existingGroup) {
+                    if (existingGroup.admins.some(admin => admin.userId === interaction.user.id)) {
+                        if (!existingGroup.members.some(member => member.userId === interaction.user.id)) {
+                            await interaction.guild.members.cache.get(member.id).roles.remove(existingGroup.roleId);
+                            await interaction.reply(`User ${user.username} has been removed from group ${name}.`);
+                        } else {
+                            await interaction.reply(`User ${user.username} is not a member of group ${name}.`);
+                        }
                     } else {
-                        await interaction.reply(`User ${user.username} is not a member of group ${name}.`);
+                        await interaction.reply(`You do not have permission to add members to group ${name}.`);
                     }
+                } else {
+                    await interaction.reply(`Group ${name} does not exist.`);
                 }
                 break;
-            }
+            }/*
             case "color": {
                 var name = interaction.options.getString('name');
                 var color = interaction.options.getString('color');
@@ -536,7 +551,7 @@ module.exports = {
                     await interaction.reply("You are not the owner of this group.");
                 }
                 break;
-            }
+            }*/
         }
 	},
 }

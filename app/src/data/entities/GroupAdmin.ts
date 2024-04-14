@@ -2,8 +2,8 @@ import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 
 import { Group } from './Group';
 
-@Entity('groupMembers')
-export class GroupMember {
+@Entity('groupAdmins')
+export class GroupAdmin {
     @PrimaryColumn({ type: 'varchar', length: 255 })
     groupId: string;
 

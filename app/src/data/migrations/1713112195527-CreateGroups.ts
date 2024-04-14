@@ -29,9 +29,9 @@ export class CreateGroups1713112195527 implements MigrationInterface {
                         type: "varchar",
                     },
                     {
-                        name: "created_at",
-                        type: "timestamp",
-                        default: "now()"
+                        name: 'private',
+                        type: 'boolean',
+                        default: false,
                     }
                 ]
             })
