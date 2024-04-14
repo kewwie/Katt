@@ -1,7 +1,4 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn, OneToMany } from "typeorm";
-
-import { GroupAdmin } from "./GroupAdmin";
-import { GroupMember } from "./GroupMember";
+import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity("groups")
 export class Group {
@@ -19,12 +16,6 @@ export class Group {
 
     @Column({ type: "varchar", length: 255 })
     ownerId: string;
-
-    @OneToMany(() => GroupAdmin, groupAdmin => groupAdmin.userId)
-    admins: GroupMember[];
-
-    @OneToMany(() => GroupMember, groupMember => groupMember.userId)
-    members: GroupMember[];
     
     @Column({ type: "boolean", default: false })
     private: boolean;

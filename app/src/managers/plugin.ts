@@ -38,7 +38,12 @@ export class PluginManager {
         }
     }
 
-    registerCommands(commands: Command[], guildId?: string | null) {
+    async registerCommands(commands: Command[], guildId?: string | null) {
+        if (guildId) {
+            await this.client.CommandManager.unregisterAll();
+        } else {
+            await this.client.CommandManager.unregisterAllGuild();
+        }
         this.client.CommandManager.register(commands, guildId);
         this.client.on(Events.interactionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
     }

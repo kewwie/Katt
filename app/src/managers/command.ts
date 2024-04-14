@@ -57,6 +57,19 @@ export class CommandManager {
         }
     }
 
+    async unregisterAllGuild() {
+        const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
+
+        for (var guild of this.client.guilds.cache) { // Doesnt find any guilds
+            if (guild) {
+                /*await rest.put(
+                    Routes.applicationGuildCommands(env.CLIENT_ID, guild),
+                    { body: [] }
+                )*/
+            }
+        }
+    }
+
     async onInteraction(interaction: any) {
         if (interaction.isChatInputCommand()) {
             const command = this.client.commands.get(interaction.commandName);

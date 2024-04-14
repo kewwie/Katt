@@ -15,6 +15,8 @@ import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../data/datasource";
 import { Group } from "../../../data/entities/Group";
+import { GroupMember } from "../../../data/entities/GroupMember";
+import { GroupAdmin } from "../../../data/entities/GroupAdmin";
 
 export const GroupCommand: Command =  {
 	config: {
@@ -237,7 +239,9 @@ export const GroupCommand: Command =  {
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
         const GroupRepository = await dataSource.getRepository(Group);
-
+        const GroupAdminsRepository = await dataSource.getRepository(GroupAdmin);
+        const GroupMembersRepository = await dataSource.getRepository(GroupMember);
+        
         switch (interaction.options.getSubcommand()) {
             case "create": {
                 var name = interaction.options.getString('name');
@@ -263,15 +267,25 @@ export const GroupCommand: Command =  {
 
                 await interaction.guild.members.cache.get(interaction.member.user.id).roles.add(role);
 
-                await GroupRepository.insert({
+                var ResGroup = await GroupRepository.insert({
                     groupId: String(Date.now() - 1000),
                     name: name,
                     guildId: interaction.guild.id,
                     roleId: role.id,
                     ownerId: interaction.user.id,
-                    admins: [{ userId: interaction.user.id }],
-                    members: [{ userId: interaction.user.id }],
                     private: false
+                });
+
+                await GroupAdminsRepository.insert({
+                    groupId: ResGroup.identifiers[0].groupId,
+                    userId: interaction.user.id,
+                    username: interaction.user.username
+                });
+
+                await GroupMembersRepository.insert({
+                    groupId: ResGroup.identifiers[0].groupId,
+                    userId: interaction.user.id,
+                    username: interaction.user.username
                 });
 
                 await interaction.reply(`Group ${name} has been created.`);
@@ -292,16 +306,27 @@ export const GroupCommand: Command =  {
                 });
 
                 if (existingGroup) {
-                    if (existingGroup.members.some(member => member.userId === interaction.user.id)) {
+                    if (existingGroup.private) {
+                        await interaction.reply("This group is private.");
+                        return;
+                    }
+
+                    const groupMember = await GroupMembersRepository.findOne({
+                        where: { groupId: existingGroup.groupId, userId: interaction.user.id }
+                    });
+                    console.log(groupMember);
+
+                    if (groupMember) {
                         await interaction.reply("You are already a member of this group.");
                         return;
                     }
                     await interaction.guild.members.cache.get(interaction.user.id).roles.add(existingGroup.roleId);
 
-                    await GroupRepository.update(
-                        { name: name, guildId: interaction.guild.id },
-                        { members: [...existingGroup.members, { userId: interaction.user.id }] }
-                    );
+                    await GroupMembersRepository.insert({
+                        groupId: existingGroup.groupId,
+                        userId: interaction.user.id,
+                        username: interaction.user.username
+                    });
                     await interaction.reply(`You have joined the group ${name}.`);
                 } else {
                     await interaction.reply("Group does not exist.");
@@ -319,13 +344,14 @@ export const GroupCommand: Command =  {
                 });
 
                 if (existingGroup) {
-                    if (existingGroup.members.some(member => member.userId === interaction.user.id)) {
+                    const groupMember = await GroupMembersRepository.findOne({ 
+                        where: { groupId: existingGroup.groupId, userId: interaction.user.id }
+                    });
+
+                    if (groupMember) {
                         await interaction.guild.members.cache.get(interaction.user.id).roles.remove(existingGroup.roleId);
                         
-                        await GroupRepository.update(
-                            { name: name, guildId: interaction.guild.id },
-                            { members: existingGroup.members.filter(member => member.userId !== interaction.user.id) }
-                        );
+                        await GroupMembersRepository.delete({ groupId: existingGroup.groupId, userId: interaction.user.id })
                         await interaction.reply(`You have left the group ${name}.`);
                     } else {
                         await interaction.reply(`You are not a member of the group ${name}.`);
@@ -347,11 +373,18 @@ export const GroupCommand: Command =  {
                 });
 
                 if (existingGroup) {
-                    if (existingGroup.admins.some(admin => admin.userId === interaction.user.id)) {
-                        if (!existingGroup.members.some(member => member.userId === interaction.user.id)) {
+                    if (GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }})) {
+                        if (!GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: member.id }})) {
+
+                            await GroupMembersRepository.insert({
+                                groupId: existingGroup.groupId,
+                                userId: user.id,
+                                username: user.username
+                            });
                             await interaction.guild.members.cache.get(member.id).roles.add(existingGroup.roleId);
                             await interaction.reply(`User ${user.username} has been added to group ${name}.`);
                         } else {
+
                             await interaction.reply(`User ${user.username} is already a member of group ${name}.`);
                         }
                     } else {
@@ -374,8 +407,8 @@ export const GroupCommand: Command =  {
                 });
 
                 if (existingGroup) {
-                    if (existingGroup.admins.some(admin => admin.userId === interaction.user.id)) {
-                        if (!existingGroup.members.some(member => member.userId === interaction.user.id)) {
+                    if (GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }})) {
+                        if (!GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: member.id }})) {
                             await interaction.guild.members.cache.get(member.id).roles.remove(existingGroup.roleId);
                             await interaction.reply(`User ${user.username} has been removed from group ${name}.`);
                         } else {

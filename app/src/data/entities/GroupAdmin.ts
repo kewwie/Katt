@@ -1,6 +1,4 @@
-import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-
-import { Group } from './Group';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity('groupAdmins')
 export class GroupAdmin {
@@ -10,6 +8,6 @@ export class GroupAdmin {
     @Column({ type: 'varchar', length: 255 })
     userId: string;
 
-    @ManyToOne(() => Group, group => group.members)
-    group: Group;
+    @Column({ type: 'varchar', length: 255 })
+    username: string;
 }
