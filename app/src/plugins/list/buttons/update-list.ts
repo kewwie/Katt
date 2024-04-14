@@ -1,17 +1,26 @@
 import { KiwiClient } from "../../../client";
-import { Button, ButtonStyles, ComponentTypes } from "../../../types/component";
+
+import { 
+    ButtonStyle,
+    ComponentType,
+    ButtonInteraction
+} from "discord.js";
+
+import { Button } from "../../../types/component";
 
 export const UpdateList: Button = {
-    name: "update-list",
     config: {
-        style: ButtonStyles.Primary,
+        type: ComponentType.Button,
+        custom_id: "update-list",
+        style: ButtonStyle.Primary,
+        
     },
+    
     /**
-    * 
-    * @param {any} interaction
+    * @param {ButtonInteraction} interaction
     * @param {Client} client
     */
-    async execute(interaction: any, client: KiwiClient) {
+    async execute(interaction: ButtonInteraction, client: KiwiClient) {
         var userToMove = interaction.customId.split("_")[1];
         var users = interaction.message.content.split("\n");
 
@@ -23,8 +32,9 @@ export const UpdateList: Button = {
         }
         
         var content = users.join("\n");
-        
-        interaction.update({ content });
+
+        interaction.message.edit({ content });
+        interaction.reply({ content: `Moved **${userToMove}** to the bottom of the list!`, ephemeral: true });
 
         /*const guild = await client.database.db("kiwi").collection("guilds").findOne(
             { guildId: interaction.guildId }

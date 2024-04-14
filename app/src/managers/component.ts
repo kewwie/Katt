@@ -10,7 +10,7 @@ export class ComponentManager {
 
     public loadButtons(buttons: Button[]) {
         for (var button of buttons) {
-            this.client.buttons.set(button.name, button);
+            this.client.buttons.set(button.config.custom_id, button);
         }
     }
 

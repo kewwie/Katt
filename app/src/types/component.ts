@@ -1,5 +1,15 @@
 import { KiwiClient } from "../client";
 
+import { APIButtonComponent, APIButtonComponentWithCustomId, ComponentType } from "discord-api-types/v10";
+
+
+export interface Button {
+    config: APIButtonComponentWithCustomId;
+    execute: (interaction: any, client: KiwiClient) => void;
+}
+
+
+
 export enum ComponentTypes {
     ActionRow = 1,
     Button = 2,
@@ -24,15 +34,8 @@ export enum ButtonStyles {
     Link = 5,
 }
 
-export interface Button {
-    name: string;
-    config: ButtonConfig;
-    execute: (interaction: any, client: KiwiClient) => void;
-}
-
-export interface ButtonConfig {
-    type?: ComponentTypes.Button;
-    style: ButtonStyles;
+export interface ButtonData {
+    style?: ButtonStyles;
     label?: string;
     emoji?: {
         name?: string;

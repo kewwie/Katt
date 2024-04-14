@@ -1,5 +1,7 @@
 import {
 	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
 	ChatInputCommandInteraction,
 } from "discord.js";
 
@@ -12,9 +14,6 @@ import {
 	Permissions,
 	Command
 } from "../../../types/command";
-
-import { ButtonBuilder } from "../../../builders/button";
-import { ButtonStyles } from "../../../types/component";
 
 import { UpdateList } from "../buttons/update-list";
 
@@ -50,43 +49,45 @@ export const List: Command = {
     * @param {ChatInputCommandInteraction} interaction
     * @param {Client} client
     */
-	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {		
-		var usersString = interaction.options.getString('users');
-		var users = usersString.split(",");
+	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
+		switch (interaction.options.getSubcommand()) {
+            case "add": {
+				var usersString = interaction.options.getString('users');
+				var users = usersString.split(",");
 
-		var buttons = [];
-		var userText = "";
+				var buttons = [];
+				var userText = "";
 
-	    for (let user of users) {
-			if (!user) break;
-			var button = new ButtonBuilder()
-				.setButton(UpdateList.config)
-				.setCustomId('update-list_' + user)
-				.setLabel(user)
-				.toJSON();
+				for (let user of users) {
+					if (!user) break;
+					let button = new ButtonBuilder(UpdateList.config)
+						.setCustomId('update-list_' + user)
+						.setLabel(user);
 
-			buttons.push(button); // When pushed to array it just pastes the last button 3 times
-			userText += `${user}\n`
+					buttons.push(button);
+					userText += `${user}\n`
+				}
+
+				var rows = [];
+
+				for (var i = 0; i < buttons.length; i += 3) {
+					rows.push(
+						new RowBuilder().addComponents(buttons.slice(i, (i + 3))).toJSON()
+					);
+				}
+
+				await interaction.channel.send({
+					content: userText,
+					components: rows,
+				});
+
+				await interaction.reply({
+					content: "List has been created",
+					ephemeral: true
+				});
+				
+				break;
+			}
 		}
-
-
-		var rows = [];
-		console.log(buttons)
-
-		for (var i = 0; i < buttons.length; i += 3) {
-			rows.push(
-				new RowBuilder().addComponents(buttons.slice(i, (i + 3))).toJSON()
-			);
-		}
-
-		await interaction.channel.send({
-			content: userText,
-			components: rows,
-		});
-
-		await interaction.reply({
-			content: "List has been created",
-			ephemeral: true
-		});
 	},
 }

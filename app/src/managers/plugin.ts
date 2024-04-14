@@ -28,6 +28,7 @@ export class PluginManager {
             this.client.EventManager.load(plugin.events);
         }
 
+        this.client.on(Events.interactionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));      
         plugin.afterLoad?.(this.client);
     }
     
