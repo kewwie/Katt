@@ -47,6 +47,8 @@ export class KiwiClient extends Client {
                 GatewayIntentBits.MessageContent,
                 GatewayIntentBits.GuildModeration,
                 GatewayIntentBits.GuildVoiceStates,
+                GatewayIntentBits.AutoModerationExecution,
+                GatewayIntentBits.AutoModerationConfiguration
             ]
         });
 
