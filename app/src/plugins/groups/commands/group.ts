@@ -1,5 +1,6 @@
 import {
     ChatInputCommandInteraction,
+    AutocompleteInteraction,
     EmbedBuilder,
     resolveColor,
     ColorResolvable
@@ -56,6 +57,7 @@ export const GroupCommand: Command =  {
                         type: OptionTypes.STRING,
                         name: "name",
                         description: "Name of the group",
+                        autocomplete: true,
                         required: true
                     }
                 ]
@@ -69,6 +71,7 @@ export const GroupCommand: Command =  {
                         type: OptionTypes.STRING,
                         name: "name",
                         description: "Name of the group",
+                        autocomplete: true,
                         required: true
                     }
                 ]
@@ -87,6 +90,7 @@ export const GroupCommand: Command =  {
                                 type: OptionTypes.STRING,
                                 name: "name",
                                 description: "Name of the group",
+                                autocomplete: true,
                                 required: true
                             },
                             {
@@ -106,6 +110,7 @@ export const GroupCommand: Command =  {
                                 type: OptionTypes.STRING,
                                 name: "name",
                                 description: "Name of the group",
+                                autocomplete: true,
                                 required: true
                             },
                             {
@@ -132,6 +137,7 @@ export const GroupCommand: Command =  {
                                 type: OptionTypes.STRING,
                                 name: "name",
                                 description: "Name of the group",
+                                autocomplete: true,
                                 required: true
                             },
                             {
@@ -151,6 +157,7 @@ export const GroupCommand: Command =  {
                                 type: OptionTypes.STRING,
                                 name: "name",
                                 description: "Name of the group",
+                                autocomplete: true,
                                 required: true
                             },
                             {
@@ -177,6 +184,7 @@ export const GroupCommand: Command =  {
                                 type: OptionTypes.STRING,
                                 name: "name",
                                 description: "Name of the group",
+                                autocomplete: true,
                                 required: true
                             },
                             {
@@ -196,6 +204,7 @@ export const GroupCommand: Command =  {
                                 type: OptionTypes.STRING,
                                 name: "name",
                                 description: "Name of the group",
+                                autocomplete: true,
                                 required: true
                             },
                             {
@@ -215,6 +224,7 @@ export const GroupCommand: Command =  {
                                 type: OptionTypes.STRING,
                                 name: "name",
                                 description: "Name of the group",
+                                autocomplete: true,
                                 required: true
                             },
                             {
@@ -238,6 +248,7 @@ export const GroupCommand: Command =  {
                                 type: OptionTypes.STRING,
                                 name: "name",
                                 description: "Name of the group",
+                                autocomplete: true,
                                 required: true
                             },
                             {
@@ -264,6 +275,7 @@ export const GroupCommand: Command =  {
                         type: OptionTypes.STRING,
                         name: "name",
                         description: "Name of the group",
+                        autocomplete: true,
                         required: true
                     }
                 ]
@@ -277,11 +289,22 @@ export const GroupCommand: Command =  {
                         type: OptionTypes.STRING,
                         name: "name",
                         description: "Name of the group",
+                        autocomplete: true,
                         required: true
                     }
                 ]
             }
         ]
+    },
+
+    async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
+        const GroupRepository = await dataSource.getRepository(Group);
+        const focusedValue = interaction.options.getFocused();
+        const choices = await GroupRepository.find({ where: { guildId: interaction.guild.id } });
+		const filtered = choices.filter(choice => choice.name.startsWith(focusedValue));
+		await interaction.respond(
+			filtered.map(choice => ({ name: choice.name, value: choice.name })),
+		);
     },
 
 	/**
