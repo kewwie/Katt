@@ -24,10 +24,7 @@ export class KiwiClient extends Client {
     public embed: { 
         color: ColorResolvable | null;
     };
-    public getAvatarUrl: (user: {
-        id: string; 
-        avatar: string;
-    }) => string;
+
     public commands: Collection<string, Command>;
     public events: Collection<string, Event>;
     public buttons: Collection<string, Button>;
@@ -53,11 +50,7 @@ export class KiwiClient extends Client {
         });
 
         this.embed = {
-            color: "#2b2d31"
-        }
-
-        this.getAvatarUrl = function (user: { id: string; avatar: string; }) {
-            return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`;
+            color: 0x2b2d31
         }
 
         this.commands = new Collection();
@@ -82,5 +75,17 @@ export class KiwiClient extends Client {
         // Load all plugins
         this.PluginManager.loadAll(Plugins)
         this.PluginManager.registerCommands([...this.commands.values()], env.TEST_GUILD);
+    }
+
+    public async getAvatarUrl(user: { id: string; avatar: string; }) {
+        return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`;
+    }
+    
+    public async getTag(user: { name: string; discriminator: string; }) {
+        if (!["0", "0000"].includes(user.discriminator)) {
+            return `${user.name}#${user.discriminator}`;
+        } else {
+            return user.name;
+        }
     }
 };
