@@ -454,7 +454,7 @@ export const GroupCommand: Command =  {
                     switch (interaction.options.getSubcommandGroup()) {
                         case "member": {
                             const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }});
-                            if (groupAdmin) {
+                            if (!groupAdmin) {
                                 await interaction.reply(`You do not have permission to add members to group **${name}**`);
                                 return;
                             }
@@ -483,7 +483,7 @@ export const GroupCommand: Command =  {
 
                             var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
                             const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
-                            if (groupAdmin) {
+                            if (!groupAdmin) {
                                 await GroupAdminsRepository.upsert(
                                     { groupId: existingGroup.groupId, userId: user.id, username: userTag },
                                     ["groupId", "userId"]
@@ -557,8 +557,8 @@ export const GroupCommand: Command =  {
                             }
 
                             var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
-                            const groupMember = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
-                            if (groupMember) {
+                            const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
+                            if (groupAdmin) {
                                 await GroupAdminsRepository.delete({ groupId: existingGroup.groupId, userId: user.id })
                                 await interaction.reply(`**${userTag}** is no longer admin of group **${name}**`);
                             } else {
