@@ -2,7 +2,8 @@ import {
 	ButtonBuilder,
 	ActionRowBuilder,
     EmbedBuilder,
-    GuildMember
+    GuildMember,
+    TextChannel
 } from "discord.js";
 
 import { KiwiClient } from "../../../client";
@@ -12,6 +13,10 @@ import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../data/datasource";
 import { Guild } from "../../../data/entities/Guild";
+import { Blacklist } from "../../../data/entities/Blacklist";
+import { Whitelist } from "../../../data/entities/Whitelist";
+import { Group } from "../../../data/entities/Group";
+import { GroupMember } from "../../../data/entities/GroupMember";
 
 import { AcceptGuest } from "../buttons/accept-guest";
 import { AcceptMember } from "../buttons/accept-member";
@@ -26,52 +31,99 @@ export const GuildMemberAdd: Event = {
     */
     async execute(client: KiwiClient, member: GuildMember) {
         const GuildRepository = await dataSource.getRepository(Guild);
+        const BlacklistRepository = await dataSource.getRepository(Blacklist);
+        const WhitelistRepository = await dataSource.getRepository(Whitelist);
+
+        const GroupRepository = await dataSource.getRepository(Group);
+        const GroupMembersRepository = await dataSource.getRepository(GroupMember);
+        
         const guild = await GuildRepository.findOne({ where: { guildId: member.guild.id } });
 
-        /*var blacklist = await client.database.db("kiwi").collection("blacklist").findOne(
-            { userId: member.user.id }
-        );
-        var whitelist = await client.database.db("kiwi").collection("whitelist").findOne(
-            { userId: member.user.id }
-        );
+        const blacklisted = await BlacklistRepository.findOne({ where: { userId: member.user.id } });
+        const whitelisted = await WhitelistRepository.findOne({ where: { userId: member.user.id } });
 
-        if (blacklist) {
-            try {
-                await member.kick();
-                if (guild?.logsChannel) {
+        if (member.user.bot && whitelisted?.level !== "3") {
+            await member.kick("Bots must be whitelisted");
+            return;
+        }
 
-                    var log = await member.guild.channels.cache.get(guild.logsChannel);
-                    if (log && log.type === ChannelType.GuildText) {
-                        var em = new EmbedBuilder()
-                        .setTitle(member.user.username + "#" + member.user.discriminator)
-                        .setThumbnail(member.user.avatarURL())
-                        .addFields(
-                            { name: "Mention", value: `<@${member.user.id}>` },
-                            { name: "Blacklisted By", value: `<@${blacklist.createdBy}>` },
-                            { name: "Blacklisted", value: "True" },
-                            { name: "Action", value: "Kicked" }
-                        )
-                        .setColor(0xFF474D)
-    
-                        await log.send({
-                            embeds: [em]
-                        });
-                    };
+        if (blacklisted) {
+            await member.kick("User is blacklisted");
+            if (guild.logsChannel) {
+                var log = member.guild.channels.cache.get(guild.logsChannel) as TextChannel;
+                if (!log) return;
+                var em = new EmbedBuilder()
+                .setTitle(member.user.username + "#" + member.user.discriminator)
+                .setThumbnail(member.user.avatarURL())
+                .addFields(
+                    { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
+                    { name: "Blacklisted By", value: `<@${blacklisted.createdBy}>` },
+                    { name: "Blacklisted", value: "True" },
+                    { name: "Action", value: "Kicked" }
+                )
+                .setColor(0xFF474D)
+
+                await log.send({
+                    embeds: [em]
+                });
+            }
+            return;
+        }
+
+        if (whitelisted) {
+            if (whitelisted.level === "1") {
+                var guestRole = member.guild.roles.cache.find(role => role.id === guild.guestRole);
+                if (guestRole) {
+                    await member.roles.add(guestRole);
                 }
-                return;
-            } catch (e) {
-                console.error("Failed to kick user from the guild.");
             }
 
-        } else if (whitelist) {
-            try {
-                client.emit("guildMemberVerify", member, whitelist.level, whitelist.createdBy, true);
-            } catch (e) {
-                console.log(e)
-                console.error("Failed to verify user");
+            if (whitelisted.level >= "2") {
+                console.log("level 2")
+                var memberRole = member.guild.roles.cache.find(role => role.id === guild.memberRole);
+                if (memberRole) {
+                    await member.roles.add(memberRole);
+                }
             }
-        
-        } else*/ if (guild && guild.pendingChannel) {
+
+            const groups = await GroupMembersRepository.find({ where: { userId: member.id } });
+            for (const g of groups) {
+                const group = await GroupRepository.findOne({ where: { groupId: g.groupId } });
+                const role = member.guild.roles.cache.find(role => role.id === group.roleId);
+                if (role) {
+                    await member.roles.add(role);
+                }
+            }
+            await member.send(`You have been ** auto verified** in **${member.guild.name}**`);
+
+            if (guild.logsChannel) {
+                var log = member.guild.channels.cache.get(guild.logsChannel) as TextChannel;
+                if (!log) return;
+
+                var addedRoles = member.roles.cache
+                    .filter((roles) => roles.id !== member.guild.id)
+                    .sort((a, b) => b.rawPosition - a.rawPosition)
+                    .map((role) => role.name);
+    
+                var em = new EmbedBuilder()
+                    .setTitle(member.user.username + "#" + member.user.discriminator)
+                    .setThumbnail(member.user.avatarURL())
+                    .setColor(0x90EE90)
+                    .addFields(
+                        { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
+                        { name: "Whitelisted By", value: `<@${whitelisted.createdBy}>` },
+                        { name: "Whitelisted", value: `True` },
+                        { name: "Roles", value: addedRoles.join(", ")}
+                    )
+    
+                await log.send({
+                    embeds: [em]
+                });
+            }
+            return;
+        }
+
+        if (guild && guild.pendingChannel) {
             
             var pendingChannel = await member.guild.channels.fetch(guild.pendingChannel);
             if (pendingChannel && pendingChannel.type === ChannelType.GuildText) {
