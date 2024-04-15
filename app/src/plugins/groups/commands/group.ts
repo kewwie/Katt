@@ -450,6 +450,11 @@ export const GroupCommand: Command =  {
                     }
                 });
 
+                if (user.bot) {
+                    await interaction.reply("Bots cannot be added to groups");
+                    return;
+                }
+
                 if (existingGroup) {
                     switch (interaction.options.getSubcommandGroup()) {
                         case "member": {
