@@ -72,6 +72,7 @@ export class CommandManager {
 
     async onInteraction(interaction: any) {
         if (interaction.isChatInputCommand()) {
+
             const command = this.client.commands.get(interaction.commandName);
 
             if (!command) return;
@@ -82,6 +83,20 @@ export class CommandManager {
                 console.error(error);
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
+
+        } else if (interaction.isAutocomplete()) {
+
+            const command = this.client.commands.get(interaction.commandName);
+
+            if (!command) return;
+
+            try {
+                await command.autocomplete(interaction, this.client);
+            } catch (error) {
+                console.error(error);
+                await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+            }
+            
         }
     }
 }
