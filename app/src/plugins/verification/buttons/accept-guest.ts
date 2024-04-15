@@ -28,12 +28,13 @@ export const AcceptGuest: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
+        interaction.deferUpdate();
         var memberId = interaction.customId.split("_")[1];
 
         const GuildRepository = await dataSource.getRepository(Guild);
         const GroupRepository = await dataSource.getRepository(Group);
         const GroupMembersRepository = await dataSource.getRepository(GroupMember);
-        const guild = await GuildRepository.findOne({ where: { guildId: member.guild.id } });
+        const guild = await GuildRepository.findOne({ where: { guildId: interaction.guild.id } });
         
         var member = await interaction.guild.members.fetch(memberId);
        

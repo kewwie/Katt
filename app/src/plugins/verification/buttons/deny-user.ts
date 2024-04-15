@@ -17,7 +17,7 @@ export const DenyUser: Button = {
     config: {
         type: ComponentType.Button,
         custom_id: "deny-user",
-        style: ButtonStyle.Success,
+        style: ButtonStyle.Danger,
         label: "Deny User"
     },
     
@@ -26,6 +26,7 @@ export const DenyUser: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
+        interaction.deferUpdate();
         var memberId = interaction.customId.split("_")[1];
         var member = await interaction.guild.members.fetch(memberId);
 
