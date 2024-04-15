@@ -105,7 +105,7 @@ export const WhitelistCmd: Command = {
                 const whitelistUser = await WhitelistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
                 );
-                if (whitelistUser && whitelistUser.level === lvl) {
+                if (whitelistUser && whitelistUser.level <= lvl) {
                     interaction.reply(`**${userTag}** is already whitelisted`);
 
                 } else if (whitelistUser && whitelistUser.level !== lvl) {
