@@ -45,6 +45,12 @@ export const GuildMemberAdd: Event = {
         if (member.user.bot && whitelisted?.level !== "3") {
             await member.kick("Bots must be whitelisted");
             return;
+        } else if (member.user.bot && whitelisted?.level === "3") {
+            var botRole = member.guild.roles.cache.find(role => role.id === guild.botRole);
+            if (botRole) {
+                await member.roles.add(botRole);
+            }
+            return;
         }
 
         if (blacklisted) {
@@ -79,10 +85,16 @@ export const GuildMemberAdd: Event = {
             }
 
             if (whitelisted.level >= "2") {
-                console.log("level 2")
                 var memberRole = member.guild.roles.cache.find(role => role.id === guild.memberRole);
                 if (memberRole) {
                     await member.roles.add(memberRole);
+                }
+            }
+
+            if (whitelisted.level === "4") {
+                var adminRole = member.guild.roles.cache.find(role => role.id === guild.adminRole);
+                if (adminRole) {
+                    await member.roles.add(adminRole);
                 }
             }
 
@@ -94,7 +106,7 @@ export const GuildMemberAdd: Event = {
                     await member.roles.add(role);
                 }
             }
-            await member.send(`You have been ** auto verified** in **${member.guild.name}**`);
+            await member.send(`You have been **auto verified** in **${member.guild.name}**`);
 
             if (guild.logsChannel) {
                 var log = member.guild.channels.cache.get(guild.logsChannel) as TextChannel;
