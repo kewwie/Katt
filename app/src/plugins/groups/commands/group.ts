@@ -1,5 +1,6 @@
 import {
     ChatInputCommandInteraction,
+    EmbedBuilder,
     resolveColor,
     ColorResolvable
 } from "discord.js";
@@ -172,9 +173,13 @@ export const GroupCommand: Command =  {
                                 required: true
                             },
                             {
-                                type: OptionTypes.BOOLEAN,
+                                type: OptionTypes.STRING,
                                 name: "private",
                                 description: "true or false",
+                                choices: [
+                                    { name: "True", value: "true" },
+                                    { name: "False", value: "false" }
+                                ],
                                 required: true
                             }
                         ]
@@ -529,50 +534,58 @@ export const GroupCommand: Command =  {
                         await interaction.reply(`You do not have permission to change the privacy of the group **${name}**.`);
                         return;
                     }
-                    console.log((isPrivate === "true"))
+
                     await GroupRepository.update({ groupId: existingGroup.groupId }, { private: (isPrivate === "true") });
                     await interaction.reply(`Group **${name}** privacy has been updated.`);
                 } else {
                     await interaction.reply("This group doesnt exist.");
                 }
                 break;
-            }/*
+            }
             case "owner": {
                 var user = interaction.options.getUser('user');
+                var name = interaction.options.getString('name');
 
                 if (user.bot) {
                     await interaction.reply("Bots cannot have ownership of a group.");
                     return;
                 }
 
-                var name = interaction.options.getString('name');
-
-                const group = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id,
-                    ownerId: interaction.member.id
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
                 });
 
-                if (group && group.admins.includes(interaction.member.id)) {
-                    await client.database.db("kiwi").collection("groups").updateOne(
-                        { name: name, guildId: interaction.guild.id },
-                        { $set: { ownerId: user.id }, $addToSet: { admins: user.id } }
+                if (existingGroup) {
+                    if (existingGroup.ownerId !== interaction.user.id) {
+                        await interaction.reply("You are not the owner of this group.");
+                        return;
+                    }
+                    
+                    await GroupRepository.update({ groupId: existingGroup.groupId }, { ownerId: user.id });
+                    await GroupAdminsRepository.upsert(
+                        { groupId: existingGroup.groupId, userId: user.id, username: user.username },
+                        ["groupId", "userId"]
+                    )
+                    await GroupMembersRepository.upsert(
+                        { groupId: existingGroup.groupId, userId: user.id, username: user.username },
+                        ["groupId", "userId"]
                     );
 
-                    await interaction.reply(`Ownership of group ${name} has been transferred to ${user.username}.`);
+                    await interaction.reply(`Ownership of group **${name}** has been transferred to **${user.username}**`);
                 } else {
-                    await interaction.reply("You are not the owner of this group.");
+                    await interaction.reply("This group doesnt exist");
                 }
                 break;
             }
             case "list": {
-                const groups = await client.database.db("kiwi").collection("groups").find({
-                    guildId: interaction.guild.id
-                }).toArray();
-
+                const groups = await GroupRepository.find({ where: { guildId: interaction.guild.id } });
+                console.log(groups);
                 if (groups.length > 0) {
                     const groupNames = groups.map(group => group.name).join(", ");
-                    await interaction.reply(`Groups in this guild: ${groupNames}`);
+                    await interaction.reply(`Groups in this guild: **${groupNames}**`);
                 } else {
                     await interaction.reply("There are no groups in this guild.");
                 }
@@ -580,21 +593,27 @@ export const GroupCommand: Command =  {
             }
             case "info": {
                 var name = interaction.options.getString('name');
-                const group = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id
+
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
                 });
 
-                if (group) {
+                if (existingGroup) {
+                    const groupAdmins = await GroupAdminsRepository.find({ where: { groupId: existingGroup.groupId } });
+                    const groupMembers = await GroupMembersRepository.find({ where: { groupId: existingGroup.groupId } });
+
                     var em = new EmbedBuilder()
-                        .setTitle("Group " + group.name)
+                        .setTitle("Group " + existingGroup.name)
                         .addFields(
-                            { name: "Owner", value: `<@${group.ownerId}>` },
-                            { name: "Admins", value: group.admins.map(admin => `<@${admin}>`).join(", ") },
-                            { name: "Members", value: group.members.map(member => `<@${member}>`).join(", ") },
-                            { name: "Private", value: group.private ? "Yes" : "No" }
+                            { name: "Owner", value: `<@${existingGroup.ownerId}>` },
+                            { name: "Admins", value: groupAdmins.map(admin => `${admin.username}`).join(", ") },
+                            { name: "Members", value: groupMembers.map(member => `${member.username}`).join(", ") },
+                            { name: "Private", value: existingGroup.private ? "Yes" : "No" }
                         )
-                        .setColor(0x2b2d31)
+                        .setColor(client.embed.color)
                         .setTimestamp();
 
                     await interaction.reply({ embeds: [em] });
@@ -602,7 +621,7 @@ export const GroupCommand: Command =  {
                     await interaction.reply("Group does not exist.");
                 }
                 break;
-            }
+            }/*
             case "delete": {
                 var name = interaction.options.getString('name');
                 const group = await client.database.db("kiwi").collection("groups").findOne({
