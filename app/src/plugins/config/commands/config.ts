@@ -9,13 +9,14 @@ import {
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes,
-	Permissions
+	Permissions,
+    Command
 } from "../../../types/command";
 
 import { dataSource } from "../../../data/datasource";
 import { Guild } from "../../../data/entities/Guild";
 
-module.exports = {
+export const ConfigCmd: Command ={
 	config: {
         name: "config",
         description: "Config Commands",
