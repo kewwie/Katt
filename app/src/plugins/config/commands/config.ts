@@ -8,6 +8,7 @@ import {
 	CommandTypes,
 	SlashCommandContexts,
 	IntegrationTypes,
+    ChannelTypes,
 	OptionTypes,
 	Permissions,
     Command
@@ -33,7 +34,8 @@ export const ConfigCmd: Command ={
                     {
                         type: OptionTypes.CHANNEL,
                         name: "channel",
-                        description: "The channel to log in",
+                        description: "The channel to send logs to",
+                        channel_types: [ChannelTypes.GUILD_TEXT],
                         required: true
                     }
                 ]
@@ -47,6 +49,7 @@ export const ConfigCmd: Command ={
                         type: OptionTypes.CHANNEL,
                         name: "channel",
                         description: "The channel to send join request in",
+                        channel_types: [ChannelTypes.GUILD_TEXT],
                         required: true
                     }
                 ]
