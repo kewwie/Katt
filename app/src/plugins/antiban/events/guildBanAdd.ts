@@ -7,7 +7,7 @@ import { KiwiClient } from "../../../client";
 import { Events, Event } from "../../../types/event";
 
 export const GuildBanAdd: Event = {
-    name: Events.guildBanAdd,
+    name: Events.GuildBanAdd,
 
     /**
     * 

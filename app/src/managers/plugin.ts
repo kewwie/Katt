@@ -28,7 +28,7 @@ export class PluginManager {
             this.client.EventManager.load(plugin.events);
         }
 
-        this.client.on(Events.interactionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));      
+        this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));      
         plugin.afterLoad?.(this.client);
     }
     
@@ -45,6 +45,6 @@ export class PluginManager {
             await this.client.CommandManager.unregisterAllGuild();
         }
         this.client.CommandManager.register(commands, guildId);
-        this.client.on(Events.interactionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
+        this.client.on(Events.InteractionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
     }
 }
