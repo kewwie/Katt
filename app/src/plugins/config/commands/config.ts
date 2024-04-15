@@ -80,6 +80,32 @@ export const ConfigCmd: Command ={
                     }
                 ]
             },
+            {
+                type: OptionTypes.SUB_COMMAND,
+                name: "bot_role",
+                description: "Set the bot role for the server (Owner only)",
+                options: [
+                    {
+                        type: OptionTypes.ROLE,
+                        name: "role",
+                        description: "The role to assign to bots",
+                        required: true
+                    }
+                ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
+                name: "admin_role",
+                description: "Set the admin role for the server (Owner only)",
+                options: [
+                    {
+                        type: OptionTypes.ROLE,
+                        name: "role",
+                        description: "The role to assign to admins",
+                        required: true
+                    }
+                ]
+            },
         ]
     },
 
@@ -133,6 +159,44 @@ export const ConfigCmd: Command ={
                 )
                 await interaction.reply({
                     content: `Member role has been set to <@&${roleId}>!`,
+                    ephemeral: true
+                });        
+                break;
+
+            case "bot_role":
+                if (interaction.user.id !== interaction.guild.ownerId) {
+                    await interaction.reply({
+                        content: `You must be the owner of the server to set the bot role!`,
+                    });
+                    return;
+                }
+
+                var roleId = interaction.options.getRole("role").id;
+                await GuildRepository.upsert(
+                    { guildId: interaction.guildId, botRole: roleId },
+                    ["guildId"]
+                )
+                await interaction.reply({
+                    content: `Bot role has been set to <@&${roleId}>!`,
+                    ephemeral: true
+                });        
+                break;
+
+            case "admin_role":
+                if (interaction.user.id !== interaction.guild.ownerId) {
+                    await interaction.reply({
+                        content: `You must be the owner of the server to set the admin role!`,
+                    });
+                    return;
+                }
+
+                var roleId = interaction.options.getRole("role").id;
+                await GuildRepository.upsert(
+                    { guildId: interaction.guildId, botRole: roleId },
+                    ["guildId"]
+                )
+                await interaction.reply({
+                    content: `Admin role has been set to <@&${roleId}>!`,
                     ephemeral: true
                 });        
                 break;
