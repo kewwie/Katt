@@ -50,16 +50,16 @@ export const NicknameCmd: Command = {
                 description: "Set a users nickname",
                 options: [
                     {
-                        type: OptionTypes.USER,
-                        name: "user",
-                        description: "The user to save the nickname for",
-                        required: false
-                    },
-                    {
                         type: OptionTypes.STRING,
                         name: "nickname",
                         description: "The nickname to set",
                         required: true
+                    },
+                    {
+                        type: OptionTypes.USER,
+                        name: "user",
+                        description: "The user to save the nickname for",
+                        required: false
                     }
                 ]
             }
@@ -77,24 +77,50 @@ export const NicknameCmd: Command = {
         switch (interaction.options.getSubcommand()) {
             case "save": {
                 var user = interaction.options.getUser("user");
+                var member = interaction.guild.members.cache.get(user.id);
 
-                await NicknameRepository.upsert({
-                    userId: user.id,
-                    guildId: interaction.guildId,
-                    nickname: user.username
-                }, ["userId", "guildId"]);
+                if (!member.nickname) {
+                    interaction.reply("User does not have a nickname");
+                    return;
+                }
 
+                var nickUser = await NicknameRepository.findOne({ where: { userId: user.id, guildId: interaction.guildId } });
+                if (nickUser) {
+                    await NicknameRepository.update(
+                        { userId: user.id, guildId: interaction.guildId},
+                        { nickname: member.nickname }
+                    );
+                    interaction.reply(`Updated **${user.username}**'s nickname`);
+                } else {
+                    await NicknameRepository.insert({
+                        userId: user.id,
+                        guildId: interaction.guildId,
+                        nickname: member.nickname
+                    });
+                    interaction.reply(`Saved **${user.username}**'s nickname`);
+                }
                 break;
             }
             case "save-all": {
                 for (var member of interaction.guild.members.cache.values()) {
 
-                    await NicknameRepository.upsert({
-                        userId: member.id,
-                        guildId: interaction.guildId,
-                        nickname: member.user.username
-                    }, ["userId", "guildId"]);
+                    if (member.nickname) {
+                        var nickUser = await NicknameRepository.findOne({ where: { userId: user.id, guildId: interaction.guildId } });
+                        if (nickUser) {
+                            await NicknameRepository.update(
+                                { userId: user.id, guildId: interaction.guildId},
+                                { nickname: member.nickname }
+                            );
+                        } else {
+                            await NicknameRepository.insert({
+                                userId: user.id,
+                                guildId: interaction.guildId,
+                                nickname: member.nickname
+                            });
+                        };
+                    }
                 }
+                interaction.reply("Saved all users nicknames");
                     
                 break;
             }
@@ -102,12 +128,24 @@ export const NicknameCmd: Command = {
                 var user = interaction.options.getUser("user");
                 var nickname = interaction.options.getString("nickname");
 
-                await NicknameRepository.upsert({
-                    userId: user.id,
-                    guildId: interaction.guildId,
-                    nickname: nickname
-                }, ["userId", "guildId"]);
-                
+                var nickUser = await NicknameRepository.findOne({ where: { userId: user.id, guildId: interaction.guildId } });
+                if (nickUser) {
+                    await NicknameRepository.update(
+                        { userId: user.id, guildId: interaction.guildId},
+                        { nickname: member.nickname }
+                    );
+                } else {
+                    await NicknameRepository.insert({
+                        userId: user.id,
+                        guildId: interaction.guildId,
+                        nickname: member.nickname
+                    });
+                }
+
+                interaction.guild.members.cache.get(user.id).setNickname(nickname);
+
+                interaction.reply(`Set **${user.username}**'s nickname to **${nickname}**`);
+
                 break;
             }
         }
