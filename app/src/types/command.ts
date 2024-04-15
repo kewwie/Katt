@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
 import { KiwiClient } from "../client";
 
 export enum CommandTypes {
@@ -92,7 +92,7 @@ export interface Command {
         integration_types: IntegrationTypes[];
         options?: CommandOption[];
     };
-    autocomplete?: (interaction: ChatInputCommandInteraction, client: KiwiClient) => Promise<void>;
+    autocomplete?: (interaction: AutocompleteInteraction, client: KiwiClient) => Promise<void>;
     execute: (interaction: ChatInputCommandInteraction, client: KiwiClient) => Promise<void>;
 }
 
