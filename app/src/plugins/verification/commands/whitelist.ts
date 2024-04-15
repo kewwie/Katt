@@ -42,7 +42,8 @@ export const WhitelistCmd: Command = {
                         required: true,
                         choices: [
                             { name: "Guest", value: "1" },
-                            { name: "Member", value: "2" }
+                            { name: "Member", value: "2" },
+                            { name: "Bot", value: "3" }
                         ]
                     }
                 ]
@@ -83,6 +84,22 @@ export const WhitelistCmd: Command = {
                     return;
                 }
                 var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                var lvl = interaction.options.getString("level");
+
+                if (user.bot && lvl !== "3") {
+                    interaction.reply("You can only whitelist bots as bots");
+                    return;
+                }
+
+                if (!user.bot && lvl === "3") {
+                    interaction.reply("You can not whitelist users as bots");
+                    return;
+                }
+
+                if (lvl === "3" && interaction.guild.ownerId !== interaction.user.id) {
+                    interaction.reply("You must be the owner of the server to whitelist bots");
+                    return;
+                }
                 
                 const whitelistUser = await WhitelistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
