@@ -1,11 +1,42 @@
 version: "3"
-name: "kewwieapp"
+name: "kewi-app"
 
 services:
-  kewwie-app:
-    container_name: kewwie-app
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:?}
+      MYSQL_DATABASE: kewiapp
+      MYSQL_USER: kewiapp
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD:?}
+    ports:
+      - "${DATABASE_PORT:?}:${DATABASE_PORT:?}"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  migrate:
+    container_name: migrate
+    build:
+      context: .
+      dockerfile: ./app/.docker/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: ["npm", "run", "migrate:run"]
+
+  app:
+    container_name: app
     restart: unless-stopped
     build:
       context: .
-      dockerfile: ./.docker/Dockerfile
-    command: ["npm", "run", "start"]
+      dockerfile: ./app/.docker/Dockerfile
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    command: [ "npm", "run", "start" ]
