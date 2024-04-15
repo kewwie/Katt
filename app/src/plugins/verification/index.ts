@@ -3,6 +3,7 @@ import { Plugin } from "../../types/plugin";
 import { AcceptGuest } from "./buttons/accept-guest";
 import { AcceptMember } from "./buttons/accept-member";
 import { DenyUser } from "./buttons/deny-user";
+import { BlacklistCmd } from "./commands/blacklist";
 
 import { WhitelistCmd } from "./commands/whitelist";
 
@@ -18,6 +19,7 @@ export const VerificationPlugin: Plugin = {
         DenyUser
     ],
     commands: [
+        BlacklistCmd,
         WhitelistCmd
     ],
     events: [
