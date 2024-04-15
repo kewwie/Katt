@@ -590,7 +590,6 @@ export const GroupCommand: Command =  {
                     }
                     const role = interaction.guild.roles.cache.get(existingGroup.roleId);
                     if (role) {
-                        console.log(resolveColor(color as ColorResolvable), 1011)
                         await role.setColor(resolveColor(color as ColorResolvable));
                         await interaction.reply(`Color of group **${name}** has been changed to **${color}**`);
                     } else {
@@ -702,7 +701,6 @@ export const GroupCommand: Command =  {
             }
             case "list": {
                 const groups = await GroupRepository.find({ where: { guildId: interaction.guild.id } });
-                console.log(groups);
                 if (groups.length > 0) {
                     const groupNames = groups.map(group => group.name).join(", ");
                     await interaction.reply(`Groups in this guild: **${groupNames}**`);
