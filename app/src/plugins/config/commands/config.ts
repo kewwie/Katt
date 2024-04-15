@@ -89,47 +89,48 @@ module.exports = {
 
         switch (interaction.options.getSubcommand()) {
             case "logs_channel":
+                var channelId = interaction.options.getChannel("channel").id;
                 await GuildRepository.upsert(
-                    {},
-                    []
+                    { guildId: interaction.guildId, logsChannel: channelId },
+                    ["guildId"]
                 )
                 await interaction.reply({
-                    content: "Logs channel has been set!",
+                    content: `Logs channel has been set to <#${channelId}>!`,
                     ephemeral: true
                 });
                 break;
             case "pending_channel":
-                client.database.db("kiwi").collection("guilds").updateOne(
-                    { guildId: interaction.guildId },
-                    { $set: { pendingChannel: interaction.options.getChannel("channel").id } },
-                    { upsert: true }
-                );
+                var channelId = interaction.options.getChannel("channel").id;
+                await GuildRepository.upsert(
+                    { guildId: interaction.guildId, pendingChannel: channelId },
+                    ["guildId"]
+                )
                 await interaction.reply({
-                    content: "Pending channel has been set!",
+                    content: `Pending channel has been set to <#${channelId}>!`,
                     ephemeral: true
                 });
                 break;
             case "guest_role":
-                client.database.db("kiwi").collection("guilds").updateOne(
-                    { guildId: interaction.guildId },
-                    { $set: { guestRole: interaction.options.getRole("role").id } },
-                    { upsert: true }
-                );           
+                var roleId = interaction.options.getRole("role").id;
+                await GuildRepository.upsert(
+                    { guildId: interaction.guildId, guestRole: roleId },
+                    ["guildId"]
+                )
                 await interaction.reply({
-                    content: "Guest role has been set!",
+                    content: `Guest role has been set to <@&${roleId}>!`,
                     ephemeral: true
-                });    
+                });
                 break;
             case "member_role":
-                client.database.db("kiwi").collection("guilds").updateOne(
-                    { guildId: interaction.guildId },
-                    { $set: { memberRole: interaction.options.getRole("role").id } },
-                    { upsert: true }
-                );       
+                var roleId = interaction.options.getRole("role").id;
+                await GuildRepository.upsert(
+                    { guildId: interaction.guildId, memberRole: roleId },
+                    ["guildId"]
+                )
                 await interaction.reply({
-                    content: "Member role has been set!",
+                    content: `Member role has been set to <@&${roleId}>!`,
                     ephemeral: true
-                });         
+                });        
                 break;
         }
 	},
