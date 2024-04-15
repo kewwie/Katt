@@ -43,7 +43,8 @@ export const WhitelistCmd: Command = {
                         choices: [
                             { name: "Guest", value: "1" },
                             { name: "Member", value: "2" },
-                            { name: "Bot", value: "3" }
+                            { name: "Bot", value: "3" },
+                            { name: "Admin", value: "4" }
                         ]
                     }
                 ]

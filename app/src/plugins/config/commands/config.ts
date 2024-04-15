@@ -17,7 +17,7 @@ import {
 import { dataSource } from "../../../data/datasource";
 import { Guild } from "../../../data/entities/Guild";
 
-export const ConfigCmd: Command ={
+export const ConfigCmd: Command = {
 	config: {
         name: "config",
         description: "Config Commands",
@@ -192,7 +192,7 @@ export const ConfigCmd: Command ={
 
                 var roleId = interaction.options.getRole("role").id;
                 await GuildRepository.upsert(
-                    { guildId: interaction.guildId, botRole: roleId },
+                    { guildId: interaction.guildId, adminRole: roleId },
                     ["guildId"]
                 )
                 await interaction.reply({

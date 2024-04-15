@@ -20,6 +20,7 @@ import { GroupMember } from "../../../data/entities/GroupMember";
 
 import { AcceptGuest } from "../buttons/accept-guest";
 import { AcceptMember } from "../buttons/accept-member";
+import { DenyUser } from "../buttons/deny-user";
 
 export const GuildMemberAdd: Event = {
     name: Events.guildMemberAdd,
@@ -137,8 +138,8 @@ export const GuildMemberAdd: Event = {
 
         if (guild && guild.pendingChannel) {
             
-            var pendingChannel = await member.guild.channels.fetch(guild.pendingChannel);
-            if (pendingChannel && pendingChannel.type === ChannelType.GuildText) {
+            var pendingChannel = await member.guild.channels.fetch(guild.pendingChannel) as TextChannel;
+            if (pendingChannel) {
 
                 var verificationPing = `@everyone`;
 
@@ -162,7 +163,7 @@ export const GuildMemberAdd: Event = {
 
                 rows.push(new ActionRowBuilder().addComponents([acceptGuestButton, acceptMemberButton]));
 
-                var denyButton = new ButtonBuilder()
+                var denyButton = new ButtonBuilder(DenyUser.config)
                     .setCustomId('deny-user_' + member.user.id);
 
                 rows.push(new ActionRowBuilder().addComponents([denyButton]));
