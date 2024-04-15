@@ -4,7 +4,7 @@ import { NicknameCmd } from "./commands/nickname";
 
 import { GuildMemberUpdate } from "./events/guildMemberUpdate";
 
-export const NicknamePlugin: Plugin = {
+export const NicknamesPlugin: Plugin = {
     config: {
         name: "Nickname"
     },
@@ -15,6 +15,6 @@ export const NicknamePlugin: Plugin = {
         GuildMemberUpdate
     ],
     afterLoad: () => {
-        console.log("Loaded Nickname Plugin")
+        console.log("Loaded Nicknames Plugin")
     }
 }
