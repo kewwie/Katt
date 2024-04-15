@@ -1,12 +1,14 @@
-import { AntiBan } from "./antiban"
-import { Groups } from "./groups"
+import { AntiBanPlugin } from "./antiban"
+import { ConfigPlugin } from "./config"
+import { GroupsPlugin } from "./groups"
 import { ListPlugin } from "./list"
 import { ReadyPlugin } from "./ready"
 import { VerificationPlugin } from "./verification"
 
 export const Plugins = [
-    AntiBan,
-    Groups,
+    AntiBanPlugin,
+    ConfigPlugin,
+    GroupsPlugin,
     ListPlugin,
     ReadyPlugin,
     VerificationPlugin

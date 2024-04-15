@@ -3,7 +3,7 @@ import { Plugin } from "../../types/plugin";
 import { GuildBanAdd } from "./events/guildBanAdd";
 import { Ready } from "./events/ready";
 
-export const AntiBan: Plugin = {
+export const AntiBanPlugin: Plugin = {
     config: {
         name: "AntiBan"
     },

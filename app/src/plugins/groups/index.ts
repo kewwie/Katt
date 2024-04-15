@@ -2,7 +2,7 @@ import { Plugin } from "../../types/plugin";
 
 import { GroupCommand } from "./commands/group";
 
-export const Groups: Plugin = {
+export const GroupsPlugin: Plugin = {
     config: {
         name: "Groups"
     },

@@ -10,6 +10,12 @@ import { ChannelType } from "discord-api-types/v10";
 
 import { Event, Events } from "../../../types/event";
 
+import { dataSource } from "../../../data/datasource";
+import { Guild } from "../../../data/entities/Guild";
+
+import { AcceptGuest } from "../buttons/accept-guest";
+import { AcceptMember } from "../buttons/accept-member";
+
 export const GuildMemberAdd: Event = {
     name: Events.guildMemberAdd,
 
@@ -19,11 +25,10 @@ export const GuildMemberAdd: Event = {
     * @param {GuildMember} member
     */
     async execute(client: KiwiClient, member: GuildMember) {
-        /*const guild = await client.database.db("kiwi").collection("guilds").findOne(
-            { guildId: member.guild.id }
-        );
+        const GuildRepository = await dataSource.getRepository(Guild);
+        const guild = await GuildRepository.findOne({ where: { guildId: member.guild.id } });
 
-        var blacklist = await client.database.db("kiwi").collection("blacklist").findOne(
+        /*var blacklist = await client.database.db("kiwi").collection("blacklist").findOne(
             { userId: member.user.id }
         );
         var whitelist = await client.database.db("kiwi").collection("whitelist").findOne(
@@ -65,8 +70,8 @@ export const GuildMemberAdd: Event = {
                 console.log(e)
                 console.error("Failed to verify user");
             }
-
-        } else if (guild && guild.pendingChannel) {
+        
+        } else*/ if (guild && guild.pendingChannel) {
             
             var pendingChannel = await member.guild.channels.fetch(guild.pendingChannel);
             if (pendingChannel && pendingChannel.type === ChannelType.GuildText) {
@@ -74,7 +79,9 @@ export const GuildMemberAdd: Event = {
                 var verificationPing = `@everyone`;
 
                 var em = new EmbedBuilder()
-                    .setTitle(member.user.username + "#" + member.user.discriminator)
+                    .setTitle(await client.getTag(
+                        { name: member.user.username, discriminator: member.user.discriminator }
+                    ))
                     .setThumbnail(member.user.avatarURL())
                     .setFields(
                         { name: "Mention", value: `<@${member.user.id}>`},
@@ -82,33 +89,26 @@ export const GuildMemberAdd: Event = {
                     )
                     .setColor(0xADD8E6);
 
-                var acceptGuestButton = new ButtonBuilder()
-                    .setCustomId('accept-user_guest_' + member.user.id)
-                    .setLabel("Accept as Guest")
-                    .setStyle(ButtonStyle.Success);
-                var acceptMemberButton = new ButtonBuilder()
-                    .setCustomId('accept-user_member_' + member.user.id)
-                    .setLabel("Accept as Member")
-                    .setStyle(ButtonStyle.Primary);
+                var rows = [];
 
-                var ignoreButton = new ButtonBuilder()
-                    .setCustomId('ignore-user_' + member.user.id)
-                    .setLabel("Ignore User")
-                    .setStyle(ButtonStyle.Danger);
+                var acceptGuestButton = new ButtonBuilder(AcceptGuest.config)
+                    .setCustomId('accept-guest_' + member.user.id);
+                var acceptMemberButton = new ButtonBuilder(AcceptMember.config)
+                    .setCustomId('accept-member_' + member.user.id);
 
-                var row = new ActionRowBuilder()
-                    .addComponents([acceptGuestButton, acceptMemberButton])
-                
-                var row2 = new ActionRowBuilder()
-                    .addComponents([ignoreButton])
+                rows.push(new ActionRowBuilder().addComponents([acceptGuestButton, acceptMemberButton]));
+
+                var denyButton = new ButtonBuilder()
+                    .setCustomId('deny-user_' + member.user.id);
+
+                rows.push(new ActionRowBuilder().addComponents([denyButton]));
 
                 await pendingChannel.send({
                     content: verificationPing,
                     embeds: [em],
-                    //components: [row, row2]
+                    components: rows
                 });
             }
-        }*/
-        console.log("guildMemberAdd event executed");
+        }
     }
 }
