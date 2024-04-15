@@ -1,12 +1,15 @@
-import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "whitelist" })
 export class Whitelist {
-    @PrimaryColumn({ type: "varchar", length: 255, unique: true })
-    userId: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @Column({ type: "varchar", length: 255 })
     guildId: string;
+    
+    @Column({ type: "varchar", length: 255 })
+    userId: string;
 
     @Column({ type: "varchar", length: 255 })
     username: string;

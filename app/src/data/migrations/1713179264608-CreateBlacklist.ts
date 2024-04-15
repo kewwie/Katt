@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateWhitelist1713179253876 implements MigrationInterface {
+export class CreateBlacklist1713179264608 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: "whitelist",
+                name: "blacklist",
                 columns: [
                     {
                         name: "id",
@@ -27,10 +27,6 @@ export class CreateWhitelist1713179253876 implements MigrationInterface {
                         type: "varchar",
                     },
                     {
-                        name: "level",
-                        type: "varchar",
-                    },
-                    {
                         name: "createdBy",
                         type: "varchar",
                     }
@@ -40,7 +36,7 @@ export class CreateWhitelist1713179253876 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("whitelist");
+        await queryRunner.dropTable("blacklist");
     }
 
 }

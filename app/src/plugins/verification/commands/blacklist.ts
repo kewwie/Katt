@@ -13,12 +13,12 @@ import {
 import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../data/datasource";
-import { Whitelist } from "../../../data/entities/Whitelist";
+import { Blacklist } from "../../../data/entities/Blacklist";
 
-export const WhitelistCmd: Command = {
+export const BlacklistCmd: Command = {
     config: {
-        name: "whitelist",
-        description: "Whitelist Commands",
+        name: "blacklist",
+        description: "Blacklist Commands",
         type: CommandTypes.CHAT_INPUT,
         default_member_permissions: Permissions.ManageGuild,
         contexts: [SlashCommandContexts.GUILD],
@@ -27,35 +27,25 @@ export const WhitelistCmd: Command = {
             {
                 type: OptionTypes.SUB_COMMAND,
                 name: "add",
-                description: "Add a user to the whitelist",
+                description: "Add a user to the blacklist",
                 options: [
                     {
                         type: OptionTypes.USER,
                         name: "user",
-                        description: "The user to be added to the whitelist",
+                        description: "The user to add to the blacklist",
                         required: true
-                    },
-                    {
-                        type: OptionTypes.STRING,
-                        name: "level",
-                        description: "The level of the users whitelist",
-                        required: true,
-                        choices: [
-                            { name: "Guest", value: "1" },
-                            { name: "Member", value: "2" }
-                        ]
                     }
                 ]
             },
             {
                 type: OptionTypes.SUB_COMMAND,
                 name: "remove",
-                description: "Remove a user from the whitelist",
+                description: "Remove a user from the blacklist",
                 options: [
                     {
                         type: OptionTypes.USER,
                         name: "user",
-                        description: "The user to remove from the whitelist",
+                        description: "The user to remove from the blacklist",
                         required: true
                     }
                 ]
@@ -63,7 +53,7 @@ export const WhitelistCmd: Command = {
             {
                 type: OptionTypes.SUB_COMMAND,
                 name: "view",
-                description: "View the whitelist",
+                description: "View the blacklist",
             }
         ]
     },
@@ -73,7 +63,7 @@ export const WhitelistCmd: Command = {
     * @param {KiwiClient} client
     */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        const WhitelistRepository = await dataSource.getRepository(Whitelist);
+        const BlacklistRepository = await dataSource.getRepository(Blacklist);
 
         switch (interaction.options.getSubcommand()) {
             case "add": {
@@ -84,23 +74,22 @@ export const WhitelistCmd: Command = {
                 }
                 var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
                 
-                const whitelistUser = await WhitelistRepository.findOne(
+                const blacklistUser = await BlacklistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
                 );
-                if (whitelistUser && whitelistUser.level === interaction.options.getString("level")) {
-                    interaction.reply(`**${userTag}** is already whitelisted`);
+                if (blacklistUser) {
+                    interaction.reply(`**${userTag}** is already blacklisted`);
                     return;
                 };
 
-                await WhitelistRepository.upsert({
+                await BlacklistRepository.insert({
                     guildId: interaction.guild.id,
                     userId: user.id,
                     username: user.username,
-                    level: interaction.options.getString("level"),
                     createdBy: interaction.user.id
-                }, ["userId", "guildId"]);
+                });
 
-                interaction.reply(`**${userTag}** has been whitelisted`);
+                interaction.reply(`**${userTag}** has been added to the blacklist`);
                 break;
             }
             case "remove": {
@@ -111,28 +100,28 @@ export const WhitelistCmd: Command = {
                 };
                 var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
 
-                const whitelistUser = await WhitelistRepository.findOne(
+                const blacklistUser = await BlacklistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
                 );
-                if (!whitelistUser) {
-                    interaction.reply(`**${userTag}** is not whitelisted`);
+                if (!blacklistUser) {
+                    interaction.reply(`**${userTag}** is not blacklisted`);
                     return;
                 };
                 
-                await WhitelistRepository.delete({ guildId: interaction.guild.id, userId: user.id })
-                interaction.reply(`**${userTag}** has been removed from the whitelist`);
+                await BlacklistRepository.delete({ guildId: interaction.guild.id, userId: user.id })
+                interaction.reply(`**${userTag}** has been removed from the blacklist`);
                 break;
             }
             case "view": {
-                const whitelistUsers = await WhitelistRepository.find(
+                const blacklistedUsers = await BlacklistRepository.find(
                     { where: { guildId: interaction.guild.id } }
                 );
-                if (!whitelistUsers) {
+                if (!blacklistedUsers) {
                     interaction.reply("No users have been whitelisted");
                     return;
                 }
 
-                interaction.reply(`**Whitelisted Users**\n ${whitelistUsers.map(user => `${user.username}`).join("\n")}`);
+                interaction.reply(`**Whitelisted Users**\n ${blacklistedUsers.map(user => `${user.username}`).join("\n")}`);
                 break;
             }
         }
