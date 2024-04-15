@@ -73,6 +73,11 @@ export const BlacklistCmd: Command = {
                     return;
                 }
                 var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+
+                if (user.bot) {
+                    interaction.reply("Bots cannot be blacklisted");
+                    return;
+                }
                 
                 const blacklistUser = await BlacklistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
