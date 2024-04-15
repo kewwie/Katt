@@ -92,7 +92,7 @@ export interface Command {
         integration_types: IntegrationTypes[];
         options?: CommandOption[];
     };
-    autocomplete: (interaction: ChatInputCommandInteraction, client: KiwiClient) => Promise<void>;
+    autocomplete?: (interaction: ChatInputCommandInteraction, client: KiwiClient) => Promise<void>;
     execute: (interaction: ChatInputCommandInteraction, client: KiwiClient) => Promise<void>;
 }
 
