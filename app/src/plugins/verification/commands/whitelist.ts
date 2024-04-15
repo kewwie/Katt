@@ -12,7 +12,10 @@ import {
 } from "../../../types/command";
 import { KiwiClient } from "../../../client";
 
-export const Whitelist: Command = {
+import { dataSource } from "../../../data/datasource";
+import { Whitelist } from "../../../data/entities/Whitelist";
+
+export const WhitelistCmd: Command = {
     config: {
         name: "whitelist",
         description: "Whitelist Commands",
@@ -38,8 +41,8 @@ export const Whitelist: Command = {
                         description: "The level of the whitelist",
                         required: true,
                         choices: [
-                            { name: "Guest", value: "guest" },
-                            { name: "Member", value: "member" }
+                            { name: "Guest", value: "1" },
+                            { name: "Member", value: "2" }
                         ]
                     }
                 ]
@@ -70,6 +73,8 @@ export const Whitelist: Command = {
     * @param {KiwiClient} client
     */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
+        const WhitelistRepository = await dataSource.getRepository(Whitelist);
+
         switch (interaction.options.getSubcommand()) {
             case "add": {
                 var user = interaction.options.getUser("user");
@@ -77,21 +82,25 @@ export const Whitelist: Command = {
                     interaction.reply("User not found");
                     return;
                 }
-                /*var whitelist = await client.database.db("kiwi").collection("whitelist").findOne(
-                    { userId: user.id }
+                var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                
+                const whitelistUser = await WhitelistRepository.findOne(
+                    { where: { userId: user.id, guildId: interaction.guild.id } }
                 );
-                if (whitelist) return interaction.reply("User is already whitelisted");
-                await client.database.db("kiwi").collection("whitelist").insertOne(
-                    { 
-                        userId: user.id,
-                        username: user.username,
-                        discriminator: user.discriminator,
-                        createdAt: Date.now(),
-                        createdBy: interaction.user.id,
-                        level: interaction.options.getString("level") || "guest"
-                    }
-                );*/
-                interaction.reply(`**${user.username}#${user.discriminator}** has been whitelisted`);
+                if (whitelistUser && whitelistUser.level === interaction.options.getString("level")) {
+                    interaction.reply(`**${userTag}** is already whitelisted`);
+                    return;
+                };
+
+                await WhitelistRepository.upsert({
+                    userId: user.id,
+                    guildId: interaction.guild.id,
+                    username: user.username,
+                    level: interaction.options.getString("level"),
+                    createdBy: interaction.user.id
+                }, ["userId", "guildId"]);
+
+                interaction.reply(`**${userTag}** has been whitelisted`);
                 break;
             }
             case "remove": {
@@ -100,21 +109,30 @@ export const Whitelist: Command = {
                     interaction.reply("User not found");
                     return;
                 };
-                /*var whitelist = await client.database.db("kiwi").collection("whitelist").findOne(
-                    { userId: user.id }
+                var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+
+                const whitelistUser = await WhitelistRepository.findOne(
+                    { where: { userId: user.id, guildId: interaction.guild.id } }
                 );
-                if (!whitelist) return interaction.reply("User is not whitelisted");
-                await client.database.db("kiwi").collection("whitelist").deleteOne(
-                    { userId: user.id }
-                );*/
-                interaction.reply(`**${user.username}#${user.discriminator}** has been removed from the whitelist`);
+                if (!whitelistUser) {
+                    interaction.reply(`**${userTag}** is not whitelisted`);
+                    return;
+                };
+                
+                await WhitelistRepository.delete({ userId: user.id, guildId: interaction.guild.id })
+                interaction.reply(`**${userTag}** has been removed from the whitelist`);
                 break;
             }
             case "view": {
-                //var whitelist = await client.database.db("kiwi").collection("whitelist").find().toArray();
-                //if (!whitelist) return interaction.reply("No users are whitelisted");
-                //var users = whitelist.map(user => user.userId);
-                //interaction.reply(`Whitelisted Users: ${users.map(userId => `<@${userId}>`).join(", ")}`);
+                const whitelistUsers = await WhitelistRepository.find(
+                    { where: { guildId: interaction.guild.id } }
+                );
+                if (!whitelistUsers) {
+                    interaction.reply("No users have been whitelisted");
+                    return;
+                }
+
+                interaction.reply(`**Whitelisted Users**\n ${whitelistUsers.map(user => `${user.username}`).join("\n")}`);
                 break;
             }
         }
