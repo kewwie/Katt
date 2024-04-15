@@ -132,7 +132,7 @@ export const WhitelistCmd: Command = {
                     return;
                 }
 
-                interaction.reply(`**Whitelisted Users**\n ${whitelistUsers.map(user => `${user.username}`).join("\n")}`);
+                interaction.reply(`**Whitelisted Users**\n${whitelistUsers.map(user => `${user.username}`).join("\n")}`);
                 break;
             }
         }

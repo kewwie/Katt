@@ -121,7 +121,7 @@ export const BlacklistCmd: Command = {
                     return;
                 }
 
-                interaction.reply(`**Whitelisted Users**\n ${blacklistedUsers.map(user => `${user.username}`).join("\n")}`);
+                interaction.reply(`**Blacklisted Users**\n${blacklistedUsers.map(user => `${user.username}`).join("\n")}`);
                 break;
             }
         }
