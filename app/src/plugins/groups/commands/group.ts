@@ -1,6 +1,7 @@
 import {
     ChatInputCommandInteraction,
-    EmbedBuilder
+    resolveColor,
+    ColorResolvable
 } from "discord.js";
 
 import { 
@@ -444,25 +445,29 @@ export const GroupCommand: Command =  {
                     await interaction.reply(`Group ${name} does not exist.`);
                 }
                 break;
-            }/*
+            }
             case "color": {
                 var name = interaction.options.getString('name');
                 var color = interaction.options.getString('color');
 
-                const group = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
                 });
 
-                if (group && group.admins.includes(interaction.member.id)) {
+                if (existingGroup) {
                     const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }});
                     if (!groupAdmin) {
-                        await interaction.reply(`You do not have permission to change the color of the group ${name}.`);
+                        await interaction.reply(`You do not have permission to change the color of the group **${name}**.`);
+                        return;
                     }
-                    const role = interaction.guild.roles.cache.get(group.roleId);
+                    const role = interaction.guild.roles.cache.get(existingGroup.roleId);
                     if (role) {
-                        await role.setColor(color);
-                        await interaction.reply(`Color of group ${name} has been changed to ${color}.`);
+                        console.log(resolveColor(color as ColorResolvable), 1011)
+                        await role.setColor(resolveColor(color as ColorResolvable));
+                        await interaction.reply(`Color of group **${name}** has been changed to **${color}**.`);
                     } else {
                         await interaction.reply("Group role not found.");
                     }
@@ -475,52 +480,63 @@ export const GroupCommand: Command =  {
                 var name = interaction.options.getString('name');
                 var newName = interaction.options.getString('newname');
 
-                const group = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id,
-                    ownerId: interaction.member.id
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
                 });
 
-                if (group && group.admins.includes(interaction.member.id)) {
-                    const role = interaction.guild.roles.cache.get(group.roleId);
+                if (existingGroup) {
+                    const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }});
+                    if (!groupAdmin) {
+                        await interaction.reply(`You do not have permission to change the name of the group **${name}**.`);
+                        return;
+                    }
+                    const role = interaction.guild.roles.cache.get(existingGroup.roleId);
                     if (role) {
                         await role.edit({ name: `Group ${newName}` });
                     } else {
-                        await interaction.reply("Role not found.");
+                        await interaction.reply("Group role not found.");
                         return;
                     }
-                    await client.database.db("kiwi").collection("groups").updateOne(
-                        { name: name, guildId: interaction.guild.id },
-                        { $set: { name: newName } }
+
+                    await GroupRepository.update(
+                        { groupId: existingGroup.groupId },
+                        { name: newName }
                     );
 
-                    await interaction.reply(`Group ${name} has been renamed to ${newName}.`);
+                    await interaction.reply(`Group **${name}** has been renamed to **${newName}**.`);
                 } else {
-                    await interaction.reply("You are not the owner of this group or the group does not exist.");
+                    await interaction.reply("This group doesnt exist.");
                 }
                 break;
             }
             case "private": {
                 var name = interaction.options.getString('name');
-                var isPrivate = interaction.options.get('private');
+                var isPrivate = interaction.options.getString('private');
 
-                const group = await client.database.db("kiwi").collection("groups").findOne({
-                    name: name,
-                    guildId: interaction.guild.id,
-                    ownerId: interaction.member.id
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
                 });
 
-                if (group && group.admins.includes(interaction.member.id)) {
-                    await client.database.db("kiwi").collection("groups").updateOne(
-                        { name: name, guildId: interaction.guild.id },
-                        { $set: { private: isPrivate } }
-                    );
-                    await interaction.reply(`Group ${name} privacy has been updated.`);
+                if (existingGroup) {
+                    const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: interaction.user.id }});
+                    if (!groupAdmin) {
+                        await interaction.reply(`You do not have permission to change the privacy of the group **${name}**.`);
+                        return;
+                    }
+                    console.log((isPrivate === "true"))
+                    await GroupRepository.update({ groupId: existingGroup.groupId }, { private: (isPrivate === "true") });
+                    await interaction.reply(`Group **${name}** privacy has been updated.`);
                 } else {
-                    await interaction.reply("You are not the owner of this group.");
+                    await interaction.reply("This group doesnt exist.");
                 }
                 break;
-            }
+            }/*
             case "owner": {
                 var user = interaction.options.getUser('user');
 
