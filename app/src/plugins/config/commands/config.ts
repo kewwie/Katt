@@ -198,7 +198,7 @@ export const ConfigCmd: Command ={
                 await interaction.reply({
                     content: `Admin role has been set to <@&${roleId}>!`,
                     ephemeral: true
-                });        
+                });
                 break;
         }
 	},
