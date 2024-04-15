@@ -104,20 +104,26 @@ export const WhitelistCmd: Command = {
                 const whitelistUser = await WhitelistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
                 );
-                if (whitelistUser && whitelistUser.level === interaction.options.getString("level")) {
+                if (whitelistUser && whitelistUser.level === lvl) {
                     interaction.reply(`**${userTag}** is already whitelisted`);
-                    return;
+
+                } else if (whitelistUser && whitelistUser.level !== lvl) {
+                    await WhitelistRepository.update(
+                        { guildId: interaction.guild.id, userId: user.id },
+                        { level: lvl }
+                    );
+                    interaction.reply(`**${userTag}** whitelist has been updated`);
+
+                } else {
+                    await WhitelistRepository.insert({
+                        guildId: interaction.guild.id,
+                        userId: user.id,
+                        username: user.username,
+                        level: lvl,
+                        createdBy: interaction.user.id
+                    });
+                    interaction.reply(`**${userTag}** has been whitelisted`);
                 };
-
-                await WhitelistRepository.upsert({
-                    guildId: interaction.guild.id,
-                    userId: user.id,
-                    username: user.username,
-                    level: interaction.options.getString("level"),
-                    createdBy: interaction.user.id
-                }, ["userId", "guildId"]);
-
-                interaction.reply(`**${userTag}** has been whitelisted`);
                 break;
             }
             case "remove": {

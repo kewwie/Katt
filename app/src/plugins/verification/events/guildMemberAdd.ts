@@ -71,7 +71,7 @@ export const GuildMemberAdd: Event = {
         }
 
         if (whitelisted) {
-            if (whitelisted.level === "1") {
+            if (whitelisted.level >= "1") {
                 var guestRole = member.guild.roles.cache.find(role => role.id === guild.guestRole);
                 if (guestRole) {
                     await member.roles.add(guestRole);

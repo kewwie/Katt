@@ -72,7 +72,7 @@ export const AcceptMember: Button = {
                     .setThumbnail(member.user.avatarURL())
                     .setColor(0x90EE90)
                     .addFields(
-                        { name: "Mention", value: `<@${member.user.id}>` },
+                        { name: "Mention", value: `<@${member.user.id}>\n${member.user.username}` },
                         { name: "Verified By", value: `<@${interaction.member.user.id}>` },
                         { name: "Roles", value: addedRoles.join(", ")}
                     )
