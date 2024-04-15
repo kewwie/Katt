@@ -43,14 +43,14 @@ export const GuildMemberAdd: Event = {
         const blacklisted = await BlacklistRepository.findOne({ where: { userId: member.user.id } });
         const whitelisted = await WhitelistRepository.findOne({ where: { userId: member.user.id } });
 
-        if (member.user.bot && whitelisted?.level !== "3") {
-            await member.kick("Bots must be whitelisted");
-            return;
-        } else if (member.user.bot && whitelisted?.level === "3") {
+        if (member.user.bot && whitelisted?.level === "3" && guild.botRole) {
             var botRole = member.guild.roles.cache.find(role => role.id === guild.botRole);
             if (botRole) {
                 await member.roles.add(botRole);
             }
+            return;
+        } else if (member.user.bot && whitelisted?.level !== "3") {
+            await member.kick("Bots must be whitelisted");
             return;
         }
 
@@ -78,21 +78,21 @@ export const GuildMemberAdd: Event = {
         }
 
         if (whitelisted) {
-            if (whitelisted.level >= "1") {
+            if (whitelisted.level >= "1" && guild.guestRole) {
                 var guestRole = member.guild.roles.cache.find(role => role.id === guild.guestRole);
                 if (guestRole) {
                     await member.roles.add(guestRole);
                 }
             }
 
-            if (whitelisted.level >= "2") {
+            if (whitelisted.level >= "2" && guild.memberRole) {
                 var memberRole = member.guild.roles.cache.find(role => role.id === guild.memberRole);
                 if (memberRole) {
                     await member.roles.add(memberRole);
                 }
             }
 
-            if (whitelisted.level === "4") {
+            if (whitelisted.level === "4" && guild.adminRole) {
                 var adminRole = member.guild.roles.cache.find(role => role.id === guild.adminRole);
                 if (adminRole) {
                     await member.roles.add(adminRole);
