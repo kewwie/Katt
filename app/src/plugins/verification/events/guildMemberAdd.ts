@@ -23,7 +23,7 @@ import { AcceptMember } from "../buttons/accept-member";
 import { DenyUser } from "../buttons/deny-user";
 
 export const GuildMemberAdd: Event = {
-    name: Events.guildMemberAdd,
+    name: Events.GuildMemberAdd,
 
     /**
     * 

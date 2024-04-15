@@ -1,11 +1,12 @@
 import { KiwiClient } from "../client";
 
 export enum Events {
-    guildBanAdd = "guildBanAdd",
-    guildMemberAdd = "guildMemberAdd",
-    interactionCreate = "interactionCreate",
-    ready = "ready",
-    voiceStateUpdate = "voiceStateUpdate",
+    GuildBanAdd = "guildBanAdd",
+    GuildMemberAdd = "guildMemberAdd",
+    GuildMemberUpdate = "guildMemberUpdate",
+    InteractionCreate = "interactionCreate",
+    Ready = "ready",
+    VoiceStateUpdate = "voiceStateUpdate",
 }
 
 export interface Event {
