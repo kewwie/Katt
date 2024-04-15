@@ -2,7 +2,7 @@ import { Plugin } from "../../types/plugin";
 
 import { NicknameCmd } from "./commands/nickname";
 
-import { GuildMemberAdd } from "../verification/events/guildMemberAdd";
+import { GuildMemberUpdate } from "./events/guildMemberUpdate";
 
 export const NicknamePlugin: Plugin = {
     config: {
@@ -12,7 +12,7 @@ export const NicknamePlugin: Plugin = {
         NicknameCmd
     ],
     events: [
-        GuildMemberAdd
+        GuildMemberUpdate
     ],
     afterLoad: () => {
         console.log("Loaded Nickname Plugin")
