@@ -49,7 +49,7 @@ export const voiceStateUpdate: Event = {
             await VoiceChannelsDB.delete(
                 { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }
             );
-        } else if (!oldVoiceState.channelId && newVoiceState.channelId) {
+        } else if (!pvs && newVoiceState.channelId) {
             await VoiceChannelsDB.upsert({
                 userId: newVoiceState.id,
                 guildId: newVoiceState.guild.id,
