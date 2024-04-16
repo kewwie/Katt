@@ -78,8 +78,11 @@ export const VoiceCmd: Command = {
                     { where: { guildId: interaction.guild.id }, order: { minutes: "DESC" }, take: 10 }
                 );
 
-                var leaderboard = voiceActivities.map((va, i) => {
-                    return `${i + 1}. <@${va.userId}> - ${new Intl.NumberFormat("en-US").format(Math.floor(va.minutes))} minutes`;
+                var leaderboard = voiceActivities.map(async (va, i) => {
+                    var user = await client.users.fetch(va.userId)
+                    var uTag = await client.getTag({ name: user.username, discriminator: user.discriminator });
+                    
+                    return `${i + 1}. **${uTag}** - ${new Intl.NumberFormat("en-US").format(Math.floor(va.minutes))} minutes`;
                 }).join("\n");
 
                 interaction.reply(`**Voice Chat Leaderboard**\n${leaderboard}`);
