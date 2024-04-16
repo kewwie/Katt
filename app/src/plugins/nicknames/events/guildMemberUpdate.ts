@@ -19,7 +19,7 @@ export const GuildMemberUpdate: Event = {
     */
     async execute(client: KiwiClient, oldMember: GuildMember, newMember: GuildMember) {
         const NicknameRepository = await dataSource.getRepository(Nickname);
-        if (oldMember.nickname !== newMember.nickname) {
+        if (newMember.nickname && oldMember.nickname !== newMember.nickname) {
             await NicknameRepository.upsert({
                 guildId: newMember.guild.id,
                 userId: newMember.id,
