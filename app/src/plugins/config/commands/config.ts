@@ -106,6 +106,11 @@ export const ConfigCmd: Command = {
                     }
                 ]
             },
+            {
+                type: OptionTypes.SUB_COMMAND,
+                name: "view",
+                description: "View the server configuration"
+            }
         ]
     },
 
@@ -197,6 +202,14 @@ export const ConfigCmd: Command = {
                 )
                 await interaction.reply({
                     content: `Admin role has been set to <@&${roleId}>!`,
+                    ephemeral: true
+                });
+                break;
+            
+            case "view":
+                var guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
+                await interaction.reply({
+                    content: `Logs Channel: <#${guild.logsChannel}>\nPending Channel: <#${guild.pendingChannel}>\nGuest Role: <@&${guild.guestRole}>\nMember Role: <@&${guild.memberRole}>\nBot Role: <@&${guild.botRole}>\nAdmin Role: <@&${guild.adminRole}>`,
                     ephemeral: true
                 });
                 break;
