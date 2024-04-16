@@ -44,7 +44,7 @@ export const voiceStateUpdate: Event = {
                 userId: oldVoiceState.id,
                 guildId: oldVoiceState.guild.id,
                 minutes: newMinutes
-            }, ["userId", "guildId"]);
+            }, ["guildId", "userId"]);
 
             await VoiceChannelsDB.delete(
                 { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }
@@ -54,7 +54,7 @@ export const voiceStateUpdate: Event = {
                 userId: newVoiceState.id,
                 guildId: newVoiceState.guild.id,
                 joinTime: new Date()
-            }, ["userId", "guildId"]);
+            }, ["guildId", "userId"]);
         }
     }
 }

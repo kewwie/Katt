@@ -8,10 +8,15 @@ export class CreateVoiceChannels1712736122504 implements MigrationInterface {
                 name: "voiceChannels",
                 columns: [
                     {
+                        name: "id",
+                        type: "int",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "increment"
+                    },
+                    {
                         name: "guildId",
                         type: "varchar",
-                        isPrimary: true,
-                        isUnique: true
                     },
                     {
                         name: "userId",
