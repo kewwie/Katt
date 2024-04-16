@@ -23,6 +23,10 @@ export class CreateVoiceActivity1712736323691 implements MigrationInterface {
                         type: "varchar",
                     },
                     {
+                        name: "username",
+                        type: "varchar",
+                    },
+                    {
                         name: "minutes",
                         type: "int",
                         isNullable: false,

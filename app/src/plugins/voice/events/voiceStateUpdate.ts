@@ -42,14 +42,20 @@ export const voiceStateUpdate: Event = {
 
             if (pva) {
                 await VoiceActivityDB.update(
-                    { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id },
+                    { 
+                        guildId: oldVoiceState.guild.id,
+                        userId: oldVoiceState.id,
+                        username: oldVoiceState.member.user.username
+                    },
                     { minutes: newMinutes }
                 );
             } else {
-                await VoiceActivityDB.upsert(
-                    { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id, minutes: newMinutes },
-                    ["userId", "guildId"]
-                );
+                await VoiceActivityDB.insert({ 
+                    guildId: oldVoiceState.guild.id,
+                    userId: oldVoiceState.id,
+                    username: oldVoiceState.member.user.username,
+                    minutes: newMinutes 
+                });
             }
 
             await VoiceChannelsDB.delete(
