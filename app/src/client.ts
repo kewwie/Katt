@@ -1,6 +1,7 @@
 import {
     Client,
     GatewayIntentBits,
+    Partials,
     Collection,
     ColorResolvable
 } from "discord.js";
@@ -45,7 +46,13 @@ export class KiwiClient extends Client {
                 GatewayIntentBits.GuildModeration,
                 GatewayIntentBits.GuildVoiceStates,
                 GatewayIntentBits.AutoModerationExecution,
-                GatewayIntentBits.AutoModerationConfiguration
+                GatewayIntentBits.AutoModerationConfiguration,
+            ],
+            partials: [
+                Partials.GuildMember,
+                Partials.Channel,
+                Partials.Message,
+                Partials.User,
             ]
         });
 
