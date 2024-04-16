@@ -36,6 +36,11 @@ export const VoiceCmd: Command = {
                         required: false
                     }
                 ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
+                name: "leaderboard",
+                description: "View the voice chat leaderboard",
             }
         ]
     },
@@ -65,7 +70,19 @@ export const VoiceCmd: Command = {
                 
                 
                 var uTag= await client.getTag({ name: user.username, discriminator: user.discriminator });
-                interaction.reply(`**${uTag}** has been in voice chat for **${Math.floor(voiceActivity.minutes)}** minutes`);
+                interaction.reply(`**${uTag}** has been in voice chat for **${new Intl.NumberFormat("en-US").format(Math.floor(voiceActivity.minutes))}** minutes`);
+                break;
+            }
+            case "leaderboard": {
+                var voiceActivities = await VoiceActivityRepository.find(
+                    { where: { guildId: interaction.guild.id }, order: { minutes: "DESC" }, take: 10 }
+                );
+
+                var leaderboard = voiceActivities.map((va, i) => {
+                    return `${i + 1}. <@${va.userId}> - ${new Intl.NumberFormat("en-US").format(Math.floor(va.minutes))} minutes`;
+                }).join("\n");
+
+                interaction.reply(`**Voice Chat Leaderboard**\n${leaderboard}`);
                 break;
             }
         }
