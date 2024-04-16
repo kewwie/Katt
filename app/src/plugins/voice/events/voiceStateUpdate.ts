@@ -39,12 +39,18 @@ export const voiceStateUpdate: Event = {
 
             var minutesSinceLastUpdate = (new Date().getTime() - pvs.joinTime.getTime()) / (1000 * 60);
             var newMinutes = minutesSinceLastUpdate + minutes;
-            
-            await VoiceActivityDB.upsert({
-                userId: oldVoiceState.id,
-                guildId: oldVoiceState.guild.id,
-                minutes: newMinutes
-            }, ["guildId", "userId"]);
+
+            if (pva) {
+                await VoiceActivityDB.update(
+                    { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id },
+                    { minutes: newMinutes }
+                );
+            } else {
+                await VoiceActivityDB.upsert(
+                    { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id, minutes: newMinutes },
+                    ["userId", "guildId"]
+                );
+            }
 
             await VoiceChannelsDB.delete(
                 { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }
