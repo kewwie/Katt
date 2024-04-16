@@ -8,6 +8,6 @@ export class VoiceChannel {
     @Column({ type: 'varchar', length: 255 })
     userId: string;
 
-    @Column({ type: 'int' })
-    joinTime: number;
+    @Column({ type: 'datetime' })
+    joinTime: Date;
 }

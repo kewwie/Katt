@@ -19,7 +19,7 @@ export class CreateVoiceChannels1712736122504 implements MigrationInterface {
                     },
                     {
                         name: "joinTime",
-                        type: "int",
+                        type: "datetime"
                     }
                 ]
             })

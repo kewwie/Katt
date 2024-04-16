@@ -5,6 +5,7 @@ import { ListPlugin } from "./list"
 import { NicknamesPlugin } from "./nicknames"
 import { ReadyPlugin } from "./ready"
 import { VerificationPlugin } from "./verification"
+import { VoicePlugin } from "./voice"
 
 export const Plugins = [
     AntiBanPlugin,
@@ -13,5 +14,6 @@ export const Plugins = [
     ListPlugin,
     NicknamesPlugin,
     ReadyPlugin,
-    VerificationPlugin
+    VerificationPlugin,
+    VoicePlugin
 ]
