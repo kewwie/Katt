@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Command module to handle blacklisting users.
+ * @module BlacklistCmd
+ */
+
 import {
     ChatInputCommandInteraction
 } from "discord.js";
@@ -15,7 +20,22 @@ import { KiwiClient } from "../../../client";
 import { dataSource } from "../../../data/datasource";
 import { Blacklist } from "../../../data/entities/Blacklist";
 
+/**
+ * Represents the Blacklist command module.
+ * @constant {Command} BlacklistCmd
+ */
 export const BlacklistCmd: Command = {
+    /**
+     * Configuration object for the Blacklist command.
+     * @type {Object}
+     * @property {string} name - The name of the command.
+     * @property {string} description - The description of the command.
+     * @property {CommandTypes} type - The type of the command.
+     * @property {Permissions} default_member_permissions - The default permissions required by members to execute the command.
+     * @property {Array<SlashCommandContexts>} contexts - The context(s) in which the command is available.
+     * @property {Array<IntegrationTypes>} integration_types - The integration types in which the command is available.
+     * @property {Array<Object>} options - The options for the command.
+     */
     config: {
         name: "blacklist",
         description: "Blacklist Commands",
@@ -59,9 +79,12 @@ export const BlacklistCmd: Command = {
     },
 
     /**
-    * @param {ChatInputCommandInteraction} interaction
-    * @param {KiwiClient} client
-    */
+     * Executes the Blacklist command.
+     * @async
+     * @param {ChatInputCommandInteraction} interaction - The interaction object representing the command interaction.
+     * @param {KiwiClient} client - The Discord client.
+     * @returns {Promise<void>}
+     */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         const BlacklistRepository = await dataSource.getRepository(Blacklist);
 
