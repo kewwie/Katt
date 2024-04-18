@@ -147,7 +147,7 @@ export const GuildMemberAdd: Event = {
 
                 var verificationPing;
                 if (guild.verificationPing) {
-                    verificationPing = "<@&guild.verificationPing>";
+                    verificationPing = `<@&${guild.verificationPing}>`;
                 } else {
                     verificationPing = `@everyone`;
                 }
