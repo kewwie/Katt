@@ -51,6 +51,8 @@ export const newMatchLoop: Loop = {
                     .setFooter({ text: `Match ID: ${match.metadata.matchid}` })
                     .setTimestamp();
 
+                console.log(discordUser.username, "has a new match")
+
                 discordUser.send({ embeds: [em] });
             }
         }

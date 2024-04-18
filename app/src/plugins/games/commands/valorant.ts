@@ -124,13 +124,22 @@ export const ValorantCmd: Command = {
                     return;
                 }
 
+                var match = await client.RiotApi.getMatchesByPUUID({ region: valUser.region, puuid: valUser.puuid, limit: 1 });
+    
+                if (match.metadata.matchid) {
+                    match = match[0].metadata.matchid;
+                } else{
+                    match = null;
+                }
+
                 await ValorantUserReposatory.upsert(
                     { 
                         userId: interaction.user.id,
                         puuid: valorantUser.puuid,
                         name: valorantUser.name,
                         tag: valorantUser.tag,
-                        region: valorantUser.region
+                        region: valorantUser.region,
+                        last_match: match
                     },
                     ["userId"]
                 );
