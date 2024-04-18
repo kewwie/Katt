@@ -1,18 +1,21 @@
 import {
-	CommandInteraction,
+	ChatInputCommandInteraction,
     EmbedBuilder
 } from "discord.js";
 
-import { KiwiClient } from "../client";
+import { KiwiClient } from "../../../client";
 
 import { 
 	CommandTypes,
 	SlashCommandContexts,
 	IntegrationTypes,
-	OptionTypes
-} from "../types/command";
+	OptionTypes,
+    Command
+} from "../../../types/command"
+import { dataSource } from "../../../data/datasource";
+import { ValorantUser } from "../../../data/entities/ValorantUser";
 
-module.exports = {
+export const ValorantCmd: Command = {
 	config: {
         name: "valorant",
         description: "VALORANT Commands",
@@ -70,72 +73,88 @@ module.exports = {
 
     /**
     * 
-    * @param {CommandInteraction} interaction
+    * @param {ChatInputCommandInteraction} interaction
     * @param {KiwiClient} client
     */
-	async execute(interaction: any, client: KiwiClient) {
+	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
+        const ValorantUserReposatory = await dataSource.getRepository(ValorantUser);
+
         switch (interaction.options.getSubcommand()) {
             case "set": {
                 var name = interaction.options.getString("name");
                 var tag = interaction.options.getString("tag");
 
-                if (!name || !tag) return interaction.reply("Please provide a name and tag");
+                if (!name || !tag) {
+                    interaction.reply("Please provide a name and tag");
+                    return;
+                }
 
-                var user = await client.riotApi.getAccount({ name, tag });
+                var valorantUser = await client.RiotApi.getAccount({ name, tag });
 
-                var existingUser = await client.database.db("kiwi").collection("valorantUsers").findOne(
-                    { puuid: user.puuid }
+                var existingUser = await ValorantUserReposatory.findOne(
+                    { where: { puuid: valorantUser.puuid } }
                 );
 
                 if (existingUser && existingUser.userId !== interaction.user.id) {
-                    return interaction.reply("Another user has already saved this account");
+                    interaction.reply("Another user has already saved this account");
+                    return;
                 }
 
-                await client.database.db("kiwi").collection("valorantUsers").updateOne(
-                    { userId: interaction.user.id },
-                    { $set: { 
-                        puuid: user.puuid,
-                        region: user.region,
-                        name: user.name,
-                        tag: user.tag
-                    } },
-                    { upsert: true }
+                await ValorantUserReposatory.upsert(
+                    { 
+                        userId: interaction.user.id,
+                        puuid: valorantUser.puuid,
+                        name: valorantUser.name,
+                        tag: valorantUser.tag,
+                        region: valorantUser.region
+                    },
+                    ["userId"]
                 );
 
-                interaction.reply(`Set **${interaction.user.username}**'s username to **${user.name}#${user.tag}**`)
+                interaction.reply(`Set **${interaction.user.username}**'s username to **${valorantUser.name}#${valorantUser.tag}**`)
                 break;
             }
             case "rank": {
                 var user = interaction.options.getUser("name") || interaction.user;
-                if (!user) return interaction.reply("User not found");
+                if (!user) {
+                    interaction.reply("User not found");
+                    return;
+                }
 
-                var valUser = await client.database.db("kiwi").collection("valorantUsers").findOne(
-                    { userId: user.id }
+                var valUser = await ValorantUserReposatory.findOne(
+                    { where: { userId: user.id } }
                 );
 
-                if (!valUser) return interaction.reply("This user havent saved their VALORANT username");
+                if (!valUser) {
+                    interaction.reply("This user havent saved their VALORANT username");
+                    return;
+                }
 
-                var rank = await client.riotApi.getMMRByPUUID({ region: valUser.region, puuid: valUser.puuid });
+                var rank = await client.RiotApi.getMMRByPUUID({ region: valUser.region, puuid: valUser.puuid });
                 console.log(rank)
 
-                if (rank.status === 400) return interaction.reply(rank.message);
+                if (rank.status === 400) {
+                    interaction.reply(rank.message);
+                    return;
+                }
 
                 if (
                     rank.name !== valUser.name || rank.tag !== valUser.tag
                 ) {
-                    client.database.db("kiwi").collection("valorantUsers").updateOne(
+                    await ValorantUserReposatory.update(
                         { userId: user.id },
-                        { $set: { 
+                        { 
                             name: rank.name,
-                            tag: rank.tag
-                        } }
+                            tag: rank.tag,
+                            region: rank.region
+                        }
                     );
                 }
 
                 const em = new EmbedBuilder()
                     .setColor(client.embed.color)
                     .setTitle(`${user.username.charAt(0).toUpperCase() + user.username.slice(1)}'s Rank`)
-                    .setThumbnail(client.getAvatarUrl(user))
+                    .setThumbnail(await client.getAvatarUrl(user))
                     .addFields(
                         { name: 'Current Rank', value: `**${rank.current_data.currenttierpatched}** \n${rank.current_data.ranking_in_tier}%` },
                         { name: 'Peak Rank', value: `**${rank.highest_rank.patched_tier}**` },
@@ -147,29 +166,39 @@ module.exports = {
             }
             case "last-match": {
                 var user = interaction.options.getUser("user") || interaction.user;
-                if (!user) return interaction.reply("User not found");
+                if (!user) {
+                    interaction.reply("User not found");
+                    return;
+                }
 
-                var valUser = await client.database.db("kiwi").collection("valorantUsers").findOne(
-                    { userId: user.id }
+                var valUser = await ValorantUserReposatory.findOne(
+                    { where: { userId: user.id } }
                 );
 
-                if (!valUser) return interaction.reply("This user hasn't saved their VALORANT username");
+                if (!valUser) {
+                    interaction.reply("This user hasn't saved their VALORANT username");
+                    return;
+                }
 
-                var [match] = await client.riotApi.getMatchesByPUUID({ region: valUser.region, puuid: valUser.puuid, limit: 1 });
+                var [match] = await client.RiotApi.getMatchesByPUUID({ region: valUser.region, puuid: valUser.puuid, limit: 1 });
         
-                if (match.status === 400) return interaction.reply(match.message);
+                if (match.status === 400) {
+                    interaction.reply(match.message);
+                    return;
+                }
 
-                var account = await client.riotApi.getAccountByPUUID({ puuid: valUser.puuid });
+                var account = await client.RiotApi.getAccountByPUUID({ puuid: valUser.puuid });
 
                 if (
                     account.name !== valUser.name || account.tag !== valUser.tag
                 ) {
-                    client.database.db("kiwi").collection("valorantUsers").updateOne(
+                    await ValorantUserReposatory.update(
                         { userId: user.id },
-                        { $set: { 
+                        { 
                             name: account.name,
-                            tag: account.tag
-                        } }
+                            tag: account.tag,
+                            region: account.region
+                        }
                     );
                 }
                 console.log(match)
@@ -177,7 +206,7 @@ module.exports = {
                 const em = new EmbedBuilder()
                     .setColor(client.embed.color)
                     .setTitle(`${user.username.charAt(0).toUpperCase() + user.username.slice(1)}'s Last Match`)
-                    .setThumbnail(client.getAvatarUrl(user))
+                    .setThumbnail(await client.getAvatarUrl(user))
                     .addFields(
                         { name: 'Map', value: match.metadata.map },
                         { name: 'Mode', value: match.metadata.mode },

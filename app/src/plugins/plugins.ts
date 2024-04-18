@@ -1,5 +1,6 @@
 import { AntiBanPlugin } from "./antiban"
 import { ConfigPlugin } from "./config"
+import { GamesPlugin } from "./games"
 import { GroupsPlugin } from "./groups"
 import { ListPlugin } from "./list"
 import { NicknamesPlugin } from "./nicknames"
@@ -10,6 +11,7 @@ import { VoicePlugin } from "./voice"
 export const Plugins = [
     AntiBanPlugin,
     ConfigPlugin,
+    GamesPlugin,
     GroupsPlugin,
     ListPlugin,
     NicknamesPlugin,
