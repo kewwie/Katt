@@ -154,7 +154,7 @@ export const GuildMemberAdd: Event = {
 
                 var em = new EmbedBuilder()
                     .setTitle(await client.getTag(
-                        { name: member.user.username, discriminator: member.user.discriminator }
+                        { username: member.user.username, discriminator: member.user.discriminator }
                     ))
                     .setThumbnail(member.user.avatarURL())
                     .setFields(

@@ -95,7 +95,7 @@ export const BlacklistCmd: Command = {
                     interaction.reply("User not found");
                     return;
                 }
-                var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                var userTag = await client.getTag({ username: user.username, discriminator: user.discriminator });
 
                 if (user.bot) {
                     interaction.reply("Bots cannot be blacklisted");
@@ -126,7 +126,7 @@ export const BlacklistCmd: Command = {
                     interaction.reply("User not found");
                     return;
                 };
-                var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                var userTag = await client.getTag({ username: user.username, discriminator: user.discriminator });
 
                 const blacklistUser = await BlacklistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
