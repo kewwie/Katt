@@ -88,11 +88,12 @@ export class KiwiClient extends Client {
         return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`;
     }
     
-    public async getTag(user: { name: string; discriminator: string; }) {
+    public async getTag(user: { username: string; discriminator: string; }) {
+        var username = user.username.charAt(0).toUpperCase() + user.username.slice(1);
         if (!["0", "0000"].includes(user.discriminator)) {
-            return `${user.name}#${user.discriminator}`;
+            return `${username}#${user.discriminator}`;
         } else {
-            return user.name;
+            return username;
         }
     }
 };
