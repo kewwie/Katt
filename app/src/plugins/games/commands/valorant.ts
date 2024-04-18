@@ -249,7 +249,7 @@ export const ValorantCmd: Command = {
             }
             case "send-report": {
                 var active = interaction.options.getBoolean("active");
-                if (!active) {
+                if (active === null) {
                     interaction.reply("Please provide a boolean");
                     return;
                 }
