@@ -69,7 +69,7 @@ export const VoiceCmd: Command = {
                 }
                 
                 
-                var uTag= await client.getTag({ name: user.username, discriminator: user.discriminator });
+                var uTag= await client.getTag({ username: user.username, discriminator: user.discriminator });
                 interaction.reply(`**${uTag}** has been in voice chat for **${new Intl.NumberFormat("en-US").format(Math.floor(voiceActivity.minutes))}** minutes`);
                 break;
             }

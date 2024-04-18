@@ -465,7 +465,7 @@ export const GroupCommand: Command =  {
                             }
                             const groupMember = await GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
                             if (groupMember) {
-                                let userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                                let userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
                                 await interaction.reply(`**${userTag}** is already a member of group **${name}**`);
                                 return;
                             }
@@ -476,7 +476,7 @@ export const GroupCommand: Command =  {
                                 username: user.username
                             });
                             await interaction.guild.members.cache.get(user.id).roles.add(existingGroup.roleId);
-                            let userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                            let userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
                             await interaction.reply(`**${userTag}** has been added to group **${name}**`);
                             break;
                         }
@@ -486,7 +486,7 @@ export const GroupCommand: Command =  {
                                 return;
                             }
 
-                            var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                            var userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
                             const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
                             if (!groupAdmin) {
                                 await GroupAdminsRepository.upsert(
@@ -539,7 +539,7 @@ export const GroupCommand: Command =  {
                                 return;
                             }
 
-                            var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                            var userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
                             const groupMember = await GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
                             if (groupMember) {
                                 await interaction.guild.members.cache.get(user.id).roles.remove(existingGroup.roleId);
@@ -561,7 +561,7 @@ export const GroupCommand: Command =  {
                                 return;
                             }
 
-                            var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                            var userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
                             const groupAdmin = await GroupAdminsRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
                             if (groupAdmin) {
                                 await GroupAdminsRepository.delete({ groupId: existingGroup.groupId, userId: user.id })

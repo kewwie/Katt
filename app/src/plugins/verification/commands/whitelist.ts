@@ -84,7 +84,7 @@ export const WhitelistCmd: Command = {
                     interaction.reply("User not found");
                     return;
                 }
-                var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                var userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
                 var lvl = interaction.options.getString("level");
 
                 if (user.bot && lvl !== "3") {
@@ -133,7 +133,7 @@ export const WhitelistCmd: Command = {
                     interaction.reply("User not found");
                     return;
                 };
-                var userTag = await client.getTag({name: user.username, discriminator: user.discriminator});
+                var userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
 
                 const whitelistUser = await WhitelistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
