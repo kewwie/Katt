@@ -8,14 +8,14 @@ import { ValorantUser } from '../../../data/entities/ValorantUser';
 
 export const newMatchLoop: Loop = {
     name: "newMatch",
-    seconds: 5 * 60,
+    seconds: 60 * 2.5,
     execute: async (client: KiwiClient) => {
         const valorantUserRepo = await dataSource.getRepository(ValorantUser);
         console.log("Checking for new matches");
 
         const valorantUsers = await valorantUserRepo.find();
         for (var valorantUser of valorantUsers) {
-            var match = await client.RiotApi.getMatchesByPUUID({ puuid: valorantUser.puuid, region: valorantUser.region, limit: 1 })
+            var [match] = await client.RiotApi.getMatchesByPUUID({ puuid: valorantUser.puuid, region: valorantUser.region, limit: 1 })
             
             if (match.metadata.matchid !== valorantUser.last_match) {
                 valorantUser.last_match = match.metadata.matchid;
@@ -49,6 +49,7 @@ export const newMatchLoop: Loop = {
                         { name: "Damage Taken", value: `${player.damage_received}` },
                     )
                     .setFooter({ text: `Match ID: ${match.metadata.matchid}` })
+                    .setTimestamp();
 
                 discordUser.send({ embeds: [em] });
             }
