@@ -14,26 +14,30 @@ import { Plugins } from "./plugins/plugins";
 import { CommandManager } from "./managers/command";
 import { ComponentManager } from "./managers/component";
 import { EventManager } from "./managers/event";
+import { LoopManager } from "./managers/loop";
 
 import { RiotAPI } from "./managers/riotApi";
 
+import { Button } from "./types/component";
 import { Command } from "./types/command";
 import { Event } from "./types/event";
-import { Button } from "./types/component";
+import { Loop } from "./types/loop";
 
 export class KiwiClient extends Client {
     public embed: { 
         color: ColorResolvable | null;
     };
 
+    public buttons: Collection<string, Button>;
     public commands: Collection<string, Command>;
     public events: Collection<string, Event>;
-    public buttons: Collection<string, Button>;
+    public loops: Collection<string, Loop>;
 
     public PluginManager: PluginManager;
     public CommandManager: CommandManager;
     public ComponentManager: ComponentManager;
     public EventManager: EventManager;
+    public LoopManager: LoopManager;
     public RiotApi: RiotAPI;
 
     constructor() {
@@ -57,12 +61,13 @@ export class KiwiClient extends Client {
         });
 
         this.embed = {
-            color: 0x2b2d31
+            color: "#2b2d31"
         }
 
         this.commands = new Collection();
         this.events = new Collection();
         this.buttons = new Collection();
+        this.loops = new Collection();
 
         // Plugin Manager
         this.PluginManager = new PluginManager(this);
@@ -75,6 +80,9 @@ export class KiwiClient extends Client {
 
         // Event Manager
         this.EventManager = new EventManager(this);
+
+        // Loop Manager
+        this.LoopManager = new LoopManager(this);
 
         // RiotAPI
         this.RiotApi = new RiotAPI();

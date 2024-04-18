@@ -200,7 +200,6 @@ export const ValorantCmd: Command = {
                 }
 
                 var player = match.players.all_players.find(p => p.puuid === valUser.puuid);
-                console.log(player);
 
                 const em = new EmbedBuilder()
                     .setColor(client.embed.color)

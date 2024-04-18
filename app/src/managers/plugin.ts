@@ -28,6 +28,10 @@ export class PluginManager {
             this.client.EventManager.load(plugin.events);
         }
 
+        if (plugin.loops) {
+            this.client.LoopManager.load(plugin.loops);
+        }
+
         this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));      
         plugin.afterLoad?.(this.client);
     }

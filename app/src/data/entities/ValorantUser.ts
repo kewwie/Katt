@@ -16,4 +16,10 @@ export class ValorantUser {
 
     @Column({ type: "varchar", length: 255 })
     region: string;
+
+    @Column({ type: "boolean" })
+    send_report: boolean;
+
+    @Column({ type: "varchar", length: 255 })
+    last_match: string;
 }
