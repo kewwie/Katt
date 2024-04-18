@@ -105,6 +105,15 @@ export const ValorantCmd: Command = {
                 }
 
                 var valorantUser = await client.RiotApi.getAccount({ name, tag });
+                if (valorantUser.status === 400) {
+                    interaction.reply(valorantUser.message);
+                    return;
+                }
+
+                if (!valorantUser.puuid) {
+                    interaction.reply("User not found");
+                    return;
+                }
 
                 var existingUser = await ValorantUserReposatory.findOne(
                     { where: { puuid: valorantUser.puuid } }
@@ -130,7 +139,7 @@ export const ValorantCmd: Command = {
                 break;
             }
             case "rank": {
-                var user = interaction.options.getUser("name") || interaction.user;
+                var user = interaction.options.getUser("user") || interaction.user;
                 if (!user) {
                     interaction.reply("User not found");
                     return;
