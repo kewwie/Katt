@@ -60,6 +60,8 @@ export class KiwiClient extends Client {
             ]
         });
 
+        this.setMaxListeners(25);
+
         this.embed = {
             color: "#2b2d31"
         }
