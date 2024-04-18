@@ -21,7 +21,7 @@ export const ValorantCmd: Command = {
         description: "VALORANT Commands",
         type: CommandTypes.CHAT_INPUT,
         default_member_permissions: null,
-        contexts: [SlashCommandContexts.GUILD],
+        contexts: [SlashCommandContexts.GUILD, SlashCommandContexts.PRIVATE_CHANNEL],
         integration_types: [IntegrationTypes.GUILD, IntegrationTypes.USER],
         options: [
             {
@@ -137,25 +137,12 @@ export const ValorantCmd: Command = {
                     return;
                 }
 
-                if (
-                    rank.name !== valUser.name || rank.tag !== valUser.tag
-                ) {
-                    await ValorantUserReposatory.update(
-                        { userId: user.id },
-                        { 
-                            name: rank.name,
-                            tag: rank.tag,
-                            region: rank.region
-                        }
-                    );
-                }
-
                 const em = new EmbedBuilder()
                     .setColor(client.embed.color)
                     .setTitle(`${user.username.charAt(0).toUpperCase() + user.username.slice(1)}'s Rank`)
                     .setThumbnail(await client.getAvatarUrl(user))
                     .addFields(
-                        { name: 'Current Rank', value: `**${rank.current_data.currenttierpatched}** \n${rank.current_data.ranking_in_tier}%` },
+                        { name: 'Current Rank', value: `**${rank.current_data.currenttierpatched}** \n${rank.current_data.ranking_in_tier}rr` },
                         { name: 'Peak Rank', value: `**${rank.highest_rank.patched_tier}**` },
                     )
                     .setTimestamp();
@@ -179,37 +166,37 @@ export const ValorantCmd: Command = {
                     return;
                 }
 
-                var [match] = await client.RiotApi.getMatchesByPUUID({ region: valUser.region, puuid: valUser.puuid, limit: 1 });
+                var match = await client.RiotApi.getMatchesByPUUID({ region: valUser.region, puuid: valUser.puuid, limit: 1 });
         
                 if (match.status === 400) {
                     interaction.reply(match.message);
                     return;
+                } else {
+                    match = match[0];
                 }
 
-                var account = await client.RiotApi.getAccountByPUUID({ puuid: valUser.puuid });
-
-                if (
-                    account.name !== valUser.name || account.tag !== valUser.tag
-                ) {
-                    await ValorantUserReposatory.update(
-                        { userId: user.id },
-                        { 
-                            name: account.name,
-                            tag: account.tag,
-                            region: account.region
-                        }
-                    );
-                }
+                var player = match.players.all_players.find(p => p.puuid === valUser.puuid);
+                console.log(player);
 
                 const em = new EmbedBuilder()
                     .setColor(client.embed.color)
                     .setTitle(`${user.username.charAt(0).toUpperCase() + user.username.slice(1)}'s Last Match`)
-                    .setThumbnail(await client.getAvatarUrl(user))
+                    .setThumbnail(player.assets.card.small)
                     .addFields(
-                        { name: 'Map', value: match.metadata.map },
-                        { name: 'Mode', value: match.metadata.mode },
-                        { name: 'Rounds', value: match.metadata.rounds_played },
+                        { name: 'Server', value: match.metadata.cluster, inline: true },
+                        { name: 'Map', value: match.metadata.map, inline: true },
+                        { name: 'Mode', value: match.metadata.mode, inline: true },
+                        { name: 'Rounds', value: `${match.metadata.rounds_played}` },
+                        { name: "Agent", value:  player.character },
+                        { name: "Kills", value: `${player.stats.kills}`, inline: true },
+                        { name: "Deaths", value: `${player.stats.deaths}`, inline: true },
+                        { name: "Assists", value: `${player.stats.assists}`, inline: true },
+                        { name: "K/D", value: `${(player.stats.kills / player.stats.deaths).toFixed(2)}` },
+                        { name: "Headshot%", value: `${((player.stats.headshots / (player.stats.bodyshots + player.stats.headshots + player.stats.legshots)) * 100).toFixed(1)}%` },
+                        { name: "Damage Made", value: `${player.damage_made}` },
+                        { name: "Damage Taken", value: `${player.damage_received}` },
                     )
+                    .setFooter({ text: `Match ID: ${match.metadata.matchid}` })
                     .setTimestamp();
 
                 await interaction.reply({ embeds: [em] });
