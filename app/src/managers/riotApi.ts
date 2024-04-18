@@ -5,13 +5,16 @@ export class RiotAPI {
         this.baseUrl = "https://api.henrikdev.xyz/valorant";
     }
 
-    async fetchApi(url: string) {
-        const res = await fetch(`${this.baseUrl}${url}`);
+    async fetchApi(options: { url: string; rtype?: string; }) {
+        const res = await fetch(`${this.baseUrl}${options.url}`);
+        if (options.rtype === 'arraybuffer') {
+            return await res.arrayBuffer();
+        }
         const response = await res.json();
         if (response.status === 200) {
             return response.data;
         } else {
-            return null;
+            return response;
         }
     }
 
@@ -23,7 +26,7 @@ export class RiotAPI {
     async getAccountByPUUID(options: { puuid: string; }) {
         if (!options.puuid) return null;
 
-        return await this.fetchApi(`/v1/by-puuid/account/${options.puuid}`);
+        return await this.fetchApi({ url: `/v1/by-puuid/account/${options.puuid}` });
     }
 
     /**
@@ -35,7 +38,7 @@ export class RiotAPI {
     async getAccount(options: { name: string; tag: string; }) {
         if (!options.name || !options.tag) return null;
 
-        return await this.fetchApi(`/v1/account/${encodeURI(options.name)}/${encodeURI(options.tag)}`);
+        return await this.fetchApi({ url: `/v1/account/${encodeURI(options.name)}/${encodeURI(options.tag)}` });
     }
 
      /**
@@ -48,7 +51,7 @@ export class RiotAPI {
         if (!options.puuid) return { status: 400, error: "No puuid provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
-        return await this.fetchApi(`/v2/by-puuid/mmr/${options.region}/${options.puuid}`);
+        return await this.fetchApi({ url: `/v2/by-puuid/mmr/${options.region}/${options.puuid}` });
     }
 
      /**
@@ -62,7 +65,7 @@ export class RiotAPI {
         if (!options.name || !options.tag) return { status: 400, error: "No name or tag provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
-        return await this.fetchApi(`/v2/mmr/${options.region}/${encodeURI(options.name)}/${encodeURI(options.tag)}`);
+        return await this.fetchApi({ url: `/v2/mmr/${options.region}/${encodeURI(options.name)}/${encodeURI(options.tag)}` });
     }
 
     /**
@@ -76,7 +79,7 @@ export class RiotAPI {
         if (!options.puuid) return { status: 400, error: "No puuid provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
-        var data = await this.fetchApi(`/v3/by-puuid/matches/${options.region}/${options.puuid}`);
+        var data = await this.fetchApi({ url: `/v3/by-puuid/matches/${options.region}/${options.puuid}` });
         if (options.limit >= 1) data = data.slice(0, options.limit);
         return data;
     }
@@ -93,8 +96,15 @@ export class RiotAPI {
         if (!options.name || !options.tag) return { status: 400, error: "No puuid provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
-        var data = await this.fetchApi(`/v3/matches/${options.region}/${options.name}/${options.tag}`);
+        var data = await this.fetchApi({ url: `/v3/matches/${options.region}/${options.name}/${options.tag}` });
         if (options.limit >= 1) data = data.slice(0, options.limit);
         return data;
+    }
+
+    async getCrosshair(options: { code: string; }) {
+        var query = new URLSearchParams({ code: options.code }).toString();
+        return await this.fetchApi(
+            { url: `/v1/crosshair/generate${query ? `?${query}` : ''}`, rtype: 'arraybuffer' }
+        );
     }
 };

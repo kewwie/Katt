@@ -1,7 +1,9 @@
 import {
 	ChatInputCommandInteraction,
-    EmbedBuilder
+    EmbedBuilder,
+    AttachmentBuilder
 } from "discord.js";
+import { writeFileSync } from 'fs';
 
 import { KiwiClient } from "../../../client";
 
@@ -65,6 +67,19 @@ export const ValorantCmd: Command = {
                         type: OptionTypes.USER,
                         name: "user",
                         description: "The user you want to check the last match of",
+                    }
+                ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
+                name: "get-crosshair",
+                description: "Get your last matches",
+                options: [
+                    {
+                        type: OptionTypes.STRING,
+                        name: "code",
+                        description: "The crosshair code you want to get the image of",
+                        required: true
                     }
                 ]
             }
@@ -200,6 +215,38 @@ export const ValorantCmd: Command = {
                     .setTimestamp();
 
                 await interaction.reply({ embeds: [em] });
+                break;
+            }
+            case "get-crosshair": {
+                await interaction.reply("This command is currently disabled");
+                return;
+                var code = interaction.options.getString("code");
+                if (!code) {
+                    interaction.reply("Please provide a code");
+                    return;
+                }
+
+                var crosshair_data = await client.RiotApi.getCrosshair({code: code});
+                if (crosshair_data.status === 400) {
+                    interaction.reply(crosshair_data.message);
+                    return;
+                }
+                
+                console.log(crosshair_data, 1011, Buffer.from(crosshair_data))
+    
+                //download('0;P;c;5;t;3;o;1;f;0;m;1;0t;4;0l;5;0o;0;0a;1;0f;0;1t;8;1l;3;1o;0;1a;1;1m;0;1f;0');
+
+                const em = new EmbedBuilder()
+                    .setColor(client.embed.color)
+                    .setTitle("Crosshair")
+                    //.setImage(writeFileSync())
+                    .setTimestamp();
+
+
+                // https://github.com/Henrik-3/unofficial-valorant-api/blob/main/package/examples/download_crosshair.js
+                const attach = new AttachmentBuilder(Buffer.from(crosshair_data), { name: 'result.jpeg' })
+
+                //interaction.reply({ files: [attach] });
                 break;
             }
         }
