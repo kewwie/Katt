@@ -22,7 +22,7 @@ export const ValorantCmd: Command = {
         type: CommandTypes.CHAT_INPUT,
         default_member_permissions: null,
         contexts: [SlashCommandContexts.GUILD],
-        integration_types: [IntegrationTypes.GUILD],
+        integration_types: [IntegrationTypes.GUILD, IntegrationTypes.USER],
         options: [
             {
                 type: OptionTypes.SUB_COMMAND,
