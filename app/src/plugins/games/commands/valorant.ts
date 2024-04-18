@@ -131,7 +131,6 @@ export const ValorantCmd: Command = {
                 }
 
                 var rank = await client.RiotApi.getMMRByPUUID({ region: valUser.region, puuid: valUser.puuid });
-                console.log(rank)
 
                 if (rank.status === 400) {
                     interaction.reply(rank.message);
@@ -201,7 +200,6 @@ export const ValorantCmd: Command = {
                         }
                     );
                 }
-                console.log(match)
 
                 const em = new EmbedBuilder()
                     .setColor(client.embed.color)
