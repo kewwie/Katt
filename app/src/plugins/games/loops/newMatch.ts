@@ -11,7 +11,6 @@ export const newMatchLoop: Loop = {
     seconds: 60 * 2.5,
     execute: async (client: KiwiClient) => {
         const valorantUserRepo = await dataSource.getRepository(ValorantUser);
-        console.log("Checking for new matches");
 
         const valorantUsers = await valorantUserRepo.find();
         for (var valorantUser of valorantUsers) {
@@ -50,8 +49,6 @@ export const newMatchLoop: Loop = {
                     )
                     .setFooter({ text: `Match ID: ${match.metadata.matchid}` })
                     .setTimestamp();
-
-                console.log(discordUser.username, "has a new match")
 
                 discordUser.send({ embeds: [em] });
             }
