@@ -8,7 +8,7 @@ import { ValorantUser } from '../../../data/entities/ValorantUser';
 
 export const newMatchLoop: Loop = {
     name: "newMatch",
-    seconds: 60 * 5,
+    seconds: 5 * 60,
     execute: async (client: KiwiClient) => {
         const valorantUserRepo = await dataSource.getRepository(ValorantUser);
         console.log("Checking for new matches");
