@@ -233,7 +233,7 @@ export const ConfigCmd: Command = {
             case "view":
                 var guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
                 await interaction.reply({
-                    content: `Logs Channel: <#${guild.logsChannel}>\nPending Channel: <#${guild.pendingChannel}>\nGuest Role: <@&${guild.guestRole}>\nMember Role: <@&${guild.memberRole}>\nBot Role: <@&${guild.botRole}>\nAdmin Role: <@&${guild.adminRole}>`,
+                    content: `Logs Channel: <#${guild.logsChannel}>\nPending Channel: <#${guild.pendingChannel}>\nVerification Ping: <@&${guild.verificationPing}>\nGuest Role: <@&${guild.guestRole}>\nMember Role: <@&${guild.memberRole}>\nBot Role: <@&${guild.botRole}>\nAdmin Role: <@&${guild.adminRole}>`,
                     ephemeral: true,
                     allowedMentions: { users: [], roles: [] }
                 });
