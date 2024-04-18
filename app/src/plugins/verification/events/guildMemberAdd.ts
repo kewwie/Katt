@@ -40,8 +40,12 @@ export const GuildMemberAdd: Event = {
         
         const guild = await GuildRepository.findOne({ where: { guildId: member.guild.id } });
 
-        const blacklisted = await BlacklistRepository.findOne({ where: { userId: member.user.id } });
-        const whitelisted = await WhitelistRepository.findOne({ where: { userId: member.user.id } });
+        const blacklisted = await BlacklistRepository.findOne(
+            { where: { guildId: member.guild.id, userId: member.user.id } }
+        );
+        const whitelisted = await WhitelistRepository.findOne(
+            { where: { guildId: member.guild.id, userId: member.user.id } }
+        );
 
         if (member.user.bot && whitelisted?.level === "3" && guild.botRole) {
             var botRole = member.guild.roles.cache.find(role => role.id === guild.botRole);
