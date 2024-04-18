@@ -250,7 +250,7 @@ export const ValorantCmd: Command = {
             case "send-report": {
                 var active = interaction.options.getBoolean("active");
                 if (active === null) {
-                    interaction.reply("Please provide a boolean");
+                    interaction.reply({ content: "Please provide a boolean", ephemeral: true });
                     return;
                 }
 
@@ -259,14 +259,14 @@ export const ValorantCmd: Command = {
                 );
 
                 if (!valUser) {
-                    interaction.reply("You haven't saved your VALORANT username");
+                    interaction.reply({ content:"You haven't saved your VALORANT username", ephemeral: true });
                     return;
                 }
 
                 valUser.send_report = active;
                 await ValorantUserReposatory.save(valUser);
 
-                interaction.reply(`Set **${interaction.user.username}**'s send report to **${active}**`);
+                interaction.reply({ content: `Set **${interaction.user.username}**'s send report to **${active}**`, ephemeral: true });
                 break;
             }
             case "get-crosshair": {
