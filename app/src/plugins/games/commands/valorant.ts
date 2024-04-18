@@ -72,6 +72,19 @@ export const ValorantCmd: Command = {
             },
             {
                 type: OptionTypes.SUB_COMMAND,
+                name: "send-report",
+                description: "send a report of your match to your DMs",
+                options: [
+                    {
+                        type: OptionTypes.BOOLEAN,
+                        name: "active",
+                        description: "True or False if you want to send a report of your match to your DMs",
+                        required: true
+                    }
+                ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
                 name: "get-crosshair",
                 description: "Get your last matches",
                 options: [
@@ -232,6 +245,28 @@ export const ValorantCmd: Command = {
                     .setTimestamp();
 
                 await interaction.reply({ embeds: [em] });
+                break;
+            }
+            case "send-report": {
+                var active = interaction.options.getBoolean("active");
+                if (!active) {
+                    interaction.reply("Please provide a boolean");
+                    return;
+                }
+
+                var valUser = await ValorantUserReposatory.findOne(
+                    { where: { userId: interaction.user.id } }
+                );
+
+                if (!valUser) {
+                    interaction.reply("You haven't saved your VALORANT username");
+                    return;
+                }
+
+                valUser.send_report = active;
+                await ValorantUserReposatory.save(valUser);
+
+                interaction.reply(`Set **${interaction.user.username}**'s send report to **${active}**`);
                 break;
             }
             case "get-crosshair": {
