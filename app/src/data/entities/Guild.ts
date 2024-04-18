@@ -6,6 +6,9 @@ export class Guild {
     guildId: string; // Guild ID
 
     @Column({ type: 'varchar', length: 255, nullable: true })
+    verificationPing: string | null;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
     guestRole: string | null;
 
     @Column({ type: 'varchar', length: 255, nullable: true })

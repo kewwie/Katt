@@ -56,6 +56,19 @@ export const ConfigCmd: Command = {
             },
             {
                 type: OptionTypes.SUB_COMMAND,
+                name: "verification_ping",
+                description: "The role to ping when a user joins the server",
+                options: [
+                    {
+                        type: OptionTypes.ROLE,
+                        name: "role",
+                        description: "The role to ping on new users",
+                        required: true
+                    }
+                ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
                 name: "guest_role",
                 description: "Set the guest role for the server",
                 options: [
@@ -142,6 +155,17 @@ export const ConfigCmd: Command = {
                 )
                 await interaction.reply({
                     content: `Pending channel has been set to <#${channelId}>!`,
+                    ephemeral: true
+                });
+                break;
+            case "verification_ping":
+                var roleId = interaction.options.getRole("role").id;
+                await GuildRepository.upsert(
+                    { guildId: interaction.guildId, verificationPing: roleId },
+                    ["guildId"]
+                )
+                await interaction.reply({
+                    content: `Verification Ping has been set to <@&${roleId}>!`,
                     ephemeral: true
                 });
                 break;

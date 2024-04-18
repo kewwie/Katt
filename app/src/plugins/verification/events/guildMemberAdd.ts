@@ -145,7 +145,12 @@ export const GuildMemberAdd: Event = {
             var pendingChannel = await member.guild.channels.fetch(guild.pendingChannel) as TextChannel;
             if (pendingChannel) {
 
-                var verificationPing = `@everyone`;
+                var verificationPing;
+                if (guild.verificationPing) {
+                    verificationPing = "<@&guild.verificationPing>";
+                } else {
+                    verificationPing = `@everyone`;
+                }
 
                 var em = new EmbedBuilder()
                     .setTitle(await client.getTag(
