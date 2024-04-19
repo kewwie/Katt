@@ -1,5 +1,5 @@
 version: "3"
-name: "kewi-app"
+name: "kewi"
 
 services:
   mysql:
@@ -24,7 +24,7 @@ services:
     container_name: migrate
     build:
       context: .
-      dockerfile: ./app/.docker/Dockerfile
+      dockerfile: ./migrate/.docker/Dockerfile
     depends_on:
       mysql:
         condition: service_healthy

@@ -1,0 +1,20 @@
+{
+  "name": "kewi-migrate",
+  "version": "3.0.0",
+  "scripts": {
+    "build": "tsc",
+    "typeorm": "npx typeorm",
+    "migrate:create": "npm run typeorm -- migration:create",
+    "migrate:generate": "npm run typeorm -- migration:generate -d dist/data/datasource.js",
+    "migrate:run": "npm run typeorm -- migration:run -d dist/data/datasource.js",
+    "migrate:revert": "npm run typeorm -- migration:revert -d dist/data/datasource.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.9.4",
+    "typeorm": "^0.3.20"
+  }
+}
