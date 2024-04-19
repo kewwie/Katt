@@ -195,10 +195,12 @@ export const ValorantCmd: Command = {
                     return;
                 }
 
+                var account = await client.RiotApi.getAccountByPUUID({ puuid: valUser.puuid });
+
                 const em = new EmbedBuilder()
                     .setColor(client.embed.color)
                     .setTitle(`${user.username.charAt(0).toUpperCase() + user.username.slice(1)}'s Rank`)
-                    .setThumbnail(await client.getAvatarUrl(user))
+                    .setThumbnail(account.assets.card.small)
                     .addFields(
                         { name: 'Current Rank', value: `**${rank.current_data.currenttierpatched}** \n${rank.current_data.ranking_in_tier}rr` },
                         { name: 'Peak Rank', value: `**${rank.highest_rank.patched_tier}**` },
