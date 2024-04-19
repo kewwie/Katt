@@ -72,6 +72,18 @@ export const ValorantCmd: Command = {
             },
             {
                 type: OptionTypes.SUB_COMMAND,
+                name: "user",
+                description: "Get a users stats",
+                options: [
+                    {
+                        type: OptionTypes.USER,
+                        name: "user",
+                        description: "The user you want to check the stats of",
+                    }
+                ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
                 name: "send-report",
                 description: "send a report of your match to your DMs",
                 options: [
@@ -245,6 +257,50 @@ export const ValorantCmd: Command = {
                     .setTimestamp();
 
                 await interaction.reply({ embeds: [em] });
+                break;
+            }
+            case "user": {
+                interaction.deferReply();
+                var user = interaction.options.getUser("user") || interaction.user;
+                if (!user) {
+                    interaction.editReply("User not found");
+                    return;
+                }
+
+                var valUser = await ValorantUserReposatory.findOne(
+                    { where: { userId: user.id } }
+                );
+
+                if (!valUser) {
+                    interaction.editReply("This user hasn't saved their VALORANT username");
+                    return;
+                }
+
+                var rank = await client.RiotApi.getMMRByPUUID({ region: valUser.region, puuid: valUser.puuid });
+                var matches = await client.RiotApi.getMatchesByPUUID({ region: valUser.region, puuid: valUser.puuid });
+
+                if (rank.status === 400) {
+                    interaction.editReply(rank.message);
+                    return;
+                }
+
+                if (matches.status === 400) {
+                    interaction.editReply(matches.message);
+                    return;
+                }
+
+                var kd;
+                for (var match of matches) {
+                    if (match.metadata.mode_id === "competitive") {
+                        var player = match.players.all_players.find(p => p.puuid === valUser.puuid);
+
+                        if (player) {
+                            kd =+ (player.stats.kills / player.stats.deaths).toFixed(2);
+                        }
+                    }
+                }
+
+                await interaction.editReply({ content: `**${user.username}**'s Stats\n\nRank: **${rank.current_data.currenttierpatched}**\nK/D: **${kd}**` });
                 break;
             }
             case "send-report": {
