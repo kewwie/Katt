@@ -1,3 +1,3 @@
-# Kewwie Bot
+# Kewi App
 
-Just something for a private discord server
+A "simple" thing that runs my stuff

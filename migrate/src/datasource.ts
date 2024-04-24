@@ -1,5 +1,5 @@
 import { DataSource, DataSourceOptions } from "typeorm";
-import { env } from "../env";
+import { env } from "./env";
 
 export const dataSourceOptions: DataSourceOptions = {
     type: "mysql",
@@ -8,7 +8,8 @@ export const dataSourceOptions: DataSourceOptions = {
     username: env.DB_USER,
     password: env.DB_PASSWORD,
     database: env.DB_DATABASE,
-    entities: ['dist/**/entities/*.js'],
+    migrations: ['dist/**/migrations/*.js'],
+    //entities: ['dist/**/entities/*.js'],
     //logging: ["error", "query"],
     synchronize: false,
     debug: false,

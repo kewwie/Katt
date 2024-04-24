@@ -75,7 +75,7 @@ export class RiotAPI {
      * @property {String} puuid
      * @property {Number} limit
      */
-    async getMatchesByPUUID(options: { region: string; puuid: string; limit: number; }) {
+    async getMatchesByPUUID(options: { region: string; puuid: string; limit?: number; }) {
         if (!options.puuid) return { status: 400, error: "No puuid provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
@@ -92,7 +92,7 @@ export class RiotAPI {
      * @property {String} tag
      * @property {Number} limit
      */
-    async getMatches(options: { region: string; name: string; tag: string; limit: number; }) {
+    async getMatches(options: { region: string; name: string; tag: string; limit?: number; }) {
         if (!options.name || !options.tag) return { status: 400, error: "No puuid provided" };
         if (!options.region) return { status: 400, error: "No region provided" };
 
