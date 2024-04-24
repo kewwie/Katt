@@ -17,6 +17,8 @@ import {
 import { dataSource } from "../../../data/datasource";
 import { ValorantUser } from "../../../data/entities/ValorantUser";
 
+import { Regions } from "unofficial-valorant-api";
+
 export const ValorantCmd: Command = {
 	config: {
         name: "valorant",
@@ -117,19 +119,19 @@ export const ValorantCmd: Command = {
                     return;
                 }
 
-                var valorantUser = await client.RiotApi.getAccount({ name, tag });
-                if (valorantUser.status === 400) {
-                    interaction.reply(valorantUser.message);
+                var valorantUser: any = await client.RiotApi.getAccount({ name: name, tag: tag });
+                if (valorantUser.status !== 200) {
+                    interaction.reply("Something went wrong");
                     return;
                 }
 
-                if (!valorantUser.puuid) {
+                if (!valorantUser.data.puuid) {
                     interaction.reply("User not found");
                     return;
                 }
 
                 var existingUser = await ValorantUserReposatory.findOne(
-                    { where: { puuid: valorantUser.puuid } }
+                    { where: { puuid: valorantUser.data["puuid"] } }
                 );
 
                 if (existingUser && existingUser.userId !== interaction.user.id) {
@@ -137,10 +139,10 @@ export const ValorantCmd: Command = {
                     return;
                 }
 
-                var match = await client.RiotApi.getMatchesByPUUID({ region: valUser.region, puuid: valUser.puuid, limit: 1 });
+                var match: any = (await client.RiotApi.getMatchesByPUUID({ region: valorantUser.data.region, puuid: valorantUser.data.puuid})).data[0];
     
                 if (match.metadata.matchid) {
-                    match = match[0].metadata.matchid;
+                    match = match.metadata.matchid;
                 } else{
                     match = null;
                 }
@@ -148,10 +150,10 @@ export const ValorantCmd: Command = {
                 await ValorantUserReposatory.upsert(
                     { 
                         userId: interaction.user.id,
-                        puuid: valorantUser.puuid,
-                        name: valorantUser.name,
-                        tag: valorantUser.tag,
-                        region: valorantUser.region,
+                        puuid: valorantUser.data.puuid,
+                        name: valorantUser.data.name,
+                        tag: valorantUser.data.tag,
+                        region: valorantUser.data.region,
                         last_match: match
                     },
                     ["userId"]
@@ -176,17 +178,24 @@ export const ValorantCmd: Command = {
                     return;
                 }
 
-                var rank = await client.RiotApi.getMMRByPUUID({ region: valUser.region, puuid: valUser.puuid });
-
-                if (rank.status === 400) {
-                    interaction.reply(rank.message);
+                var valorantUser: any = await client.RiotApi.getAccountByPUUID({ puuid: valUser.puuid });
+                if (valorantUser.status !== 200) {
+                    interaction.reply("Something went wrong");
                     return;
                 }
 
+                var rank: any = await client.RiotApi.getMMRByPUUID({ region: valorantUser.data.region, puuid: valorantUser.data.puuid, version: "v2" });
+
+                if (rank.status !== 200) {
+                    interaction.reply("Something went wrong");
+                    return;
+                }
+
+
                 const em = new EmbedBuilder()
                     .setColor(client.embed.color)
-                    .setTitle(`${user.username.charAt(0).toUpperCase() + user.username.slice(1)}'s Rank`)
-                    .setThumbnail(await client.getAvatarUrl(user))
+                    .setAuthor({ name: `${user.username.charAt(0).toUpperCase() + user.username.slice(1)}`, iconURL: await client.getAvatarUrl({ id: user.id, avatar: user.avatar }) })
+                    .setThumbnail(valorantUser.data.card.small)
                     .addFields(
                         { name: 'Current Rank', value: `**${rank.current_data.currenttierpatched}** \n${rank.current_data.ranking_in_tier}rr` },
                         { name: 'Peak Rank', value: `**${rank.highest_rank.patched_tier}**` },
@@ -207,25 +216,13 @@ export const ValorantCmd: Command = {
                     { where: { userId: user.id } }
                 );
 
-                if (!valUser) {
-                    interaction.reply("This user hasn't saved their VALORANT username");
-                    return;
-                }
-
-                var match = await client.RiotApi.getMatchesByPUUID({ region: valUser.region, puuid: valUser.puuid, limit: 1 });
-        
-                if (match.status === 400) {
-                    interaction.reply(match.message);
-                    return;
-                } else {
-                    match = match[0];
-                }
+                var match: any = (await client.RiotApi.getMatchesByPUUID({ region: valUser.region as Regions, puuid: valUser.puuid })).data[0];
 
                 var player = match.players.all_players.find(p => p.puuid === valUser.puuid);
 
                 const em = new EmbedBuilder()
                     .setColor(client.embed.color)
-                    .setTitle(`${user.username.charAt(0).toUpperCase() + user.username.slice(1)}'s Last Match`)
+                    .setAuthor({ name: `${user.username.charAt(0).toUpperCase() + user.username.slice(1)}`, iconURL: await client.getAvatarUrl({ id: user.id, avatar: user.avatar }) })
                     .setThumbnail(player.assets.card.small)
                     .addFields(
                         { name: 'Server', value: match.metadata.cluster, inline: true },
@@ -272,7 +269,7 @@ export const ValorantCmd: Command = {
             case "get-crosshair": {
                 await interaction.reply("This command is currently disabled");
                 return;
-                var code = interaction.options.getString("code");
+                /*var code = interaction.options.getString("code");
                 if (!code) {
                     interaction.reply("Please provide a code");
                     return;
@@ -299,7 +296,7 @@ export const ValorantCmd: Command = {
                 const attach = new AttachmentBuilder(Buffer.from(crosshair_data), { name: 'result.jpeg' })
 
                 //interaction.reply({ files: [attach] });
-                break;
+                break;*/
             }
         }
     }

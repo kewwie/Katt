@@ -16,7 +16,9 @@ import { ComponentManager } from "./managers/component";
 import { EventManager } from "./managers/event";
 import { LoopManager } from "./managers/loop";
 
-import { RiotAPI } from "./managers/riotApi";
+import RiotAPI from "unofficial-valorant-api";
+
+//import { RiotAPI } from "./managers/riotApi";
 
 import { Button } from "./types/component";
 import { Command } from "./types/command";
