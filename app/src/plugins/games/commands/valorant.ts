@@ -197,8 +197,8 @@ export const ValorantCmd: Command = {
                     .setAuthor({ name: `${user.username.charAt(0).toUpperCase() + user.username.slice(1)}`, iconURL: await client.getAvatarUrl({ id: user.id, avatar: user.avatar }) })
                     .setThumbnail(valorantUser.data.card.small)
                     .addFields(
-                        { name: 'Current Rank', value: `**${rank.current_data.currenttierpatched}** \n${rank.current_data.ranking_in_tier}rr` },
-                        { name: 'Peak Rank', value: `**${rank.highest_rank.patched_tier}**` },
+                        { name: 'Current Rank', value: `**${rank.data.current_data.currenttierpatched}** \n${rank.data.current_data.ranking_in_tier}rr` },
+                        { name: 'Peak Rank', value: `**${rank.data.highest_rank.patched_tier}**` },
                     )
                     .setTimestamp();
 
