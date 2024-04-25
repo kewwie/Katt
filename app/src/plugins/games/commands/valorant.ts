@@ -159,7 +159,7 @@ export const ValorantCmd: Command = {
                     ["userId"]
                 );
 
-                interaction.reply(`Set **${interaction.user.username}**'s username to **${valorantUser.name}#${valorantUser.tag}**`)
+                interaction.reply(`Set **${interaction.user.username}**'s username to **${valorantUser.data.name}#${valorantUser.data.tag}**`)
                 break;
             }
             case "rank": {
