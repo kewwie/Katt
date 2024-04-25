@@ -12,5 +12,6 @@ export enum Events {
 export interface Event {
     name: string;
     once?: boolean;
+    plugin?: string;
     execute: (client: KiwiClient, ...args: any) => void;
 }

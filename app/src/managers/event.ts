@@ -1,6 +1,8 @@
 import { KiwiClient } from "../client";
 import { Event } from "../types/event";
 
+import { dataSource } from "../data/datasource";
+
 export class EventManager {
     private client: KiwiClient;
 
@@ -17,6 +19,12 @@ export class EventManager {
             } else {
                 this.client.on(event.name, (...args: any[]) => event.execute(this.client, ...args));
             }
+        }
+    }
+
+    executeEvent(event: Event, ...args: any[]) {
+        if (event.plugin) {
+            
         }
     }
 };

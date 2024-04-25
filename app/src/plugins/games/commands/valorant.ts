@@ -25,7 +25,7 @@ export const ValorantCmd: Command = {
         description: "VALORANT Commands",
         type: CommandTypes.CHAT_INPUT,
         default_member_permissions: null,
-        contexts: [SlashCommandContexts.GUILD, SlashCommandContexts.PRIVATE_CHANNEL],
+        contexts: [SlashCommandContexts.GUILD, SlashCommandContexts.PRIVATE_CHANNEL, SlashCommandContexts.BOT_DM],
         integration_types: [IntegrationTypes.GUILD, IntegrationTypes.USER],
         options: [
             {

@@ -1,5 +1,6 @@
 import {
-    GuildBan
+    GuildBan,
+    PermissionFlagsBits
 } from "discord.js";
 
 import { KiwiClient } from "../../../client";
@@ -15,6 +16,8 @@ export const GuildBanAdd: Event = {
     * @param {GuildBan} guildBan
     */
     async execute(client: KiwiClient, guildBan: GuildBan) {
-        await guildBan.guild.members.unban(guildBan.user);
+        if (guildBan.guild.members.me?.permissions.has(PermissionFlagsBits.BanMembers)) {
+            await guildBan.guild.members.unban(guildBan.user);
+        }
     }
 }

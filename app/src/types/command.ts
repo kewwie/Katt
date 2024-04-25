@@ -99,6 +99,7 @@ export enum Permissions {
 }
 
 export interface Command {
+    plugin?: string;
     config: {
         type: CommandTypes;
         name: string;

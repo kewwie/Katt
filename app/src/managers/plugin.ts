@@ -17,7 +17,12 @@ export class PluginManager {
         this.plugins.push(plugin);
 
         if (plugin.commands) {
-            this.client.CommandManager.load(plugin.commands);
+            var commands = new Array();
+            for (let command of plugin.commands) {
+                command.plugin = plugin.config.name;
+                commands.push(command);
+            }
+            this.client.CommandManager.load(commands);
         }
 
         if (plugin.buttons) {
@@ -25,11 +30,21 @@ export class PluginManager {
         }
 
         if (plugin.events) {
-            this.client.EventManager.load(plugin.events);
+            var events = new Array();
+            for (let event of plugin.events) {
+                event.plugin = plugin.config.name;
+                events.push(event);
+            }
+            this.client.EventManager.load(events);
         }
 
         if (plugin.loops) {
-            this.client.LoopManager.load(plugin.loops);
+            var loops = new Array();
+            for (let loop of plugin.loops) {
+                loop.plugin = plugin.config.name;
+                commands.push(loop);
+            }
+            this.client.LoopManager.load(loops);
         }
 
         this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));      
