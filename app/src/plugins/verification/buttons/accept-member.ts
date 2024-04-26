@@ -28,7 +28,7 @@ export const AcceptMember: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
-        interaction.deferUpdate();
+        await interaction.deferUpdate();
         var memberId = interaction.customId.split("_")[1];
 
         const GuildRepository = await dataSource.getRepository(Guild);
@@ -86,7 +86,7 @@ export const AcceptMember: Button = {
                 });
             }
         } else {
-            interaction.reply("This guild is not in the database.");
+            interaction.editReply("This guild is not in the database.");
         }
     }
 }

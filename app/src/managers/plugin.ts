@@ -47,7 +47,6 @@ export class PluginManager {
             this.client.LoopManager.load(loops);
         }
 
-        this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));      
         plugin.afterLoad?.(this.client);
     }
     
@@ -55,6 +54,8 @@ export class PluginManager {
         for (let plugin of plugins) {
             this.load(plugin);
         }
+
+        this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));
     }
 
     async registerCommands(commands: Command[], guildId?: string | null) {
