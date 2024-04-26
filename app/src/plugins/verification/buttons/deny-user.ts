@@ -26,14 +26,18 @@ export const DenyUser: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
+        interaction.deferUpdate();
         var memberId = interaction.customId.split("_")[1];
         var member = await interaction.guild.members.fetch(memberId);
 
         const GuildRepository = await dataSource.getRepository(Guild);
 
         await member.send(`You have been **denied** from **${interaction.guild.name}**`)
-        await member.kick("Denied");
-        await interaction.message.delete();
+        await member.kick("Denied by a moderator.");
+        var message = await interaction.channel.messages.fetch(interaction.message.id);
+        if (message) {
+            await message.delete();
+        }
 
         const guild = await GuildRepository.findOne({ where: { guildId: member.guild.id } });
 

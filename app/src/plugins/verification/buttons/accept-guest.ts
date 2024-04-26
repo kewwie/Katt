@@ -51,7 +51,10 @@ export const AcceptGuest: Button = {
                     await member.roles.add(role);
                 }
             }
-            await interaction.message.delete();
+            var message = await interaction.channel.messages.fetch(interaction.message.id);
+            if (message) {
+                await message.delete();
+            }
             await member.send(`You have been **verified** in **${interaction.guild.name}**`);
 
             if (guild.logsChannel) {

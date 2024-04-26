@@ -28,6 +28,7 @@ export const AcceptMember: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
+        interaction.deferUpdate();
         var memberId = interaction.customId.split("_")[1];
 
         const GuildRepository = await dataSource.getRepository(Guild);
@@ -55,7 +56,10 @@ export const AcceptMember: Button = {
                     await member.roles.add(role);
                 }
             }
-            await interaction.message.delete();
+            var message = await interaction.channel.messages.fetch(interaction.message.id);
+            if (message) {
+                await message.delete();
+            }
             await member.send(`You have been **verified** in **${interaction.guild.name}**`);
 
             if (guild.logsChannel) {
