@@ -76,11 +76,33 @@ export const PluginsCmd: Command = {
 
         switch (interaction.options.getSubcommand()) {
             case "set":
-                interaction.reply("Setting the configuration");
+                var pluginName = interaction.options.getString("plugin");
+                var status = interaction.options.getBoolean("status");
+
+                if (!client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName).config.disableable) {
+                    interaction.reply("Invalid plugin name");
+                    return;
+                }
+
+                await GuildPluginsRepository.upsert(
+                    { guild_id: interaction.guildId, plugin: pluginName, status: status },
+                    ["guild_id", "plugin"]
+                );
+
+                interaction.reply(`Set **${pluginName}** to **${status ? "enabled" : "disabled"}**`);
                 break;
 
             case "view":
-                interaction.reply("Viewing the current configuration");
+                const plugins = await GuildPluginsRepository.find({ where: { guild_id: interaction.guildId } });
+
+                if (plugins.length === 0) {
+                    interaction.reply("No plugins found in the database.");
+                } else {
+                    const pluginNames = plugins
+                        .filter((plugin) => plugin.status === true)
+                        .map((plugin) => plugin.plugin);
+                    interaction.reply(`Plugins in the database: ${pluginNames.join(", ")}`);
+                }
                 break;
         }
 	},
