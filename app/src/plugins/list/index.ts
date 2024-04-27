@@ -5,7 +5,8 @@ import { List } from "./commands/list";
 
 export const ListPlugin: Plugin = {
     config: {
-        name: "List"
+        name: "List",
+        disableable: true
     },
     buttons: [
         UpdateList

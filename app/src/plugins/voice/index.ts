@@ -7,7 +7,8 @@ import { voiceStateUpdate } from "./events/voiceStateUpdate";
 
 export const VoicePlugin: Plugin = {
     config: {
-        name: "Voice"
+        name: "Voice",
+        disableable: true
     },
     commands: [
         VoiceCmd

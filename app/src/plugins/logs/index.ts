@@ -4,7 +4,8 @@ import { GuildMemberUpdate } from "./events/guildMemberUpdate";
 
 export const LogsPlugin: Plugin = {
     config: {
-        name: "Logs"
+        name: "Logs",
+        disableable: true
     },
     events: [
         GuildMemberUpdate

@@ -8,7 +8,8 @@ import { Loop } from "./loop";
 export interface Plugin {
     config: {
         name: string,
-        description?: string
+        description?: string,
+        disableable?: boolean,
     },
     buttons?: Button[],
     commands?: Command[],

@@ -57,7 +57,7 @@ export const PluginsCmd: Command = {
     async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
         const choices = new Array();
         for (var plugin of client.PluginManager.plugins) {
-            choices.push(plugin.config.name);
+            if (plugin.config.disableable) choices.push(plugin.config.name);
         }
         const focusedValue = interaction.options.getFocused();
         const filtered = choices.filter(choice => choice.startsWith(focusedValue));

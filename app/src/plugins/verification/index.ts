@@ -11,7 +11,8 @@ import { GuildMemberAdd } from "./events/guildMemberAdd";
 
 export const VerificationPlugin: Plugin = {
     config: {
-        name: "Verification"
+        name: "Verification",
+        disableable: true
     },
     buttons: [
         AcceptGuest,

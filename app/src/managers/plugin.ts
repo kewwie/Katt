@@ -26,7 +26,12 @@ export class PluginManager {
         }
 
         if (plugin.buttons) {
-            this.client.ComponentManager.loadButtons(plugin.buttons);
+            var buttons = new Array();
+            for (let button of plugin.buttons) {
+                button.plugin = plugin.config.name;
+                buttons.push(button);
+            }
+            this.client.ComponentManager.loadButtons(buttons);
         }
 
         if (plugin.events) {
@@ -42,7 +47,7 @@ export class PluginManager {
             var loops = new Array();
             for (let loop of plugin.loops) {
                 loop.plugin = plugin.config.name;
-                commands.push(loop);
+                loops.push(loop);
             }
             this.client.LoopManager.load(loops);
         }

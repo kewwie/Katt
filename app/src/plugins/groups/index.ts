@@ -4,7 +4,8 @@ import { GroupCommand } from "./commands/group";
 
 export const GroupsPlugin: Plugin = {
     config: {
-        name: "Groups"
+        name: "Groups",
+        disableable: true
     },
     commands: [
         GroupCommand

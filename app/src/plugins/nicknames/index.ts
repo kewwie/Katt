@@ -7,7 +7,8 @@ import { GuildMemberUpdate } from "./events/guildMemberUpdate";
 
 export const NicknamesPlugin: Plugin = {
     config: {
-        name: "Nickname"
+        name: "Nickname",
+        disableable: true
     },
     commands: [
         NicknameCmd

@@ -6,7 +6,8 @@ import { newMatchLoop } from "./loops/newMatch";
 
 export const GamesPlugin: Plugin = {
     config: {
-        name: "Games"
+        name: "Games",
+        disableable: true
     },
     commands: [
        ValorantCmd

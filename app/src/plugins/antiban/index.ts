@@ -5,7 +5,8 @@ import { Ready } from "./events/ready";
 
 export const AntiBanPlugin: Plugin = {
     config: {
-        name: "AntiBan"
+        name: "AntiBan",
+        disableable: true
     },
     events: [
         GuildBanAdd,
