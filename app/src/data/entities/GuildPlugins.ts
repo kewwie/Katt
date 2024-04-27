@@ -10,7 +10,4 @@ export class GuildPlugins {
 
     @Column({ type: 'varchar' })
     plugin: string;
-
-    @Column({ type: 'boolean', default: false })
-    status: boolean;
 }

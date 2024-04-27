@@ -13,5 +13,6 @@ export interface Event {
     name: string;
     once?: boolean;
     plugin?: string;
+    manualCheck?: boolean;
     execute: (client: KiwiClient, ...args: any) => void;
 }

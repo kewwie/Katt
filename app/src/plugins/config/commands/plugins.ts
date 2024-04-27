@@ -40,7 +40,7 @@ export const PluginsCmd: Command = {
                     },
                     {
                         type: OptionTypes.BOOLEAN,
-                        name: "stauts",
+                        name: "enabled",
                         description: "Whether to enable or disable the command",
                         required: true
                     }
@@ -59,10 +59,11 @@ export const PluginsCmd: Command = {
         for (var plugin of client.PluginManager.plugins) {
             if (plugin.config.disableable) choices.push(plugin.config.name);
         }
+
         const focusedValue = interaction.options.getFocused();
         const filtered = choices.filter(choice => choice.startsWith(focusedValue));
 		await interaction.respond(
-			filtered.map(choice => ({ name: choice.name, value: choice.name })),
+			filtered.map(choice => ({ name: choice, value: choice })),
 		);
     },
 
@@ -77,31 +78,32 @@ export const PluginsCmd: Command = {
         switch (interaction.options.getSubcommand()) {
             case "set":
                 var pluginName = interaction.options.getString("plugin");
-                var status = interaction.options.getBoolean("status");
+                var enabled = interaction.options.getBoolean("enabled");
+
+                console.log(pluginName, enabled)
 
                 if (!client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName).config.disableable) {
                     interaction.reply("Invalid plugin name");
                     return;
                 }
 
-                await GuildPluginsRepository.upsert(
-                    { guild_id: interaction.guildId, plugin: pluginName, status: status },
-                    ["guild_id", "plugin"]
-                );
+                if (enabled) {
+                    await GuildPluginsRepository.insert({ guild_id: interaction.guildId, plugin: pluginName });
+                } else {
+                    await GuildPluginsRepository.delete({ guild_id: interaction.guildId, plugin: pluginName });
+                }
 
-                interaction.reply(`Set **${pluginName}** to **${status ? "enabled" : "disabled"}**`);
+                interaction.reply(`**${enabled ? "Enabled" : "Disabled"}** **${pluginName}** plugin`);
                 break;
 
             case "view":
                 const plugins = await GuildPluginsRepository.find({ where: { guild_id: interaction.guildId } });
 
                 if (plugins.length === 0) {
-                    interaction.reply("No plugins found in the database.");
+                    interaction.reply("No plugins are enabled");
                 } else {
-                    const pluginNames = plugins
-                        .filter((plugin) => plugin.status === true)
-                        .map((plugin) => plugin.plugin);
-                    interaction.reply(`Plugins in the database: ${pluginNames.join(", ")}`);
+                    const pluginNames = plugins.map((plugin) => plugin.plugin);
+                    interaction.reply(`Enabled Plugins: ${pluginNames.join(", ")}`);
                 }
                 break;
         }

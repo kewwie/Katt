@@ -25,6 +25,9 @@ import { Command } from "./types/command";
 import { Event } from "./types/event";
 import { Loop } from "./types/loop";
 
+import { dataSource } from "./data/datasource";
+import { GuildPlugins } from "./data/entities/GuildPlugins";
+
 export class KiwiClient extends Client {
     public embed: { 
         color: ColorResolvable | null;
@@ -107,5 +110,11 @@ export class KiwiClient extends Client {
         } else {
             return username;
         }
+    }
+
+    public async getGuildPlugin(guildId: string, pluginName: string) {
+        const GuildPluginsRepository = await dataSource.getRepository(GuildPlugins);
+        var enabled = await GuildPluginsRepository.findOne({ where: { guild_id: guildId, plugin: pluginName } });
+        return enabled;
     }
 };

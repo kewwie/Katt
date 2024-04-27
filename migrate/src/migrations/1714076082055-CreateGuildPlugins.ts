@@ -21,12 +21,7 @@ export class CreateGuildPlugins1714076082055 implements MigrationInterface {
                     {
                         name: "plugin",
                         type: "varchar",
-                    },
-                    {
-                        name: "status",
-                        type: "boolean",
-                        default: false
-                    },
+                    }
                 ],
             })
         );
