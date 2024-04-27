@@ -1,5 +1,5 @@
-const { resolve } = require("path");
-const dotenv = require("dotenv");
+import { resolve } from "path";
+import dotenv from "dotenv";
 dotenv.config({ path: resolve(__dirname, "..", ".env") });
 
 export const env = {
