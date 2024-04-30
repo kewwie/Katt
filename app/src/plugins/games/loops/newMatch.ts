@@ -17,6 +17,7 @@ export const newMatchLoop: Loop = {
         const valorantUsers = await valorantUserRepo.find();
         for (var valorantUser of valorantUsers) {
             var match: any = (await client.RiotApi.getMatchesByPUUID({ region: valorantUser.region as Regions, puuid: valorantUser.puuid })).data[0];
+            console.log(match)
             
             if (match.metadata.matchid !== valorantUser.last_match) {
                 valorantUser.last_match = match.metadata.matchid;
