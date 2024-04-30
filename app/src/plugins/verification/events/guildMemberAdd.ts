@@ -82,14 +82,14 @@ export const GuildMemberAdd: Event = {
         }
 
         if (whitelisted) {
-            if (whitelisted.level >= "1" && guild.guestRole) {
+            if (whitelisted.level === "1" && guild.guestRole) {
                 var guestRole = member.guild.roles.cache.find(role => role.id === guild.guestRole);
                 if (guestRole) {
                     await member.roles.add(guestRole);
                 }
             }
 
-            if (whitelisted.level >= "2" && guild.memberRole) {
+            if (whitelisted.level === "2" && guild.memberRole) {
                 var memberRole = member.guild.roles.cache.find(role => role.id === guild.memberRole);
                 if (memberRole) {
                     await member.roles.add(memberRole);
@@ -117,10 +117,25 @@ export const GuildMemberAdd: Event = {
                 var log = member.guild.channels.cache.get(guild.logsChannel) as TextChannel;
                 if (!log) return;
 
-                var addedRoles = member.roles.cache
-                    .filter((roles) => roles.id !== member.guild.id)
-                    .sort((a, b) => b.rawPosition - a.rawPosition)
-                    .map((role) => role.name);
+                var verificationType;
+                switch (whitelisted.level) {
+                    case "1": {
+                        verificationType = "Guest";
+                        break;
+                    }
+                    case "2": {
+                        verificationType = "Member";
+                        break;
+                    }
+                    case "3": {
+                        verificationType = "Bot";
+                        break;
+                    }
+                    case "4": {
+                        verificationType = "Admin";
+                        break;
+                    }
+                }
     
                 var em = new EmbedBuilder()
                     .setTitle(member.user.username + "#" + member.user.discriminator)
@@ -130,7 +145,7 @@ export const GuildMemberAdd: Event = {
                         { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
                         { name: "Whitelisted By", value: `<@${whitelisted.createdBy}>` },
                         { name: "Whitelisted", value: `True` },
-                        { name: "Roles", value: addedRoles.join(", ")}
+                        { name: "Type", value: verificationType }
                     )
     
                 await log.send({
