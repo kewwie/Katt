@@ -78,7 +78,7 @@ export const AcceptMember: Button = {
                     .addFields(
                         { name: "Mention", value: `<@${member.user.id}>\n${member.user.username}` },
                         { name: "Verified By", value: `<@${interaction.member.user.id}>` },
-                        { name: "Roles", value: addedRoles.join(", ")}
+                        { name: "Type", value: "Member" },
                     )
     
                 await log.send({

@@ -74,7 +74,7 @@ export const AcceptGuest: Button = {
                     .addFields(
                         { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
                         { name: "Verified By", value: `<@${interaction.member.user.id}>` },
-                        { name: "Roles", value: addedRoles.join(", ")}
+                        { name: "Type", value: "Guest" },
                     )
     
                 await log.send({
