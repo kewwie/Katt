@@ -125,9 +125,10 @@ export const BlacklistCmd: Command = {
                 const guild = await dataSource.getRepository(Guild).findOne({ where: { guildId: interaction.guild.id } });
                 const isAdmin = (await interaction.guild.members.fetch(user)).roles.cache.has(guild.adminRole);
                 const isOwner = interaction.guild.ownerId === user.id;
+                const isHigher = (await interaction.guild.members.fetch(user)).roles.highest.comparePositionTo((await interaction.guild.members.fetch(interaction.user.id)).roles.highest) >= 0;
                 const appRole = (await interaction.guild.members.fetch(user)).roles.highest.comparePositionTo(interaction.guild.members.me.roles.highest) >= 0;
 
-                if (isAdmin || isOwner || appRole) {
+                if (isAdmin || isOwner || isHigher || appRole) {
                     interaction.reply("You cannot blacklist this user");
                     return;
                 }
