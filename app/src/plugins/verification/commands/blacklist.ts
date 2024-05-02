@@ -89,8 +89,6 @@ export const BlacklistCmd: Command = {
             choices.push({ username: u.username, id: u.userId});
         }
 
-
-
         const focusedValue = interaction.options.getFocused();
         const filtered = choices.filter(choice => choice.username.startsWith(focusedValue));
 		await interaction.respond(
@@ -107,6 +105,7 @@ export const BlacklistCmd: Command = {
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         const BlacklistRepository = await dataSource.getRepository(Blacklist);
+        const GuildRepository = await dataSource.getRepository(Guild);
 
         switch (interaction.options.getSubcommand()) {
             case "add": {
@@ -122,15 +121,21 @@ export const BlacklistCmd: Command = {
                     return;
                 }
 
-                const guild = await dataSource.getRepository(Guild).findOne({ where: { guildId: interaction.guild.id } });
-                const isAdmin = (await interaction.guild.members.fetch(user)).roles.cache.has(guild.adminRole);
-                const isOwner = interaction.guild.ownerId === user.id;
-                const isHigher = (await interaction.guild.members.fetch(user)).roles.highest.comparePositionTo((await interaction.guild.members.fetch(interaction.user.id)).roles.highest) >= 0;
-                const appRole = (await interaction.guild.members.fetch(user)).roles.highest.comparePositionTo(interaction.guild.members.me.roles.highest) >= 0;
+                const isMember = await interaction.guild.members.cache.has(user.id);
+                if (isMember) {
+                    const guild = await GuildRepository.findOne({ where: { guildId: interaction.guild.id } });
+                    var isAdmin = false;
+                    if (guild) {
+                        isAdmin = (await interaction.guild.members.fetch(user)).roles.cache.has(guild.adminRole);
+                    }
+                    var isOwner = interaction.guild.ownerId === user.id;
+                    var isHigher = (await interaction.guild.members.fetch(user)).roles.highest.comparePositionTo((await interaction.guild.members.fetch(interaction.user.id)).roles.highest) >= 0;
+                    var appRole = (await interaction.guild.members.fetch(user)).roles.highest.comparePositionTo(interaction.guild.members.me.roles.highest) >= 0;
 
-                if (isAdmin || isOwner || isHigher || appRole) {
-                    interaction.reply("You cannot blacklist this user");
-                    return;
+                    if (isAdmin || isOwner || isHigher || appRole) {
+                        interaction.reply("You cannot blacklist this user");
+                        return;
+                    }
                 }
                 
                 const blacklistUser = await BlacklistRepository.findOne(
@@ -141,7 +146,9 @@ export const BlacklistCmd: Command = {
                     return;
                 };
 
-                await interaction.guild.members.kick(user.id);
+                if (isMember) {
+                    await interaction.guild.members.kick(user.id);
+                }
 
                 await BlacklistRepository.insert({
                     guildId: interaction.guild.id,
@@ -154,11 +161,12 @@ export const BlacklistCmd: Command = {
                 break;
             }
             case "remove": {
-                var user = interaction.options.getUser("user");
-                if (!user) {
+                var userId = interaction.options.getString("user");
+                if (!userId) {
                     interaction.reply("User not found");
                     return;
                 };
+                var user = await client.users.fetch(userId);
                 var userTag = await client.getTag({ username: user.username, discriminator: user.discriminator });
 
                 const blacklistUser = await BlacklistRepository.findOne(
