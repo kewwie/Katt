@@ -2,7 +2,6 @@ import { Plugin } from "../../types/plugin";
 
 import { VoiceCmd } from "./commands/voice";
 
-import { Ready } from "./events/ready";
 import { voiceStateUpdate } from "./events/voiceStateUpdate";
 
 export const MessagePlugin: Plugin = {

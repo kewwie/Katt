@@ -110,6 +110,8 @@ export const BlacklistCmd: Command = {
                     return;
                 };
 
+                await interaction.guild.members.kick(user.id);
+
                 await BlacklistRepository.insert({
                     guildId: interaction.guild.id,
                     userId: user.id,
