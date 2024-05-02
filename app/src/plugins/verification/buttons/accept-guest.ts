@@ -72,7 +72,7 @@ export const AcceptGuest: Button = {
                     .setThumbnail(member.user.avatarURL())
                     .setColor(0x90EE90)
                     .addFields(
-                        { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
+                        { name: "User", value: `<@${member.user.id}>` },
                         { name: "Verified By", value: `<@${interaction.member.user.id}>` },
                         { name: "Type", value: "Guest" },
                     )

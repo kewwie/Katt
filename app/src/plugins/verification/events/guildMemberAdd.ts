@@ -142,7 +142,7 @@ export const GuildMemberAdd: Event = {
                     .setThumbnail(member.user.avatarURL())
                     .setColor(0x90EE90)
                     .addFields(
-                        { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
+                        { name: "User", value: `<@${member.user.id}>` },
                         { name: "Whitelisted By", value: `<@${whitelisted.createdBy}>` },
                         { name: "Whitelisted", value: `True` },
                         { name: "Type", value: verificationType }
