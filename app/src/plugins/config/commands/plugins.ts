@@ -80,8 +80,6 @@ export const PluginsCmd: Command = {
                 var pluginName = interaction.options.getString("plugin");
                 var enabled = interaction.options.getBoolean("enabled");
 
-                console.log(pluginName, enabled)
-
                 if (!client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName).config.disableable) {
                     interaction.reply("Invalid plugin name");
                     return;
