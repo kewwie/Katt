@@ -4,7 +4,8 @@
  */
 
 import {
-    ChatInputCommandInteraction
+    ChatInputCommandInteraction,
+    AutocompleteInteraction
 } from "discord.js";
 
 import { 
@@ -19,6 +20,7 @@ import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../data/datasource";
 import { Blacklist } from "../../../data/entities/Blacklist";
+import { Guild } from "../../../data/entities/Guild";
 
 /**
  * Represents the Blacklist command module.
@@ -63,10 +65,11 @@ export const BlacklistCmd: Command = {
                 description: "Remove a user from the blacklist",
                 options: [
                     {
-                        type: OptionTypes.USER,
+                        type: OptionTypes.STRING,
                         name: "user",
                         description: "The user to remove from the blacklist",
-                        required: true
+                        required: true,
+                        autocomplete: true
                     }
                 ]
             },
@@ -76,6 +79,23 @@ export const BlacklistCmd: Command = {
                 description: "View the blacklist",
             }
         ]
+    },
+
+    async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
+        const BlacklistRepository = await dataSource.getRepository(Blacklist);
+        const choices = new Array();
+
+        for (var u of await BlacklistRepository.find({ where: { guildId: interaction.guild.id } })) {
+            choices.push({ username: u.username, id: u.userId});
+        }
+
+
+
+        const focusedValue = interaction.options.getFocused();
+        const filtered = choices.filter(choice => choice.username.startsWith(focusedValue));
+		await interaction.respond(
+			filtered.map(choice => ({ name: choice.username, value: choice.id })),
+		);
     },
 
     /**
@@ -99,6 +119,16 @@ export const BlacklistCmd: Command = {
 
                 if (user.bot) {
                     interaction.reply("Bots cannot be blacklisted");
+                    return;
+                }
+
+                const guild = await dataSource.getRepository(Guild).findOne({ where: { guildId: interaction.guild.id } });
+                const isAdmin = (await interaction.guild.members.fetch(user)).roles.cache.has(guild.adminRole);
+                const isOwner = interaction.guild.ownerId === user.id;
+                const appRole = (await interaction.guild.members.fetch(user)).roles.highest.comparePositionTo(interaction.guild.members.me.roles.highest) >= 0;
+
+                if (isAdmin || isOwner || appRole) {
+                    interaction.reply("You cannot blacklist this user");
                     return;
                 }
                 
