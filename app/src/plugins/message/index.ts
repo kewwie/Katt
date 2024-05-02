@@ -13,7 +13,6 @@ export const MessagePlugin: Plugin = {
         VoiceCmd
     ],
     events: [
-        Ready,
         voiceStateUpdate
     ],
     afterLoad: () => {
