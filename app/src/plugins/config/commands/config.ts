@@ -1,24 +1,28 @@
-import {
-	ChatInputCommandInteraction
-} from "discord.js";
-
 import { KiwiClient } from "../../../client";
-
-import { 
-	CommandTypes,
-	SlashCommandContexts,
-	IntegrationTypes,
-    ChannelTypes,
-	OptionTypes,
-	Permissions,
-    Command
-} from "../../../types/command";
-
 import { dataSource } from "../../../data/datasource";
 import { Guild } from "../../../data/entities/Guild";
 
+import {
+    ChatInputCommandInteraction
+} from "discord.js";
+
+
+import {
+    CommandTypes,
+    SlashCommandContexts,
+    IntegrationTypes,
+    ChannelTypes,
+    OptionTypes,
+    Permissions,
+    Command
+} from "../../../types/command";
+
+
+/**
+ * Represents the configuration command.
+ */
 export const ConfigCmd: Command = {
-	config: {
+    config: {
         name: "config",
         description: "Config Commands",
         type: CommandTypes.CHAT_INPUT,
@@ -127,12 +131,13 @@ export const ConfigCmd: Command = {
         ]
     },
 
-	/**
-    * 
-    * @param {ChatInputCommandInteraction} interaction
-    * @param {KiwiClient} client
-    */
-	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
+    /**
+     * Executes the configuration command.
+     * @param {ChatInputCommandInteraction} interaction - The command interaction.
+     * @param {KiwiClient} client - The Kiwi client.
+     * @returns {Promise<void>}
+     */
+    async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         const GuildRepository = await dataSource.getRepository(Guild);
 
         switch (interaction.options.getSubcommand()) {
@@ -239,5 +244,5 @@ export const ConfigCmd: Command = {
                 });
                 break;
         }
-	},
+    },
 }

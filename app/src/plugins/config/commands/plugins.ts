@@ -1,24 +1,32 @@
-import {
-    AutocompleteInteraction,
-	ChatInputCommandInteraction
-} from "discord.js";
-
 import { KiwiClient } from "../../../client";
-
-import { 
-	CommandTypes,
-	SlashCommandContexts,
-	IntegrationTypes,
-	OptionTypes,
-	Permissions,
-    Command
-} from "../../../types/command";
-
 import { dataSource } from "../../../data/datasource";
 import { GuildPlugins } from "../../../data/entities/GuildPlugins";
 
+import {
+    AutocompleteInteraction,
+    ChatInputCommandInteraction
+} from "discord.js";
+
+import {
+    CommandTypes,
+    SlashCommandContexts,
+    IntegrationTypes,
+    OptionTypes,
+    Permissions,
+    Command
+} from "../../../types/command";
+
+
+/**
+ * Represents the Plugins command.
+ * @type {Command}
+ */
 export const PluginsCmd: Command = {
-	config: {
+    /**
+     * The configuration for the Plugins command.
+     * @type {object}
+     */
+    config: {
         name: "plugins",
         description: "Plugins Commands",
         type: CommandTypes.CHAT_INPUT,
@@ -54,31 +62,38 @@ export const PluginsCmd: Command = {
         ]
     },
 
-    async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
-        const choices = new Array();
-        for (var plugin of client.PluginManager.plugins) {
+    /**
+     * Autocomplete handler for the Plugins command.
+     * @param {AutocompleteInteraction} interaction - The autocomplete interaction.
+     * @param {KiwiClient} client - The Kiwi client.
+     * @returns {Promise<void>}
+     */
+    async autocomplete(interaction, client) {
+        const choices = [];
+        for (const plugin of client.PluginManager.plugins) {
             if (plugin.config.disableable) choices.push(plugin.config.name);
         }
 
         const focusedValue = interaction.options.getFocused();
         const filtered = choices.filter(choice => choice.startsWith(focusedValue));
-		await interaction.respond(
-			filtered.map(choice => ({ name: choice, value: choice })),
-		);
+        await interaction.respond(
+            filtered.map(choice => ({ name: choice, value: choice })),
+        );
     },
 
-	/**
-    * 
-    * @param {ChatInputCommandInteraction} interaction
-    * @param {KiwiClient} client
-    */
-	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
+    /**
+     * Execute handler for the Plugins command.
+     * @param {ChatInputCommandInteraction} interaction - The command interaction.
+     * @param {KiwiClient} client - The Kiwi client.
+     * @returns {Promise<void>}
+     */
+    async execute(interaction, client) {
         const GuildPluginsRepository = await dataSource.getRepository(GuildPlugins);
 
         switch (interaction.options.getSubcommand()) {
             case "set":
-                var pluginName = interaction.options.getString("plugin");
-                var enabled = interaction.options.getBoolean("enabled");
+                const pluginName = interaction.options.getString("plugin");
+                const enabled = interaction.options.getBoolean("enabled");
 
                 if (!client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName).config.disableable) {
                     interaction.reply("Invalid plugin name");
@@ -105,5 +120,5 @@ export const PluginsCmd: Command = {
                 }
                 break;
         }
-	},
+    },
 }

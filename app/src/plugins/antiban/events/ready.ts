@@ -1,24 +1,28 @@
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
-
 import { AntiBanPlugin } from "..";
 
+/**
+ * The ready event handler.
+ * @type {Event}
+ */
 export const Ready: Event = {
     name: Events.Ready,
     once: true,
     manualCheck: true,
 
     /**
-    * @param {KiwiClient} client
-    */
-    async execute(client: KiwiClient) {
+     * Executes the ready event handler.
+     * @param {KiwiClient} client - The KiwiClient instance.
+     * @returns {Promise<void>}
+     */
+    async execute(client: KiwiClient): Promise<void> {
         const guilds = await client.guilds.fetch();
         
         guilds.forEach(async (guild) => {
             var g = await guild.fetch();
 
-            
             if (g.members.me?.permissions.has(PermissionFlagsBits.BanMembers)) {
                 const bans = await g.bans.fetch();
                 if (await client.getGuildPlugin(g.id, AntiBanPlugin.config.name)) {
