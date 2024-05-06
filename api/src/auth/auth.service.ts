@@ -182,10 +182,12 @@ export class AuthService {
             });
         }
 
-        var guildId = req.cookies.guild_id
+        var guildId = req.cookies.guild_id;
         if (!guildId) {
             return { error: "Guild not found" };
         }
+
+        // Everything is good until the request below
 
         const guildMember = await axios.get(
             `https://discord.com/api/guilds/${guildId}/members/${user.id}`,
