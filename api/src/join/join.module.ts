@@ -11,4 +11,4 @@ import { Module } from '@nestjs/common';
   controllers: [JoinController],
   providers: [JoinService],
 })
-export class AuthModule {}
+export class JoinModule {}
