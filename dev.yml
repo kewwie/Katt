@@ -13,7 +13,7 @@ services:
     volumes:
       - ./nginx/dev:/kewi/nginx
     depends_on:
-      - backend
+      - api
       
   mysql:
     image: mysql:8
