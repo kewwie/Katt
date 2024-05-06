@@ -144,18 +144,6 @@ export class AuthService {
         });
 
         const authUserRepository = await dataSource.getRepository(AuthUser);
-
-        let tokenArray = new Array<string>();
-
-        tokenArray.push(Buffer.from(user.id).toString('base64'));
-        tokenArray.push(Buffer.from(Math.floor(Date.now() / 10000).toString()).toString('base64'));
-
-        let cipher = createCipheriv('aes-256-cbc', env.KEY, randomBytes(16));
-        let encrypted = cipher.update(randomUUID().substring(0, 16), 'utf8', 'hex') +  cipher.final('hex');
-        tokenArray.push(encrypted);
-
-        let token: string = tokenArray.join(".");
-
         const existingAuth = await authUserRepository.findOne({ where: { userId: user.id }});
 
         if (existingAuth) {
@@ -185,7 +173,7 @@ export class AuthService {
             });
         }
 
-        res.redirect(`${env.URL}/login/callback?token=${token}`);
+        res.redirect(`${env.URL}/hello`);
     }
 
 }
