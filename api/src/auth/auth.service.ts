@@ -10,6 +10,8 @@ import axios from 'axios';
 import { dataSource } from "../datasource";
 import { Login } from '../entities/Login';
 import { AuthUser } from '../entities/AuthUser';
+import { Guild } from "../entities/Guild";
+
 import { createCipheriv, randomBytes, randomUUID } from 'crypto';
 
 @Injectable()
@@ -102,13 +104,20 @@ export class AuthService {
         res.redirect(`${env.URL}/login/callback?token=${token}`);
     }
 
-    async getJoinAuth(req: Request, res: Response) {
+    async getJoinAuth(req: Request, res: Response, guildId: string) {
+
+        if (!guildId) {
+            return res.status(400).send('Missing guild_id');
+        }
+
+        res.cookie('guild_id', guildId);
+
 
         let OAuthData = new URLSearchParams({
             client_id: String(env.CLIENT_ID),
             response_type: "code",
-            redirect_uri: env.URL + "/auth/callback",
-            scope: ["identify", "guilds.join", "gdm.join"].join(" ")
+            redirect_uri: env.URL + "/auth/join/callback",
+            scope: ["identify", "guilds", "guilds.join", "gdm.join"].join(" ")
         });
         res.redirect(`https://discord.com/oauth2/authorize?${OAuthData}`);
     }
@@ -173,7 +182,26 @@ export class AuthService {
             });
         }
 
-        res.redirect(`${env.URL}/hello`);
-    }
+        var guildId = req.cookies.guild_id
+        if (!guildId) {
+            return { error: "Guild not found" };
+        }
 
+        const guildMember = await axios.get(
+            `https://discord.com/api/guilds/${guildId}/members/${user.id}`,
+            {
+                headers: {
+                    'authorization': `${response.token_type} ${response.access_token}`
+                }
+            }
+        ).then((response) => {
+            return response.data;
+        });
+
+        if (guildMember) {
+            res.redirect(`https://discord.com/channels/${guildId}`);
+        } else {
+            return "You will be notified in Discord when your request is approved or denied."
+        }
+    }
 }

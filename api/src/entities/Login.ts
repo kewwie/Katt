@@ -8,16 +8,16 @@ export class Login {
     @Column({ type: 'varchar', length: 255 })
     token: string;
 
-    @Column({ type: 'varchar', length: 255, name: 'token_type' })
+    @Column({ type: 'varchar', length: 255 })
     tokenType: string;
 
-    @Column({ type: 'varchar', length: 255, name: 'access_token' })
+    @Column({ type: 'varchar', length: 255 })
     accessToken: string;
 
     @Column({ type: 'datetime' })
     expires: Date;
 
-    @Column({ type: 'varchar', length: 255, name: 'refresh_token' })
+    @Column({ type: 'varchar', length: 255 })
     refreshToken: string;
 
     @Column({ type: 'varchar', length: 255 })

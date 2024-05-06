@@ -24,17 +24,21 @@ export class AuthController {
         this.authService.getCallback(req, res, code);
     }
 
-    @Get("/join") // GET /auth
-    getJoinAuth(@Req() req: Request, @Res() res: Response) {
-        this.authService.getJoinAuth(req, res);
+    @Get("/join") // GET /auth/join
+    getJoinAuth(
+        @Req() req: Request,
+        @Res() res: Response,
+        @Query("guild_id") guildId: string,
+    ) {
+        this.authService.getJoinAuth(req, res, guildId);
     }
 
-    @Get('/join/callback') // GET /auth/callback
+    @Get('/join/callback') // GET /auth/join/callback
     getJoinCallback(
         @Req() req: Request,
         @Res() res: Response,
         @Query("code") code: string,
     ) {
-        this.authService.getCallback(req, res, code);
+        this.authService.getJoinCallback(req, res, code);
     }
 }
