@@ -1,23 +1,20 @@
 version: "3"
-name: "kewi"
+name: "kewi-dev"
 
 services:
   nginx:
     container_name: nginx
     restart: unless-stopped
     build:
-      context: ./nginx
+      context: ./nginx/dev
       dockerfile: Dockerfile
-      args:
-        - DOMAIN=${DOMAIN:?}
-        - PORT=${PORT:?}
     ports:
-      - "${PORT:?}:${PORT:?}"
+      - "80:80"
     volumes:
-      - ./nginx:/kewi/nginx
+      - ./nginx/dev:/kewi/nginx
     depends_on:
       - backend
-
+      
   mysql:
     image: mysql:8
     container_name: mysql
@@ -55,8 +52,6 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
-    ports:
-      - "2000:2000"
     command: ["npm", "run", "start"]
 
   app:
