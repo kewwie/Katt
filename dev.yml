@@ -43,12 +43,12 @@ services:
         condition: service_healthy
     command: ["npm", "run", "migrate:run"]
 
-  backend:
-    container_name: backend
+  api:
+    container_name: api
     restart: unless-stopped
     build:
       context: .
-      dockerfile: ./backend/.docker/Dockerfile
+      dockerfile: ./api/.docker/Dockerfile
     depends_on:
       migrate:
         condition: service_completed_successfully
