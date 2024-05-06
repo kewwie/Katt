@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 export class AddVanityToGuilds1715021230579 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE guilds ADD COLUMN vanity VARCHAR(255)`);
+        await queryRunner.query(`ALTER TABLE guilds ADD COLUMN vanity VARCHAR(255) NULL`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
