@@ -1,9 +1,9 @@
 FROM node:20
 USER node
 
-COPY --chown=node:node .env /kewi/backend/.env
-COPY --chown=node:node ./backend /kewi/backend
+COPY --chown=node:node .env /kewi/api/.env
+COPY --chown=node:node ./api /kewi/api
 
-WORKDIR /kewi/backend
+WORKDIR /kewi/api
 
 RUN npm install && npm run build
