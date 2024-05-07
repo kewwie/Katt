@@ -250,12 +250,20 @@ export const ConfigCmd: Command = {
             
             case "vanity":
                 var vanity = interaction.options.getString("vanity");
+                const existingGuild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
+                if (existingGuild && existingGuild.vanity === vanity) {
+                    await interaction.reply({
+                        content: "Vanity url is already set to the provided value!",
+                        ephemeral: true
+                    });
+                    return;
+                }
                 await GuildRepository.upsert(
                     { guildId: interaction.guildId, vanity },
                     ["guildId"]
                 )
                 await interaction.reply({
-                    content: "Vanity url has been set to `vanity`!",
+                    content: "Vanity url has been set!",
                     ephemeral: true
                 });
                 break;
