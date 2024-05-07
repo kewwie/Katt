@@ -25,4 +25,7 @@ export class Guild {
 
     @Column({ type: 'varchar', length: 255, nullable: true })
     pendingChannel: string | null;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    vanity: string | null;
 }

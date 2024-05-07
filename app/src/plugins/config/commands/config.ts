@@ -125,6 +125,19 @@ export const ConfigCmd: Command = {
             },
             {
                 type: OptionTypes.SUB_COMMAND,
+                name: "vanity",
+                description: "Set the server vanity for the server",
+                options: [
+                    {
+                        type: OptionTypes.STRING,
+                        name: "vanity",
+                        description: "The role to assign to admins",
+                        required: true
+                    }
+                ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
                 name: "view",
                 description: "View the server configuration"
             }
@@ -231,6 +244,18 @@ export const ConfigCmd: Command = {
                 )
                 await interaction.reply({
                     content: `Admin role has been set to <@&${roleId}>!`,
+                    ephemeral: true
+                });
+                break;
+            
+            case "vanity":
+                var vanity = interaction.options.getString("vanity");
+                await GuildRepository.upsert(
+                    { guildId: interaction.guildId, vanity },
+                    ["guildId"]
+                )
+                await interaction.reply({
+                    content: "Vanity url has been set to `vanity`!",
                     ephemeral: true
                 });
                 break;
