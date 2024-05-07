@@ -12,12 +12,10 @@ import { Guild } from "../entities/Guild";
 @Injectable()
 export class JoinService {
     async getVanity(req: Request, res: Response, vanity: string) {
-        console.log(vanity)
         let guild = await dataSource.getRepository(Guild).findOne({ where: { vanity } });
         if (!guild) {
             res.send('Guild not found');
         } else {      
-            console.log(guild);
             res.redirect(`${env.URL}/auth/join?guild_id=${guild.guildId}`);
         }
     }
