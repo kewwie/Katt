@@ -5,7 +5,6 @@ https://docs.nestjs.com/providers#services
 import { Injectable } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { env } from '../env';
-import axios from 'axios';
 
 import { dataSource } from "../datasource";
 import { Guild } from "../entities/Guild";
@@ -13,11 +12,12 @@ import { Guild } from "../entities/Guild";
 @Injectable()
 export class JoinService {
     async getVanity(req: Request, res: Response, vanity: string) {
-        let guild = await dataSource.getRepository(Guild).findOne({ where: { vanity: vanity } });
+        console.log(vanity)
+        let guild = await dataSource.getRepository(Guild).findOne({ where: { vanity } });
         if (!guild) {
-            return { error: "Guild not found" };
+            res.send('Guild not found');
         } else {      
-            //res.cookie('joinGuild', guild.guildId, { maxAge: 900000, httpOnly: true });
+            console.log(guild);
             res.redirect(`${env.URL}/auth/join?guild_id=${guild.guildId}`);
         }
     }
