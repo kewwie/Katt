@@ -270,8 +270,66 @@ export const ConfigCmd: Command = {
             
             case "view":
                 var guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
+                if (!guild) {
+                    await interaction.reply({
+                        content: "No configuration found for this server!",
+                        ephemeral: true
+                    });
+                    return;
+                }
+
+                var rows = new Array();
+
+                if (guild.logsChannel) {
+                    rows.push(`**Logs Channel:** <#${guild.logsChannel}>`);
+                } else {
+                    rows.push(`**Logs Channel:** Not Set`);
+                }
+
+                if (guild.pendingChannel) {
+                    rows.push(`**Pending Channel:** <#${guild.pendingChannel}>`);
+                } else {
+                    rows.push(`**Pending Channel:** Not Set`);
+                }
+
+                if (guild.verificationPing) {
+                    rows.push(`**Verification Ping:** <@&${guild.verificationPing}>`);
+                } else {
+                    rows.push(`**Verification Ping:** Not Set`);
+                }
+
+                if (guild.guestRole) {
+                    rows.push(`**Guest Role:** <@&${guild.guestRole}>`);
+                } else {
+                    rows.push(`**Guest Role:** Not Set`);
+                }
+
+                if (guild.memberRole) {
+                    rows.push(`**Member Role:** <@&${guild.memberRole}>`);
+                } else {
+                    rows.push(`**Member Role:** Not Set`);
+                }
+
+                if (guild.botRole) {
+                    rows.push(`**Bot Role:** <@&${guild.botRole}>`);
+                } else {
+                    rows.push(`**Bot Role:** Not Set`);
+                }
+
+                if (guild.adminRole) {
+                    rows.push(`**Admin Role:** <@&${guild.adminRole}>`);
+                } else {
+                    rows.push(`**Admin Role:** Not Set`);
+                }
+
+                if (guild.vanity) {
+                    rows.push(`**Vanity:** ${guild.vanity}`);
+                } else {
+                    rows.push(`**Vanity:** Not Set`);
+                }
+
                 await interaction.reply({
-                    content: `Logs Channel: <#${guild.logsChannel}>\nPending Channel: <#${guild.pendingChannel}>\nVerification Ping: <@&${guild.verificationPing}>\nGuest Role: <@&${guild.guestRole}>\nMember Role: <@&${guild.memberRole}>\nBot Role: <@&${guild.botRole}>\nAdmin Role: <@&${guild.adminRole}>`,
+                    content: rows.join("\n"),
                     ephemeral: true,
                     allowedMentions: { users: [], roles: [] }
                 });
