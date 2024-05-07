@@ -268,7 +268,7 @@ export class AuthService {
                         color: 0xADD8E6,
                         thumbnail: { url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` },
                         fields: [
-                            { name: "User", value: `<@${user.id}>` },
+                            { name: "ID", value: `${user.id}` },
                             { name: "Username", value: user.username }
                         ]
                     }
@@ -282,13 +282,23 @@ export class AuthService {
                                 style: 3,
                                 label: "Approve as Guest",
                                 custom_id: "approve-guest_" + user.id,
-                            },
+                            }
+                        ]
+                    },
+                    {
+                        type: 1,
+                        components: [
                             {
                                 type: 2,
                                 style: 1,
                                 label: "Approve as Member",
                                 custom_id: "approve-member_" + user.id,
-                            },
+                            }
+                        ]
+                    },
+                    {
+                        type: 1,
+                        components: [
                             {
                                 type: 2,
                                 style: 4,
@@ -313,8 +323,6 @@ export class AuthService {
         });
 
 
-        res.send("You will be notified in Discord when and if your request is approved.")
-
-
+        res.send("You will be notified in Discord when and if your request is approved.");
     }
 }

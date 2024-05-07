@@ -27,30 +27,29 @@ export const DenyUser: Button = {
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
         interaction.deferUpdate();
-        var memberId = interaction.customId.split("_")[1];
-        var member = await interaction.guild.members.fetch(memberId);
-
         const GuildRepository = await dataSource.getRepository(Guild);
 
-        await member.send(`You have been **denied** from **${interaction.guild.name}**`)
-        await member.kick("Denied by a moderator.");
+        var memberId = interaction.customId.split("_")[1];
+
         var message = await interaction.channel.messages.fetch(interaction.message.id);
         if (message) {
             await message.delete();
         }
 
-        const guild = await GuildRepository.findOne({ where: { guildId: member.guild.id } });
+        const guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
 
         if (guild?.logsChannel) {
-            var log = await interaction.guild.channels.cache.get(guild.logsChannel) as TextChannel;
+            var log = await interaction.guild.channels.fetch(guild.logsChannel) as TextChannel;
+            if (!log) return;
+
+            var user = await client.users.fetch(memberId);
 
             var em = new EmbedBuilder()
-                .setTitle(member.user.username + "#" + member.user.discriminator)
-                .setThumbnail(member.user.avatarURL())
+                .setTitle("Denied User")
+                .setThumbnail(user.avatarURL())
                 .addFields(
-                    { name: "Mention", value: `<@${member.user.id}>` },
-                    { name: "Denied By", value: `<@${interaction.member.user.id}>` },
-                    { name: "Action", value: "Kicked" }
+                    { name: "User", value: `<@${user.id}>\n${user.username}` },
+                    { name: "By", value: `<@${interaction.member.user.id}>\n${interaction.member.user.username}` },
                 )
                 .setColor(0xFF474D)
 
