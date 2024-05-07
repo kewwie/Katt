@@ -18,8 +18,8 @@ import { Whitelist } from "../../../data/entities/Whitelist";
 import { Group } from "../../../data/entities/Group";
 import { GroupMember } from "../../../data/entities/GroupMember";
 
-import { AcceptGuest } from "../buttons/accept-guest";
-import { AcceptMember } from "../buttons/accept-member";
+import { ApproveGuest } from "../buttons/approve-guest";
+import { ApproveMember } from "../buttons/approve-member";
 import { DenyUser } from "../buttons/deny-user";
 
 export const GuildMemberAdd: Event = {
@@ -180,10 +180,10 @@ export const GuildMemberAdd: Event = {
 
                 var rows = [];
 
-                var acceptGuestButton = new ButtonBuilder(AcceptGuest.config)
-                    .setCustomId('accept-guest_' + member.user.id);
-                var acceptMemberButton = new ButtonBuilder(AcceptMember.config)
-                    .setCustomId('accept-member_' + member.user.id);
+                var acceptGuestButton = new ButtonBuilder(ApproveGuest.config)
+                    .setCustomId('approve-guest_' + member.user.id);
+                var acceptMemberButton = new ButtonBuilder(ApproveMember.config)
+                    .setCustomId('approve-member_' + member.user.id);
 
                 rows.push(new ActionRowBuilder().addComponents([acceptGuestButton, acceptMemberButton]));
 

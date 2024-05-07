@@ -6,18 +6,15 @@ services:
     container_name: nginx
     restart: unless-stopped
     build:
-      context: ./nginx
+      context: ./nginx/dev
       dockerfile: Dockerfile
-      args:
-        - DOMAIN=${DOMAIN:?}
-        - PORT=${PORT:?}
     ports:
-      - "${PORT:?}:${PORT:?}"
+      - "80:80"
     volumes:
-      - ./nginx:/kewi/nginx
+      - ./nginx/dev:/kewi/nginx
     depends_on:
       - api
-
+      
   mysql:
     image: mysql:8
     container_name: mysql

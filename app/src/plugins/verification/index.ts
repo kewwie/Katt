@@ -1,10 +1,10 @@
 import { Plugin } from "../../types/plugin";
 
-import { AcceptGuest } from "./buttons/accept-guest";
-import { AcceptMember } from "./buttons/accept-member";
+import { ApproveGuest } from "./buttons/approve-guest";
+import { ApproveMember } from "./buttons/approve-member";
 import { DenyUser } from "./buttons/deny-user";
-import { BlacklistCmd } from "./commands/blacklist";
 
+import { BlacklistCmd } from "./commands/blacklist";
 import { WhitelistCmd } from "./commands/whitelist";
 
 import { GuildMemberAdd } from "./events/guildMemberAdd";
@@ -15,16 +15,16 @@ export const VerificationPlugin: Plugin = {
         disableable: true
     },
     buttons: [
-        AcceptGuest,
-        AcceptMember,
+        ApproveGuest,
+        ApproveMember,
         DenyUser
     ],
     commands: [
-        BlacklistCmd,
-        WhitelistCmd
+        //BlacklistCmd,
+        //WhitelistCmd
     ],
     events: [
-        GuildMemberAdd
+        //GuildMemberAdd
     ],
     afterLoad: () => {
         console.log("Loaded Verification Plugin")
