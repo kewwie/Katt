@@ -187,18 +187,23 @@ export class AuthService {
             return { error: "Guild not found" };
         }
 
+        console.log(user)
+
         // Everything is good until the request below
 
-        const guildMember = await axios.get(
-            `https://discord.com/api/guilds/${guildId}/members/${user.id}`,
+        var guildMember = await axios.get(
+            `https://discord.com/api/users/@me/guilds`,
             {
                 headers: {
+                    'Content-Type': 'application/json',
                     'authorization': `${response.token_type} ${response.access_token}`
                 }
             }
         ).then((response) => {
+            console.log(response)
             return response.data;
         });
+        console.log(guildMember)
 
         if (guildMember) {
             res.redirect(`https://discord.com/channels/${guildId}`);
