@@ -18,9 +18,9 @@ import { GroupMember } from "../../../data/entities/GroupMember";
 export const AcceptMember: Button = {
     config: {
         type: ComponentType.Button,
-        custom_id: "accept-member",
+        custom_id: "approve-member",
         style: ButtonStyle.Primary,
-        label: "Accept as Member"
+        label: "Approve as Member"
     },
     
     /**

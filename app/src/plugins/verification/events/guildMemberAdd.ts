@@ -181,9 +181,9 @@ export const GuildMemberAdd: Event = {
                 var rows = [];
 
                 var acceptGuestButton = new ButtonBuilder(AcceptGuest.config)
-                    .setCustomId('accept-guest_' + member.user.id);
+                    .setCustomId('approve-guest_' + member.user.id);
                 var acceptMemberButton = new ButtonBuilder(AcceptMember.config)
-                    .setCustomId('accept-member_' + member.user.id);
+                    .setCustomId('approve-member_' + member.user.id);
 
                 rows.push(new ActionRowBuilder().addComponents([acceptGuestButton, acceptMemberButton]));
 

@@ -18,7 +18,7 @@ export const DenyUser: Button = {
         type: ComponentType.Button,
         custom_id: "deny-user",
         style: ButtonStyle.Danger,
-        label: "Deny User"
+        label: "Deny"
     },
     
     /**

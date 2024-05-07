@@ -6,6 +6,8 @@ import { Injectable } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { env } from '../env';
 import axios from 'axios';
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v10";
 
 import { dataSource } from "../datasource";
 import { Login } from '../entities/Login';
@@ -184,14 +186,11 @@ export class AuthService {
 
         var guildId = req.cookies.guild_id;
         if (!guildId) {
-            return { error: "Guild not found" };
+            res.send("Guild ID not found in cookies.");
+            return;
         }
 
-        console.log(user)
-
-        // Everything is good until the request below
-
-        var guildMember = await axios.get(
+        var userGuilds = await axios.get(
             `https://discord.com/api/users/@me/guilds`,
             {
                 headers: {
@@ -200,15 +199,122 @@ export class AuthService {
                 }
             }
         ).then((response) => {
-            console.log(response)
             return response.data;
         });
-        console.log(guildMember)
 
-        if (guildMember) {
+        console.log(userGuilds)
+
+        if (userGuilds.find((g) => g.id === guildId)) {
             res.redirect(`https://discord.com/channels/${guildId}`);
-        } else {
-            return "You will be notified in Discord when your request is approved or denied."
+            return;
         }
+
+        const GuildRepository = await dataSource.getRepository(Guild);
+        var GuildData = await GuildRepository.findOne({ where: { guildId: guildId }});
+        if (!GuildData) {
+            res.send("This guild doesnt use the verification system");
+            return;
+        }
+
+        var guildChannels = await axios.get(
+            `https://discord.com/api/guilds/${guildId}/channels`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bot ${env.CLIENT_TOKEN}`
+                }
+            }
+        ).then((response) => {
+            return response.data;
+        }).catch((error) => {
+            res.send(error.response.data.message);
+            return;
+        });
+
+        var guildRoles = await axios.get(
+            `https://discord.com/api/guilds/${guildId}/roles`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bot ${env.CLIENT_TOKEN}`
+                }
+            }
+        ).then((response) => {
+            return response.data;
+        }).catch((error) => {
+            res.send(error.response.data.message);
+            return;
+        });
+
+        if (
+            !guildChannels && !guildRoles &&
+            !guildChannels.find((c) => c.id === GuildData.pendingChannel) &&
+            !guildChannels.find((c) => c.id === GuildData.logsChannel) &&
+            !guildRoles.find((r) => r.id === GuildData.guestRole) &&
+            !guildRoles.find((r) => r.id === GuildData.memberRole)
+        ) {
+            res.send("This guild hasnt set up the verification system yet")
+            return;
+        }
+
+        
+                        
+        await axios.post(
+            `https://discord.com/api/channels/${GuildData.pendingChannel}/messages`,
+            {
+                content: GuildData.verificationPing ? `<@&${GuildData.verificationPing}>` : "@everyone",
+                embeds: [
+                    {   
+                        color: 0xADD8E6,
+                        thumbnail: { url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` },
+                        fields: [
+                            { name: "User", value: `<@${user.id}>` },
+                            { name: "Username", value: user.username }
+                        ]
+                    }
+                ],
+                components: [
+                    {
+                        type: 1,
+                        components: [
+                            {
+                                type: 2,
+                                style: 3,
+                                label: "Approve as Guest",
+                                custom_id: "approve-guest_" + user.id,
+                            },
+                            {
+                                type: 2,
+                                style: 1,
+                                label: "Approve as Member",
+                                custom_id: "approve-member_" + user.id,
+                            },
+                            {
+                                type: 2,
+                                style: 4,
+                                label: "Deny",
+                                custom_id: "deny-user_" + user.id,
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bot ${env.CLIENT_TOKEN}`
+                }
+            }
+        ).then((response) => {
+            return response.data;
+        }).catch((error) => {
+            res.send(error.response.data.message);
+            return;
+        });
+
+
+        res.send("You will be notified in Discord when and if your request is approved.")
+
+
     }
 }
