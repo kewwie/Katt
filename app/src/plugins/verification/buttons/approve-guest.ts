@@ -87,7 +87,7 @@ export const ApproveGuest: Button = {
             return;
         }
         
-        await member.send(`You have been **verified** in **${interaction.guild.name}**`);
+        await member.send(`You have been **verified** in **${interaction.guild.name}**`).catch(() => {});
 
         var message = await interaction.channel.messages.fetch(interaction.message.id);
         if (message) {
