@@ -87,7 +87,11 @@ export const ApproveMember: Button = {
             return;
         }
         
-            await member.send(`You have been **verified** in **${interaction.guild.name}**`);
+        await member.send(`You have been **verified** in **${interaction.guild.name}**`);
+        var message = await interaction.channel.messages.fetch(interaction.message.id);
+        if (message) {
+            await message.delete();
+        }
 
         if (guild.logsChannel) {
             var log = member.guild.channels.cache.get(guild.logsChannel) as TextChannel;

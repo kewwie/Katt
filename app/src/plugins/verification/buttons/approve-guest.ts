@@ -82,7 +82,17 @@ export const ApproveGuest: Button = {
         }
 
         var member = await interaction.guild.members.fetch(userId);
-        if (member) await member.send(`You have been **verified** in **${interaction.guild.name}**`);
+        if (!member) {
+            interaction.followUp("Member didnt join the server");
+            return;
+        }
+        
+        await member.send(`You have been **verified** in **${interaction.guild.name}**`);
+
+        var message = await interaction.channel.messages.fetch(interaction.message.id);
+        if (message) {
+            await message.delete();
+        }
 
         if (guild.logsChannel) {
             var log = member.guild.channels.cache.get(guild.logsChannel) as TextChannel;

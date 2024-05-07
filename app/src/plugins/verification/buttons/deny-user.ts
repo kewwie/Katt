@@ -49,7 +49,7 @@ export const DenyUser: Button = {
                 .setThumbnail(user.avatarURL())
                 .addFields(
                     { name: "User", value: `<@${user.id}>\n${user.username}` },
-                    { name: "By", value: `<@${interaction.member.user.id}>\n${interaction.member.user.username}` },
+                    { name: "Denied By", value: `<@${interaction.member.user.id}>\n${interaction.member.user.username}` },
                 )
                 .setColor(0xFF474D)
 
