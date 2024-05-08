@@ -19,19 +19,26 @@ export const Ready: Event = {
         for (var guild of await client.guilds.fetch()) {
             var g = await guild[1].fetch();
 
-            var guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: guild[0], userId: g.ownerId } });
-            if (guildAdmin) {
+            var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: guild[0], level: 4 } });
+            if (guildAdmins) {
+                for (var guildAdmin of guildAdmins) {
+                    if (guildAdmin.userId !== g.ownerId) {
+                        await GuildAdminsRepository.delete({ guildId: guild[0], userId: guildAdmin.userId });
+                    }
+                }
                 await GuildAdminsRepository.delete({ guildId: guild[0], level: 4 });
             }
 
-            var user = await client.users.fetch(g.ownerId);
-            if (user) {
-                await GuildAdminsRepository.insert({
-                    guildId: guild[0],
-                    userId: user.id,
-                    username: user.username,
-                    level: 4
-                });
+            if (!guildAdmins.find(admin => admin.userId === g.ownerId)) {
+                var user = await client.users.fetch(g.ownerId);
+                if (user) {
+                    await GuildAdminsRepository.insert({
+                        guildId: guild[0],
+                        userId: user.id,
+                        username: user.username,
+                        level: 4
+                    });
+                }
             }
 
             var guildData = await GuildConfigRepository.findOne({ where: { guildId: guild[0] } });
@@ -44,7 +51,7 @@ export const Ready: Event = {
                         if (m.roles.cache.find(role => role.id === guildData.adminRole)) {
                             var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: guild[0], userId: m.id } });
                             if (!isAdmin) {
-                                //await member.roles.remove(adminRole);
+                                await m.roles.remove(adminRole);
                             }
                         }
                     }

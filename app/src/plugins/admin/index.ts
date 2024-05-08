@@ -6,6 +6,7 @@ import { PluginsCmd } from "./commands/plugins";
 
 import { GuildAdminAdd } from "./events/guildAdminAdd";
 import { GuildAdminRemove } from "./events/guildAdminRemove";
+import { GuildMemberUpdate } from "./events/guildMemberUpdate";
 import { GuildVerifiedAdd } from "./events/guildVerifiedAdd";
 import { Ready } from "./events/ready";
 
@@ -21,6 +22,7 @@ export const AdminPlugin: Plugin = {
     events: [
         GuildAdminAdd,
         GuildAdminRemove,
+        GuildMemberUpdate,
         GuildVerifiedAdd,
         Ready
     ],

@@ -106,6 +106,14 @@ export const AdminCmd: Command = {
                     return;
                 }
 
+                if (user.bot || user.id === interaction.user.id) {
+                    interaction.reply({
+                        content: "You can't add a bot or yourself as an admin",
+                        ephemeral: true
+                    });
+                    return;
+                }
+
                 await GuildAdminsRepository.upsert({
                     guildId: interaction.guild.id,
                     userId: user.id,
@@ -144,6 +152,14 @@ export const AdminCmd: Command = {
                 if (guildAdmin.level <= res.level) {
                     interaction.reply({
                         content: "You can't remove an admin with a higher level than yours",
+                        ephemeral: true
+                    });
+                    return;
+                }
+
+                if (user.bot || user.id === interaction.user.id) {
+                    interaction.reply({
+                        content: "You can't remove a bot or yourself as an admin",
                         ephemeral: true
                     });
                     return;
