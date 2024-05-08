@@ -22,6 +22,7 @@ export const Ready: Event = {
                 const newGuildAdmin = new GuildAdmins();
                 newGuildAdmin.guildId = guild[0];
                 newGuildAdmin.userId = g.ownerId;
+                newGuildAdmin.level = 3;
                 await GuildAdminsRepository.save(newGuildAdmin);
             }
         }
