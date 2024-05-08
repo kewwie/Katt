@@ -22,7 +22,7 @@ export const AdminCmd: Command = {
         name: "admin",
         description: "Admin Commands",
         type: CommandTypes.CHAT_INPUT,
-        default_member_permissions: Permissions.Administrator,
+        default_member_permissions: Permissions.ManageGuild,
         contexts: [SlashCommandContexts.GUILD],
         integration_types: [IntegrationTypes.GUILD],
         options: [
@@ -86,9 +86,9 @@ export const AdminCmd: Command = {
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
-        var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: interaction.guild.id } });
+        var guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
 
-        if (guildAdmins.find(admin => admin.userId === interaction.user.id)?.level < 3) {
+        if (guildAdmin.level < 3) {
             interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
             return;
         }
@@ -97,6 +97,14 @@ export const AdminCmd: Command = {
             case "add": {
                 var user = interaction.options.getUser("user");
                 var level = interaction.options.getInteger("level") ?? 1;
+
+                if (guildAdmin.level <= level) {
+                    interaction.reply({
+                        content: "You can't add an admin with a higher level than yours",
+                        ephemeral: true
+                    });
+                    return;
+                }
 
                 await GuildAdminsRepository.upsert({
                     guildId: interaction.guild.id,
@@ -127,6 +135,14 @@ export const AdminCmd: Command = {
                 if (!res) {
                     interaction.reply({
                         content: `**${user.username}** is not an admin`,
+                        ephemeral: true
+                    });
+                    return;
+                }
+
+                if (guildAdmin.level <= res.level) {
+                    interaction.reply({
+                        content: "You can't remove an admin with a higher level than yours",
                         ephemeral: true
                     });
                     return;

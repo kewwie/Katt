@@ -32,7 +32,7 @@ export const PluginsCmd: Command = {
         name: "plugins",
         description: "Plugins Commands",
         type: CommandTypes.CHAT_INPUT,
-        default_member_permissions: Permissions.Administrator,
+        default_member_permissions: Permissions.ManageGuild,
         contexts: [SlashCommandContexts.GUILD],
         integration_types: [IntegrationTypes.GUILD],
         options: [
@@ -118,9 +118,9 @@ export const PluginsCmd: Command = {
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
-        var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: interaction.guild.id } });
+        var guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
 
-        if (guildAdmins.find(admin => admin.userId === interaction.user.id)?.level < 3) {
+        if (guildAdmin.level < 3) {
             interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
             return;
         }
