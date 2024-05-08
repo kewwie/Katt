@@ -3,10 +3,14 @@ import { KiwiClient } from "../../../client";
 import { 
     ButtonStyle,
     ComponentType,
-    ButtonInteraction
+    ButtonInteraction,
+    TextChannel
 } from "discord.js";
 
 import { Button } from "../../../types/component";
+
+import { dataSource } from "../../../data/datasource";
+import { GuildConfig } from "../../../data/entities/GuildConfig";
 
 export const UpdateList: Button = {
     config: {
@@ -21,6 +25,8 @@ export const UpdateList: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
+        const GuildRepository = await dataSource.getRepository(GuildConfig);
+
         var userToMove = interaction.customId.split("_")[1];
         var users = interaction.message.content.split("\n");
 
@@ -36,15 +42,13 @@ export const UpdateList: Button = {
         interaction.message.edit({ content });
         interaction.reply({ content: `Moved **${userToMove}** to the bottom of the list!`, ephemeral: true });
 
-        /*const guild = await client.database.db("kiwi").collection("guilds").findOne(
-            { guildId: interaction.guildId }
-        );
+        var guild = await GuildRepository.findOne({ where: { guildId: interaction.guild.id } });
 
-        if (guild && guild.logsChannel) {
-            var log = await interaction.guild?.channels.cache.get(guild.logsChannel);
-            if (log && log.type === ChannelType.GuildText) {
-                await log.send(`<@${interaction.user.id}> has moved down **${userToMove}** in [${interaction.channel.name}](${interaction.message.url})`);
-            }
-        }*/
+        if (guild.logsChannel) {
+            var log = await interaction.guild.channels.fetch(guild.logsChannel) as TextChannel;
+            if (!log) return;
+            
+            await log.send(`<@${interaction.user.id}> has moved down **${userToMove}** in [${interaction.channel.name}](${interaction.message.url})`);
+        }
     }
 }

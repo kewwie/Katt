@@ -97,7 +97,7 @@ export const ApproveMember: Button = {
         }
 
         if (guild.logsChannel) {
-            var log = member.guild.channels.cache.get(guild.logsChannel) as TextChannel;
+            var log = await interaction.guild.channels.fetch(guild.logsChannel) as TextChannel;
             if (!log) return;
 
             var em = new EmbedBuilder()
