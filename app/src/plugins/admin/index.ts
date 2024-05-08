@@ -5,7 +5,7 @@ import { ConfigCmd } from "./commands/config";
 import { PluginsCmd } from "./commands/plugins";
 
 import { GuildAdminAdd } from "./events/guildAdminAdd";
-import { GuildAdminRemove } from "./events/GuildAdminRemove";
+import { GuildAdminRemove } from "./events/guildAdminRemove";
 import { GuildVerifiedAdd } from "./events/guildVerifiedAdd";
 import { Ready } from "./events/ready";
 
