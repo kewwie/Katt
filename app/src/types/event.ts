@@ -9,6 +9,8 @@ export enum Events {
     VoiceStateUpdate = "voiceStateUpdate",
     GuildAdminAdd = "guildAdminAdd",
     GuildAdminRemove = "guildAdminRemove",
+    GuildVerifiedAdd = "guildVerifiedAdd",
+    GuildVerifiedRemove = "guildVerifiedRemove",
 }
 
 export interface Event {

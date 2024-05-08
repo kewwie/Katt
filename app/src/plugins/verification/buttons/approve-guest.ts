@@ -19,6 +19,7 @@ import { Group } from "../../../data/entities/Group";
 import { GroupMember } from "../../../data/entities/GroupMember";
 
 import axios from "axios";
+import { Events } from "../../../types/event";
 
 export const ApproveGuest: Button = {
     config: {
@@ -79,13 +80,15 @@ export const ApproveGuest: Button = {
         
         if (!guildMember) {
             return;
-        }
+        }   
 
         var member = await interaction.guild.members.fetch(userId);
         if (!member) {
             interaction.followUp("Member didnt join the server");
             return;
         }
+
+        client.emit(Events.GuildVerifiedAdd, interaction.guild, member, "guest");
         
         await member.send(`You have been **verified** in **${interaction.guild.name}**`).catch(() => {});
 
