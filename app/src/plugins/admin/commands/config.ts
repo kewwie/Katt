@@ -1,6 +1,6 @@
 import { KiwiClient } from "../../../client";
 import { dataSource } from "../../../data/datasource";
-import { Guild } from "../../../data/entities/Guild";
+import { GuildConfig } from "../../../data/entities/GuildConfig";
 
 import {
     ChatInputCommandInteraction
@@ -159,7 +159,7 @@ export const ConfigCmd: Command = {
             return;
         }
 
-        const GuildRepository = await dataSource.getRepository(Guild);
+        const GuildRepository = await dataSource.getRepository(GuildConfig);
 
         switch (interaction.options.getSubcommand()) {
             case "logs":

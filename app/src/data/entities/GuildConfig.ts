@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity({ name: 'guilds' })
-export class Guild {
+export class GuildConfig {
     @PrimaryColumn({ type: 'varchar', length: 255 })
     guildId: string; // Guild ID
 

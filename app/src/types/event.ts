@@ -7,6 +7,7 @@ export enum Events {
     InteractionCreate = "interactionCreate",
     Ready = "ready",
     VoiceStateUpdate = "voiceStateUpdate",
+    GuildAdminAdd = "guildAdminAdd",
 }
 
 export interface Event {

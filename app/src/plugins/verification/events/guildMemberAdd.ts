@@ -12,7 +12,7 @@ import { ChannelType } from "discord-api-types/v10";
 import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../data/datasource";
-import { Guild } from "../../../data/entities/Guild";
+import { GuildConfig } from "../../../data/entities/GuildConfig";
 import { Blacklist } from "../../../data/entities/Blacklist";
 import { Whitelist } from "../../../data/entities/Whitelist";
 import { Group } from "../../../data/entities/Group";
@@ -31,7 +31,7 @@ export const GuildMemberAdd: Event = {
     * @param {GuildMember} member
     */
     async execute(client: KiwiClient, member: GuildMember) {
-        const GuildRepository = await dataSource.getRepository(Guild);
+        const GuildRepository = await dataSource.getRepository(GuildConfig);
         const BlacklistRepository = await dataSource.getRepository(Blacklist);
         const WhitelistRepository = await dataSource.getRepository(Whitelist);
 

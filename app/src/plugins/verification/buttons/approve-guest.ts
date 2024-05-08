@@ -13,7 +13,7 @@ import { env } from "../../../env";
 import { Button } from "../../../types/component";
 
 import { dataSource } from "../../../data/datasource";
-import { Guild } from "../../../data/entities/Guild";
+import { GuildConfig } from "../../../data/entities/GuildConfig";
 import { AuthUser } from "../../../data/entities/AuthUser";
 import { Group } from "../../../data/entities/Group";
 import { GroupMember } from "../../../data/entities/GroupMember";
@@ -36,7 +36,7 @@ export const ApproveGuest: Button = {
         interaction.deferUpdate();
         var userId = interaction.customId.split("_")[1];
 
-        const GuildRepository = await dataSource.getRepository(Guild);
+        const GuildRepository = await dataSource.getRepository(GuildConfig);
         const AuthUserRepository = await dataSource.getRepository(AuthUser);
         const GroupRepository = await dataSource.getRepository(Group);
         const GroupMembersRepository = await dataSource.getRepository(GroupMember);

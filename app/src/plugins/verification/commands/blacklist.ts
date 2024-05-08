@@ -20,7 +20,7 @@ import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../data/datasource";
 import { Blacklist } from "../../../data/entities/Blacklist";
-import { Guild } from "../../../data/entities/Guild";
+import { Guild } from "../../../data/entities/GuildConfig";
 
 /**
  * Represents the Blacklist command module.

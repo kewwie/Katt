@@ -11,7 +11,7 @@ import {
 import { Button } from "../../../types/component";
 
 import { dataSource } from "../../../data/datasource";
-import { Guild } from "../../../data/entities/Guild";
+import { GuildConfig } from "../../../data/entities/GuildConfig";
 
 export const DenyUser: Button = {
     config: {
@@ -27,7 +27,7 @@ export const DenyUser: Button = {
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
         interaction.deferUpdate();
-        const GuildRepository = await dataSource.getRepository(Guild);
+        const GuildRepository = await dataSource.getRepository(GuildConfig);
 
         var memberId = interaction.customId.split("_")[1];
 
