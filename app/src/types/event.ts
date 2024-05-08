@@ -8,6 +8,7 @@ export enum Events {
     Ready = "ready",
     VoiceStateUpdate = "voiceStateUpdate",
     GuildAdminAdd = "guildAdminAdd",
+    GuildAdminRemove = "guildAdminRemove",
 }
 
 export interface Event {
