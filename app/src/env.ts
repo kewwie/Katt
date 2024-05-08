@@ -13,4 +13,6 @@ export const env = {
     DB_USER: "kewiapp",
     DB_PASSWORD: process.env.DATABASE_PASSWORD,
     DB_DATABASE: "kewiapp",
+
+    URL: process.env.URL,
 }
