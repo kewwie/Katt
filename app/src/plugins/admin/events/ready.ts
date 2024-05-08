@@ -29,7 +29,7 @@ export const Ready: Event = {
                 await GuildAdminsRepository.delete({ guildId: guild[0], level: 4 });
             }
 
-            if (!guildAdmins.find(admin => admin.userId === g.ownerId)) {
+            if (!guildAdmins.find(admin => admin.userId === g.ownerId && admin.level === 4)) {
                 var user = await client.users.fetch(g.ownerId);
                 if (user) {
                     await GuildAdminsRepository.insert({
