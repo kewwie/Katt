@@ -11,6 +11,9 @@ export class GuildAdmins {
     @Column({ type: 'varchar' })
     userId: string;
 
+    @Column({ type: 'varchar' })
+    username: string;
+
     @Column({ type: 'int', default: 1 })
     level: number;
 }

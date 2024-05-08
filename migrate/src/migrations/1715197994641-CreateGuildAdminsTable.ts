@@ -23,6 +23,10 @@ export class CreateGuildAdminsTable1715197994641 implements MigrationInterface {
                         type: "varchar"
                     },
                     {
+                        name: "username",
+                        type: "varchar"
+                    },
+                    {
                         name: "level",
                         type: "int",
                         default: 1
