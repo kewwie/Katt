@@ -19,7 +19,7 @@ export const Ready: Event = {
 
             var guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: guild[0], userId: g.ownerId } });
             if (guildAdmin) {
-                await GuildAdminsRepository.delete({ guildId: guild[0], userId: g.ownerId });
+                await GuildAdminsRepository.delete({ guildId: guild[0], level: 4 });
             }
        
             await GuildAdminsRepository.insert({
