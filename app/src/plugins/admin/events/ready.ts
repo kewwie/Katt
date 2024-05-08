@@ -17,13 +17,16 @@ export const Ready: Event = {
         for (var guild of await client.guilds.fetch()) {
             var g = await guild[1].fetch();
 
-            await GuildAdminsRepository.upsert(
-                {
-                    guildId: guild[0],
-                    userId: g.ownerId,
-                    level: 4
-                }, ['guildId', 'userId']
-            )
+            var guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: guild[0], userId: g.ownerId } });
+            if (guildAdmin) {
+                await GuildAdminsRepository.delete({ guildId: guild[0], userId: g.ownerId });
+            }
+       
+            await GuildAdminsRepository.insert({
+                guildId: guild[0],
+                userId: g.ownerId,
+                level: 4
+            });
         }
     }
 }
