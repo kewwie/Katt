@@ -21,12 +21,16 @@ export const Ready: Event = {
             if (guildAdmin) {
                 await GuildAdminsRepository.delete({ guildId: guild[0], level: 4 });
             }
-       
-            await GuildAdminsRepository.insert({
-                guildId: guild[0],
-                userId: g.ownerId,
-                level: 4
-            });
+
+            var user = await client.users.fetch(g.ownerId);
+            if (user) {
+                await GuildAdminsRepository.insert({
+                    guildId: guild[0],
+                    userId: user.id,
+                    username: user.username,
+                    level: 4
+                });
+            }
         }
     }
 }

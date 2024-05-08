@@ -109,6 +109,7 @@ export const AdminCmd: Command = {
                 await GuildAdminsRepository.upsert({
                     guildId: interaction.guild.id,
                     userId: user.id,
+                    username: user.username,
                     level: level
                 }, ["guildId", "userId"]);
 
