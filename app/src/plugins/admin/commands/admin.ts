@@ -199,7 +199,7 @@ export const AdminCmd: Command = {
                 });
 
                 interaction.reply({
-                    content: `**Admins**\n${adminList.join("\n")}`,
+                    content: `# Admins \n${adminList.join("\n")}`,
                     ephemeral: true
                 });
                 break;
