@@ -19,11 +19,13 @@ export const Ready: Event = {
             const guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: guild[0], userId: g.ownerId } });
 
             if (!guildAdmin) {
-                const newGuildAdmin = new GuildAdmins();
-                newGuildAdmin.guildId = guild[0];
-                newGuildAdmin.userId = g.ownerId;
-                newGuildAdmin.level = 3;
-                await GuildAdminsRepository.save(newGuildAdmin);
+                await GuildAdminsRepository.upsert(
+                    {
+                        guildId: guild[0],
+                        userId: g.ownerId,
+                        level: 4
+                    }, ['guildId', 'userId']
+                )
             }
         }
     }
