@@ -41,7 +41,7 @@ export const AdminCmd: Command = {
                         type: OptionTypes.INTEGER,
                         name: "level",
                         description: "The level of the admin",
-                        required: false,
+                        required: true,
                         choices: [
                             {
                                 name: "Level 1",
@@ -88,7 +88,7 @@ export const AdminCmd: Command = {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
         var guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
 
-        if (guildAdmin.level < 3) {
+        if (!guildAdmin || guildAdmin.level < 3) {
             interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
             return;
         }
@@ -96,7 +96,7 @@ export const AdminCmd: Command = {
         switch (interaction.options.getSubcommand()) {
             case "add": {
                 var user = interaction.options.getUser("user");
-                var level = interaction.options.getInteger("level") ?? 1;
+                var level = interaction.options.getInteger("level");
 
                 if (guildAdmin.level <= level) {
                     interaction.reply({

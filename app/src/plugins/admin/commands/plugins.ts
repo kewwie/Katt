@@ -120,7 +120,7 @@ export const PluginsCmd: Command = {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
         var guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
 
-        if (guildAdmin.level < 3) {
+        if (!guildAdmin || guildAdmin.level < 3) {
             interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
             return;
         }
