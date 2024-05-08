@@ -19,21 +19,31 @@ export const Ready: Event = {
         for (var guild of await client.guilds.fetch()) {
             var g = await guild[1].fetch();
 
-            var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: guild[0], level: 4 } });
+            var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: g.id } });
             if (guildAdmins) {
                 for (var guildAdmin of guildAdmins) {
-                    if (guildAdmin.userId !== g.ownerId) {
-                        await GuildAdminsRepository.delete({ guildId: guild[0], userId: guildAdmin.userId });
+                    if (guildAdmin.level === 4) {
+                        if (guildAdmin.userId !== g.ownerId) {
+                            await GuildAdminsRepository.delete({ guildId: g.id, userId: guildAdmin.userId });
+                        }
                     }
                 }
-                await GuildAdminsRepository.delete({ guildId: guild[0], level: 4 });
             }
 
-            if (!guildAdmins.find(admin => admin.userId === g.ownerId && admin.level === 4)) {
-                var user = await client.users.fetch(g.ownerId);
-                if (user) {
+            var user = await client.users.fetch(g.ownerId);
+            if (user) {
+                var guildAdmin = guildAdmins.find(admin => admin.userId === g.ownerId);
+                if (guildAdmin && guildAdmin.level !== 4) {
+                    await GuildAdminsRepository.update({
+                        guildId: g.id,
+                        userId: user.id
+                    }, {
+                        username: user.username,
+                        level: 4
+                    });
+                } else {
                     await GuildAdminsRepository.insert({
-                        guildId: guild[0],
+                        guildId: g.id,
                         userId: user.id,
                         username: user.username,
                         level: 4
