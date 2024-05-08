@@ -195,7 +195,7 @@ export const AdminCmd: Command = {
                 }
 
                 var adminList = admins.map(admin => {
-                    return `**${admin.userId}** - Level ${admin.level}`;
+                    return `**${admin.username}** - Level ${admin.level}`;
                 });
 
                 interaction.reply({
