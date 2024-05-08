@@ -9,7 +9,8 @@ import {
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes,
-    Command
+    Command,
+    Permissions
 } from "../../../types/command";
 
 import { dataSource } from "../../../data/datasource";
@@ -21,7 +22,7 @@ export const AdminCmd: Command = {
         name: "admin",
         description: "Admin Commands",
         type: CommandTypes.CHAT_INPUT,
-        default_member_permissions: null,
+        default_member_permissions: Permissions.Administrator,
         contexts: [SlashCommandContexts.GUILD],
         integration_types: [IntegrationTypes.GUILD],
         options: [
@@ -51,7 +52,7 @@ export const AdminCmd: Command = {
                                 value: 2
                             },
                             {
-                                name: "Level 3 (Owner)",
+                                name: "Level 3 (Co-Owner)",
                                 value: 3
                             }
                         ]
@@ -84,12 +85,13 @@ export const AdminCmd: Command = {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        if (interaction.user.id !== interaction.guild.ownerId) {
+        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
+        var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: interaction.guild.id } });
+
+        if (guildAdmins.find(admin => admin.userId === interaction.user.id)?.level < 3) {
             interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
             return;
         }
-
-        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
 
         switch (interaction.options.getSubcommand()) {
             case "add": {

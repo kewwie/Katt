@@ -1,6 +1,8 @@
 import { KiwiClient } from "../../../client";
+
 import { dataSource } from "../../../data/datasource";
 import { GuildConfig } from "../../../data/entities/GuildConfig";
+import { GuildAdmins } from "../../../data/entities/GuildAdmins";
 
 import {
     ChatInputCommandInteraction
@@ -17,7 +19,6 @@ import {
     Command
 } from "../../../types/command";
 import { env } from "../../../env";
-
 
 /**
  * Represents the configuration command.
@@ -152,10 +153,11 @@ export const ConfigCmd: Command = {
      * @returns {Promise<void>}
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        if (interaction.user.id !== interaction.guild.ownerId) {
-            await interaction.reply({
-                content: `You must be an owner of the server to configure it!`,
-            });
+        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
+        var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: interaction.guild.id } });
+
+        if (guildAdmins.find(admin => admin.userId === interaction.user.id)?.level < 3) {
+            interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
             return;
         }
 

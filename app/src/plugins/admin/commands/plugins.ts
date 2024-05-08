@@ -1,6 +1,8 @@
 import { KiwiClient } from "../../../client";
+
 import { dataSource } from "../../../data/datasource";
 import { GuildPlugins } from "../../../data/entities/GuildPlugins";
+import { GuildAdmins } from "../../../data/entities/GuildAdmins";
 
 import {
     AutocompleteInteraction,
@@ -115,10 +117,11 @@ export const PluginsCmd: Command = {
      * @returns {Promise<void>}
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
-        if (interaction.user.id !== interaction.guild.ownerId) {
-            await interaction.reply({
-                content: `You must be the owner of the server to use this command`,
-            });
+        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
+        var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: interaction.guild.id } });
+
+        if (guildAdmins.find(admin => admin.userId === interaction.user.id)?.level < 3) {
+            interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
             return;
         }
 
