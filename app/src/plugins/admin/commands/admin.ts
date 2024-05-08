@@ -14,6 +14,7 @@ import {
 
 import { dataSource } from "../../../data/datasource";
 import { GuildAdmins } from "../../../data/entities/GuildAdmins";
+import { Events } from "../../../types/event";
 
 export const AdminCmd: Command = {
 	config: {
@@ -101,6 +102,8 @@ export const AdminCmd: Command = {
                     level: level
                 }, ["guildId", "userId"]);
 
+                client.emit(Events.GuildAdminAdd, interaction.guild, user);
+
                 interaction.reply({ 
                     content: `Added **${user.username}** as an admin with **level ${level}**`,
                     ephemeral: true
@@ -131,6 +134,8 @@ export const AdminCmd: Command = {
                     guildId: interaction.guild.id,
                     userId: user.id
                 });
+
+                client.emit(Events.GuildAdminRemove, interaction.guild, user);
 
                 interaction.reply({
                     content: `Removed **${user.username}** as an admin`,
