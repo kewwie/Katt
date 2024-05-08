@@ -33,7 +33,7 @@ export const Ready: Event = {
             var user = await client.users.fetch(g.ownerId);
             if (user) {
                 var guildAdmin = guildAdmins.find(admin => admin.userId === g.ownerId);
-                if (guildAdmin && guildAdmin.level !== 4) {
+                if (guildAdmin) {
                     await GuildAdminsRepository.update({
                         guildId: g.id,
                         userId: user.id
