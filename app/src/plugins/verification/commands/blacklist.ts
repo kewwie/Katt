@@ -20,7 +20,7 @@ import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../data/datasource";
 import { Blacklist } from "../../../data/entities/Blacklist";
-import { Guild } from "../../../data/entities/GuildConfig";
+import { GuildConfig } from "../../../data/entities/GuildConfig";
 
 /**
  * Represents the Blacklist command module.
@@ -105,7 +105,7 @@ export const BlacklistCmd: Command = {
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         const BlacklistRepository = await dataSource.getRepository(Blacklist);
-        const GuildRepository = await dataSource.getRepository(Guild);
+        const GuildRepository = await dataSource.getRepository(GuildConfig);
 
         switch (interaction.options.getSubcommand()) {
             case "add": {
