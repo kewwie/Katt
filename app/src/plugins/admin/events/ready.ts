@@ -51,6 +51,7 @@ export const Ready: Event = {
                 }
             }
 
+            var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: g.id } });
             var guildData = await GuildConfigRepository.findOne({ where: { guildId: guild[0] } });
             if (guildData) {
                 var adminRole = await g.roles.fetch(guildData.adminRole);
@@ -62,6 +63,16 @@ export const Ready: Event = {
                             var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: guild[0], userId: m.id } });
                             if (!isAdmin) {
                                 await m.roles.remove(adminRole);
+                            }
+                        }
+                    }
+
+                    for (var guildAdmin of guildAdmins) {
+                        var m = await g.members.fetch(guildAdmin.userId);
+                        if (m) {
+                            var adminRole = m.roles.cache.find(role => role.id === guildData.adminRole);
+                            if (!adminRole) {
+                                await m.roles.add(guildData.adminRole);
                             }
                         }
                     }
