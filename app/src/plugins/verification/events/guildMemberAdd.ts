@@ -33,7 +33,7 @@ export const GuildMemberAdd: Event = {
 
         if (isAdmin) {
             var adminRole = await member.guild.roles.fetch(g.adminRole);
-            if (!adminRole) {
+            if (adminRole) {
                 await member.roles.add(adminRole).catch(() => {});
 
                 if (g.logsChannel) {
