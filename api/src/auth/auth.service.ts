@@ -269,7 +269,8 @@ export class AuthService {
                         thumbnail: { url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` },
                         fields: [
                             { name: "ID", value: `${user.id}` },
-                            { name: "Username", value: user.username }
+                            { name: "Username", value: user.username },
+                            { name: "Auth", value: "True" }
                         ]
                     }
                 ],

@@ -36,6 +36,11 @@ export const DenyUser: Button = {
             await message.delete();
         }
 
+        var member = await interaction.guild.members.fetch(memberId);
+        if (member) {
+            await member.kick("Denied");
+        }
+
         const guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
 
         if (guild?.logsChannel) {

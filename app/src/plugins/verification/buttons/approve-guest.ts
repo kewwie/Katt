@@ -60,27 +60,28 @@ export const ApproveGuest: Button = {
             }
         }
 
-        var guildMember = await axios.put(
-            `https://discord.com/api/guilds/${guild.guildId}/members/${userId}`, 
-            {
-                access_token: authUser.accessToken,
-                roles: roles
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'authorization': `Bot ${env.CLIENT_TOKEN}`
+        var guildMember = await interaction.guild.members.fetch(userId);
+        if (guildMember) {
+            await guildMember.roles.add(roles).catch(() => {});
+        } else {
+            await axios.put(
+                `https://discord.com/api/guilds/${guild.guildId}/members/${userId}`, 
+                {
+                    access_token: authUser.accessToken,
+                    roles: roles
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'authorization': `Bot ${env.CLIENT_TOKEN}`
+                    }
                 }
-            }
-        ).then((response) => {
-            return response.data;
-        }).catch((error) => {
-            return null;
-        });
-        
-        if (!guildMember) {
-            return;
-        }   
+            ).then((response) => {
+                return response.data;
+            }).catch((error) => {
+                return null;
+            });
+        } 
 
         var member = await interaction.guild.members.fetch(userId);
         if (!member) {
