@@ -1,3 +1,5 @@
+import { GuildMember } from "discord.js";
+
 import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
@@ -56,8 +58,7 @@ export const Ready: Event = {
             if (guildData) {
                 var adminRole = await g.roles.fetch(guildData.adminRole);
                 if (adminRole) {
-                    var membersWithRole = await g.members.fetch();
-                    for (var member of membersWithRole) {
+                    for (var member of adminRole.members) {
                         var m = await member[1].fetch();
                         if (m.roles.cache.find(role => role.id === guildData.adminRole)) {
                             var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: guild[0], userId: m.id } });
@@ -68,7 +69,7 @@ export const Ready: Event = {
                     }
 
                     for (var guildAdmin of guildAdmins) {
-                        var m = await g.members.fetch(guildAdmin.userId);
+                        var m: GuildMember | null = await g.members.fetch(guildAdmin.userId).catch(() => { return null });
                         if (m) {
                             var adminRole = m.roles.cache.find(role => role.id === guildData.adminRole);
                             if (!adminRole) {
