@@ -32,9 +32,9 @@ export const GuildMemberAdd: Event = {
         var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
 
         if (isAdmin) {
-            var adminRole = member.roles.cache.has(g.adminRole);
+            var adminRole = await member.guild.roles.fetch(g.adminRole);
             if (!adminRole) {
-                await member.roles.add(g.adminRole).catch(() => {});
+                await member.roles.add(adminRole).catch(() => {});
 
                 if (g.logsChannel) {
                     var log = await member.guild.channels.fetch(g.logsChannel) as TextChannel;
