@@ -56,7 +56,6 @@ export const GuildMemberAdd: Event = {
                 }
             }
         } else {
-            console.log(10101)
             if (g.pendingChannel) {
                 var pending = await member.guild.channels.fetch(g.pendingChannel) as TextChannel;
                 if (!pending) return;
