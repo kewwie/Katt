@@ -56,9 +56,10 @@ export const GuildMemberAdd: Event = {
                 }
             }
         } else {
+            console.log(10101)
             if (g.pendingChannel) {
                 var pending = await member.guild.channels.fetch(g.pendingChannel) as TextChannel;
-                if (!log) return;
+                if (!pending) return;
     
                 var em = new EmbedBuilder()
                     .setTitle("Auto Approved Admin")
@@ -95,6 +96,7 @@ export const GuildMemberAdd: Event = {
                 );
 
                 await pending.send({
+                    content: g.verificationPing ? `<@&${g.verificationPing}>` : "@everyone",
                     embeds: [em],
                     components: rows
                 });

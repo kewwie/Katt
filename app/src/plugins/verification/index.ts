@@ -3,6 +3,7 @@ import { Plugin } from "../../types/plugin";
 import { ApproveGuest } from "./buttons/approve-guest";
 import { ApproveMember } from "./buttons/approve-member";
 import { DenyUser } from "./buttons/deny-user";
+import { GuildMemberAdd } from "./events/guildMemberAdd";
 
 export const VerificationPlugin: Plugin = {
     config: {
@@ -13,6 +14,9 @@ export const VerificationPlugin: Plugin = {
         ApproveGuest,
         ApproveMember,
         DenyUser
+    ],
+    events: [
+        GuildMemberAdd
     ],
     afterLoad: () => {
         console.log("Loaded Verification Plugin")
