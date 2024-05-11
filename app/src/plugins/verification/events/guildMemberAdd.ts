@@ -47,6 +47,7 @@ export const GuildMemberAdd: Event = {
                         .addFields(
                             { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
                             { name: "Type", value: "Admin" },
+                            { name: "Auth", value: "False" }
                         )
         
                     await log.send({

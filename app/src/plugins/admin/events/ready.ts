@@ -15,7 +15,7 @@ export const Ready: Event = {
     async execute(client: KiwiClient) {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
         const GuildConfigRepository = await dataSource.getRepository(GuildConfig);
-        
+
         for (var guild of await client.guilds.fetch()) {
             var g = await guild[1].fetch();
 
@@ -62,7 +62,7 @@ export const Ready: Event = {
                         if (m.roles.cache.find(role => role.id === guildData.adminRole)) {
                             var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: guild[0], userId: m.id } });
                             if (!isAdmin) {
-                                await m.roles.remove(adminRole);
+                                await m.roles.remove(adminRole).catch(() => {});
                             }
                         }
                     }
@@ -72,7 +72,7 @@ export const Ready: Event = {
                         if (m) {
                             var adminRole = m.roles.cache.find(role => role.id === guildData.adminRole);
                             if (!adminRole) {
-                                await m.roles.add(guildData.adminRole);
+                                await m.roles.add(guildData.adminRole).catch(() => {});
                             }
                         }
                     }
