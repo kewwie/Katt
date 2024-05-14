@@ -1,5 +1,5 @@
-## TypeORM 
-You need to be in the app folder
+## How to use migrations
+You need to be in the migrate folder
 
 ### Create Migration
 
