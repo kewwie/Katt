@@ -71,7 +71,7 @@ export const MessageCmd: Command = {
                 
                 
                 var uTag= await client.getTag({ username: user.username, discriminator: user.discriminator });
-                interaction.reply(`**${uTag}** has sent **${new Intl.NumberFormat("en-US").format(Math.floor(messageActivity.messages))}** message(s) in the server`);
+                interaction.reply(`**${uTag}** has sent **${new Intl.NumberFormat("en-US").format(Math.floor(messageActivity.messages))}** ${messageActivity.messages === 1 ? 'message' : 'messages'} in the server`);
                 break;
             }
             case "leaderboard": {
@@ -80,7 +80,7 @@ export const MessageCmd: Command = {
                 );
 
                 var leaderboard = messageActivities.map((ma, i) => {
-                    return `${i + 1}. **${ma.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(ma.messages))} messages`;
+                    return `${i + 1}. **${ma.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(ma.messages))} ${ma.messages === 1 ? 'message' : 'messages'}`;
                 }).join("\n");
 
                 interaction.reply(`**Message Leaderboard**\n${leaderboard}`);
