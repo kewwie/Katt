@@ -17,6 +17,9 @@ import {
 import { dataSource } from "../../../data/datasource";
 import { Nickname } from "../../../data/entities/Nickname";
 
+/**
+ * @type {Command}
+ */
 export const NicknameCmd: Command = {
 	config: {
         name: "nickname",

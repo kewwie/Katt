@@ -4,7 +4,6 @@ import { Event, Events } from "../../../types/event";
 import { AntiBanPlugin } from "..";
 
 /**
- * The ready event handler.
  * @type {Event}
  */
 export const Ready: Event = {
@@ -13,9 +12,7 @@ export const Ready: Event = {
     manualCheck: true,
 
     /**
-     * Executes the ready event handler.
-     * @param {KiwiClient} client - The KiwiClient instance.
-     * @returns {Promise<void>}
+     * @param {KiwiClient} client
      */
     async execute(client: KiwiClient): Promise<void> {
         const guilds = await client.guilds.fetch();

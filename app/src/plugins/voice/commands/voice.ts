@@ -15,6 +15,9 @@ import {
 import { dataSource } from "../../../data/datasource";
 import { VoiceActivity } from "../../../data/entities/VoiceActivity";
 
+/**
+ * @type {Command}
+ */
 export const VoiceCmd: Command = {
 	config: {
         name: "voice",

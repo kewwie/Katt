@@ -20,14 +20,9 @@ import {
 
 
 /**
- * Represents the Plugins command.
  * @type {Command}
  */
 export const PluginsCmd: Command = {
-    /**
-     * The configuration for the Plugins command.
-     * @type {object}
-     */
     config: {
         name: "plugins",
         description: "Plugins Commands",
@@ -73,10 +68,8 @@ export const PluginsCmd: Command = {
     },
 
     /**
-     * Autocomplete handler for the Plugins command.
-     * @param {AutocompleteInteraction} interaction - The autocomplete interaction.
-     * @param {KiwiClient} client - The Kiwi client.
-     * @returns {Promise<void>}
+     * @param {AutocompleteInteraction} interaction
+     * @param {KiwiClient} client
      */
     async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
         const GuildPluginsRepository = await dataSource.getRepository(GuildPlugins);
@@ -111,10 +104,8 @@ export const PluginsCmd: Command = {
     },
 
     /**
-     * Execute handler for the Plugins command.
-     * @param {ChatInputCommandInteraction} interaction - The command interaction.
-     * @param {KiwiClient} client - The Kiwi client.
-     * @returns {Promise<void>}
+     * @param {ChatInputCommandInteraction} interaction
+     * @param {KiwiClient} client
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);

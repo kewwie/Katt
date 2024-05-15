@@ -9,6 +9,9 @@ import { dataSource } from "../../../data/datasource";
 import { VoiceChannel } from "../../../data/entities/VoiceChannel";
 import { VoiceActivity } from "../../../data/entities/VoiceActivity";
 
+/**
+ * @type {Event}
+ */
 export const voiceStateUpdate: Event = {
     name: Events.VoiceStateUpdate,
 

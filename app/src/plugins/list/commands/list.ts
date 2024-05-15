@@ -19,6 +19,9 @@ import { UpdateList } from "../buttons/update-list";
 
 import { RowBuilder } from "../../../builders/row";
 
+/**
+ * @type {Command}
+ */
 export const List: Command = {
 	config: {
         name: "list",

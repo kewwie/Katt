@@ -8,6 +8,9 @@ import {
 import { dataSource } from "../../../data/datasource";
 import { MessageActivity } from "../../../data/entities/MessageActivity";
 
+/**
+ * @type {Event}
+ */
 export const MessageCreate: Event = {
     name: Events.MessageCreate,
 

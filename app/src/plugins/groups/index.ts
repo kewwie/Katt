@@ -2,6 +2,9 @@ import { Plugin } from "../../types/plugin";
 
 import { GroupCommand } from "./commands/group";
 
+/**
+ * @type {Plugin}
+ */
 export const GroupsPlugin: Plugin = {
     config: {
         name: "Groups",

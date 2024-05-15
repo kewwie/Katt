@@ -12,6 +12,9 @@ import { GuildAdmins } from "../../../data/entities/GuildAdmins";
 import { GuildConfig } from "../../../data/entities/GuildConfig";
 
 
+/**
+ * @type {Event}
+ */
 export const GuildVerifiedAdd: Event = {
     name: Events.GuildVerifiedAdd,
 

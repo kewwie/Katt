@@ -18,6 +18,9 @@ import { dataSource } from "../../../data/datasource";
 import { GuildAdmins } from "../../../data/entities/GuildAdmins";
 import { Events } from "../../../types/event";
 
+/**
+ * @type {Command}
+ */
 export const AdminCmd: Command = {
 	config: {
         name: "admin",
@@ -82,6 +85,10 @@ export const AdminCmd: Command = {
         ]
     },
 
+    /**
+    * @param {AutocompleteInteraction} interaction
+    * @param {KiwiClient} client
+    */
     async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
 

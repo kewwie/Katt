@@ -10,6 +10,9 @@ import { GuildMemberUpdate } from "./events/guildMemberUpdate";
 import { GuildVerifiedAdd } from "./events/guildVerifiedAdd";
 import { Ready } from "./events/ready";
 
+/**
+ * @type {Plugin}
+ */
 export const AdminPlugin: Plugin = {
     config: {
         name: "Admin"

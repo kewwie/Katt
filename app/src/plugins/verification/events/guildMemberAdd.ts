@@ -18,6 +18,9 @@ import { ApproveGuest } from "../buttons/approve-guest";
 import { ApproveMember } from "../buttons/approve-member";
 import { DenyUser } from "../buttons/deny-user";
 
+/**
+ * @type {Event}
+ */
 export const GuildMemberAdd: Event = {
     name: Events.GuildMemberAdd,
 

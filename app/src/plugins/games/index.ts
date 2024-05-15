@@ -4,6 +4,9 @@ import { ValorantCmd } from "./commands/valorant";
 
 import { newMatchLoop } from "./loops/newMatch";
 
+/**
+ * @type {Plugin}
+ */
 export const GamesPlugin: Plugin = {
     config: {
         name: "Games",

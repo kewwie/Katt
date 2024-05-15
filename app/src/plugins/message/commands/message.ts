@@ -15,6 +15,9 @@ import {
 import { dataSource } from "../../../data/datasource";
 import { MessageActivity } from "../../../data/entities/MessageActivity";
 
+/**
+ * @type {Command}
+ */
 export const MessageCmd: Command = {
 	config: {
         name: "message",

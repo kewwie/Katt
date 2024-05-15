@@ -8,6 +8,9 @@ import { ValorantUser } from '../../../data/entities/ValorantUser';
 
 import { Regions } from "unofficial-valorant-api";
 
+/**
+ * @type {Loop}
+ */
 export const newMatchLoop: Loop = {
     name: "newMatch",
     seconds: 60 * 2.5,

@@ -9,6 +9,9 @@ import { Events, Event } from "../../../types/event";
 import { dataSource } from "../../../data/datasource";
 import { Nickname } from "../../../data/entities/Nickname";
 
+/**
+ * @type {Event}
+ */
 export const GuildMemberUpdate: Event = {
     name: Events.GuildMemberUpdate,
 

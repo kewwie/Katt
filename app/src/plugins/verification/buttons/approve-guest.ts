@@ -21,6 +21,9 @@ import { GroupMember } from "../../../data/entities/GroupMember";
 import axios from "axios";
 import { Events } from "../../../types/event";
 
+/**
+ * @type {Button}
+ */
 export const ApproveGuest: Button = {
     config: {
         type: ComponentType.Button,

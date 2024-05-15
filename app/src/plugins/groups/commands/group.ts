@@ -20,6 +20,9 @@ import { dataSource } from "../../../data/datasource";
 import { Group } from "../../../data/entities/Group";
 import { GroupMember } from "../../../data/entities/GroupMember";
 
+/**
+ * @type {Command}
+ */
 export const GroupCommand: Command =  {
 	config: {
         name: "group",
@@ -244,6 +247,10 @@ export const GroupCommand: Command =  {
         ]
     },
 
+    /**
+     * @param {AutocompleteInteraction} interaction
+     * @param {KiwiClient} client
+     */
     async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
         const GroupRepository = await dataSource.getRepository(Group);
         const focusedValue = interaction.options.getFocused();
