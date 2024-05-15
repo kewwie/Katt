@@ -71,7 +71,7 @@ export const MessageCmd: Command = {
                 
                 
                 var uTag= await client.getTag({ username: user.username, discriminator: user.discriminator });
-                interaction.reply(`**${uTag}** has sent **${new Intl.NumberFormat("en-US").format(Math.floor(messageActivity.messages))}** message in the server`);
+                interaction.reply(`**${uTag}** has sent **${new Intl.NumberFormat("en-US").format(Math.floor(messageActivity.messages))}** message(s) in the server`);
                 break;
             }
             case "leaderboard": {
