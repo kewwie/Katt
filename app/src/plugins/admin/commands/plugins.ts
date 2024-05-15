@@ -184,8 +184,8 @@ export const PluginsCmd: Command = {
                     .filter(plugin => gPlugins.some(gp => gp.plugin === plugin.config.name))
                     .map(plugin => `- ${plugin.config.name}`);
 
-                var disablePlugins = allPlugins
-                    .filter(plugin => gPlugins.some(gp => gp.plugin !== plugin.config.name))
+                const disablePlugins = allPlugins
+                    .filter(plugin => !gPlugins.some(gp => gp.plugin === plugin.config.name))
                     .map(plugin => `- ${plugin.config.name}`);
 
                 interaction.reply({
