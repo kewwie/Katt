@@ -88,7 +88,9 @@ export const AdminCmd: Command = {
         const choices = [];
 
         for (var am of await GuildAdminsRepository.find({ where: { guildId: interaction.guildId }})) {
-            choices.push({ name: `${am.username} (Level ${am.level})`, value: `${am.userId}`});
+            if (am.level <= 3) {
+                choices.push({ name: `${am.username} (Level ${am.level})`, value: `${am.userId}`});
+            };
         }
 
         const focusedValue = interaction.options.getFocused();
