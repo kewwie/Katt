@@ -41,15 +41,13 @@ ___
   - A: Check so all values in env are correct, if it's the wrong values you can see it in logs.
 - **Q: How to see logs?**
   - A: In the main directory you need to run the terminal command `docker compose logs -t -f` and it will show all logs from all containers.
-- **Q: How to updated the application?**
-  - A: In the main directory you need to run the terminal command `docker compose logs -t -f` and it will show all logs from all containers.
 
 ---
 
 #### 4. Contact Information
-- Feedback
-- Report Bug
-- Support
-- Other Quetions
+- Email - me@kewwie.com
+- X/Twitter - [@k3wwie](https://x.com/k3wwie)
+- [Bug Reports](https://github.com/kewwie/kewiapp/issues)
+- [Support](https://api.kewwie.com/join/kewi)
 
 ---
