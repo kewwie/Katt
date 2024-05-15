@@ -197,6 +197,9 @@ export const AdminCmd: Command = {
                 var admins = await GuildAdminsRepository.find({
                     where: {
                         guildId: interaction.guild.id
+                    },
+                    order: {
+                        level: "DESC"
                     }
                 });
 
