@@ -3,6 +3,7 @@ import { AntiBanPlugin } from "./antiban"
 import { GamesPlugin } from "./games"
 import { GroupsPlugin } from "./groups"
 import { ListPlugin } from "./list"
+import { MessagePlugin } from "./message"
 import { NicknamesPlugin } from "./nicknames"
 import { ReadyPlugin } from "./ready"
 import { VerificationPlugin } from "./verification"
@@ -14,6 +15,7 @@ export const Plugins = [
     GamesPlugin,
     GroupsPlugin,
     ListPlugin,
+    MessagePlugin,
     NicknamesPlugin,
     ReadyPlugin,
     VerificationPlugin,
