@@ -114,12 +114,26 @@ export const AdminCmd: Command = {
                     return;
                 }
 
-                await GuildAdminsRepository.upsert({
-                    guildId: interaction.guild.id,
-                    userId: user.id,
-                    username: user.username,
-                    level: level
-                }, ["guildId", "userId"]);
+                var u = await GuildAdminsRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        userId: user.id
+                    }
+                });
+
+                if (u) {
+                    GuildAdminsRepository.update({
+                        guildId: interaction.guild.id,
+                        userId: user.id
+                    }, { level, username: user.username });
+                } else {
+                    GuildAdminsRepository.insert({
+                        guildId: interaction.guild.id,
+                        userId: user.id,
+                        username: user.username,
+                        level
+                    });
+                }
 
                 client.emit(Events.GuildAdminAdd, interaction.guild, user);
 
