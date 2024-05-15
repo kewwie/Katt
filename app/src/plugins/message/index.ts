@@ -1,8 +1,8 @@
 import { Plugin } from "../../types/plugin";
 
-import { VoiceCmd } from "./commands/voice";
+import { MessageCmd } from "./commands/message";
 
-import { voiceStateUpdate } from "./events/voiceStateUpdate";
+import { MessageCreate } from "./events/messageCreate";
 
 export const MessagePlugin: Plugin = {
     config: {
@@ -10,10 +10,10 @@ export const MessagePlugin: Plugin = {
         disableable: true
     },
     commands: [
-        VoiceCmd
+        MessageCmd
     ],
     events: [
-        voiceStateUpdate
+        MessageCreate
     ],
     afterLoad: () => {
         console.log(`Loaded Message Plugin`)
