@@ -176,13 +176,16 @@ export const PluginsCmd: Command = {
 
             case "list":
                 var gPlugins = await GuildPluginsRepository.find({ where: { guild_id: interaction.guildId } });
+                
+                var allPlugins = client.PluginManager.plugins
+                    .filter(plugin => plugin.config.disableable)
 
-                var enabledPlugins = client.PluginManager.plugins
-                    .filter(plugin => gPlugins.some(gp => gp.plugin === plugin.config.name && plugin.config.disableable))
+                var enabledPlugins = allPlugins
+                    .filter(plugin => gPlugins.some(gp => gp.plugin === plugin.config.name))
                     .map(plugin => `- ${plugin.config.name}`);
 
-                var disablePlugins = client.PluginManager.plugins
-                    .filter(plugin => gPlugins.some(gp => gp.plugin !== plugin.config.name && plugin.config.disableable))
+                var disablePlugins = allPlugins
+                    .filter(plugin => gPlugins.some(gp => gp.plugin !== plugin.config.name))
                     .map(plugin => `- ${plugin.config.name}`);
 
                 interaction.reply({
