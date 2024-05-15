@@ -80,7 +80,7 @@ export const MessageCmd: Command = {
                 );
 
                 var leaderboard = messageActivities.map((ma, i) => {
-                    return `${i + 1}. **${ma.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(ma.messages))} minutes`;
+                    return `${i + 1}. **${ma.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(ma.messages))} messages`;
                 }).join("\n");
 
                 interaction.reply(`**Message Leaderboard**\n${leaderboard}`);
