@@ -1,4 +1,5 @@
 import {
+    AutocompleteInteraction,
 	ChatInputCommandInteraction
 } from "discord.js";
 
@@ -65,10 +66,11 @@ export const AdminCmd: Command = {
                 description: "Remove an admin in the server (Owner Only)",
                 options: [
                     {
-                        type: OptionTypes.USER,
+                        type: OptionTypes.STRING,
                         name: "user",
                         description: "The user you want to remove as an admin",
-                        required: true
+                        required: true,
+                        autocomplete: true
                     }
                 ]
             },
@@ -78,6 +80,22 @@ export const AdminCmd: Command = {
                 description: "List all admins in the server",
             }
         ]
+    },
+
+    async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
+        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
+
+        const choices = [];
+
+        for (var am of await GuildAdminsRepository.find({ where: { guildId: interaction.guildId }})) {
+            choices.push({ name: `${am.username} (Level ${am.level})`, value: `${am.userId}`});
+        }
+
+        const focusedValue = interaction.options.getFocused();
+        const filtered = choices.filter(choice => choice.name.startsWith(focusedValue));
+        await interaction.respond(
+            filtered.map(choice => ({ name: choice.name, value: choice.value })),
+        );
     },
 
 	/**
