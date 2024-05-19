@@ -27,7 +27,7 @@ export const GuildAdminRemove: Event = {
 
         var guildMember = await guild.members.fetch(user.id);
 
-        if (guildMember) {
+        if (g && guildMember) {
             var adminRole = guildMember.roles.cache.find(role => role.id === g.adminRole);
             if (!adminRole) {
                 await guildMember.roles.remove(g.adminRole).catch(() => {});
