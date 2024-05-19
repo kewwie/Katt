@@ -23,7 +23,7 @@ export const GuildMemberUpdate: Event = {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
         var g = await GuildConfigRepository.findOne({ where: { guildId: newMember.guild.id } });
 
-        if (newMember.roles.cache.has(g.adminRole)) {
+        if (g && newMember.roles.cache.has(g.adminRole)) {
             var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: newMember.guild.id, userId: newMember.id } });
             if (!isAdmin) {
                 await newMember.roles.remove(g.adminRole).catch(() => {});
