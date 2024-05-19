@@ -27,7 +27,7 @@ export const GuildAdminAdd: Event = {
         const GuildRepository = await dataSource.getRepository(GuildConfig);
         var g = await GuildRepository.findOne({ where: { guildId: guild.id}});
 
-        if (await GuildAdminsRepository.findOne({ where: { guildId: guild.id, userId: user.id } })) {
+        if (g && await GuildAdminsRepository.findOne({ where: { guildId: guild.id, userId: user.id } })) {
 
             var guildMember = await guild.members.fetch(user.id);
 
