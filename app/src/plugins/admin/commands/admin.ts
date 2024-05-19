@@ -1,4 +1,5 @@
 import {
+    AutocompleteInteraction,
 	ChatInputCommandInteraction
 } from "discord.js";
 
@@ -17,6 +18,9 @@ import { dataSource } from "../../../data/datasource";
 import { GuildAdmins } from "../../../data/entities/GuildAdmins";
 import { Events } from "../../../types/event";
 
+/**
+ * @type {Command}
+ */
 export const AdminCmd: Command = {
 	config: {
         name: "admin",
@@ -65,10 +69,11 @@ export const AdminCmd: Command = {
                 description: "Remove an admin in the server (Owner Only)",
                 options: [
                     {
-                        type: OptionTypes.USER,
+                        type: OptionTypes.STRING,
                         name: "user",
                         description: "The user you want to remove as an admin",
-                        required: true
+                        required: true,
+                        autocomplete: true
                     }
                 ]
             },
@@ -78,6 +83,28 @@ export const AdminCmd: Command = {
                 description: "List all admins in the server",
             }
         ]
+    },
+
+    /**
+    * @param {AutocompleteInteraction} interaction
+    * @param {KiwiClient} client
+    */
+    async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
+        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
+
+        const choices = [];
+
+        for (var am of await GuildAdminsRepository.find({ where: { guildId: interaction.guildId }})) {
+            if (am.level <= 3) {
+                choices.push({ name: `${am.username} (Level ${am.level})`, value: `${am.userId}`});
+            };
+        }
+
+        const focusedValue = interaction.options.getFocused();
+        const filtered = choices.filter(choice => choice.name.startsWith(focusedValue));
+        await interaction.respond(
+            filtered.map(choice => ({ name: choice.name, value: choice.value })),
+        );
     },
 
 	/**
@@ -114,12 +141,26 @@ export const AdminCmd: Command = {
                     return;
                 }
 
-                await GuildAdminsRepository.upsert({
-                    guildId: interaction.guild.id,
-                    userId: user.id,
-                    username: user.username,
-                    level: level
-                }, ["guildId", "userId"]);
+                var u = await GuildAdminsRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        userId: user.id
+                    }
+                });
+
+                if (u) {
+                    GuildAdminsRepository.update({
+                        guildId: interaction.guild.id,
+                        userId: user.id
+                    }, { level, username: user.username });
+                } else {
+                    GuildAdminsRepository.insert({
+                        guildId: interaction.guild.id,
+                        userId: user.id,
+                        username: user.username,
+                        level
+                    });
+                }
 
                 client.emit(Events.GuildAdminAdd, interaction.guild, user);
 
@@ -183,6 +224,9 @@ export const AdminCmd: Command = {
                 var admins = await GuildAdminsRepository.find({
                     where: {
                         guildId: interaction.guild.id
+                    },
+                    order: {
+                        level: "DESC"
                     }
                 });
 

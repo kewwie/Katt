@@ -21,7 +21,7 @@ import {
 import { env } from "../../../env";
 
 /**
- * Represents the configuration command.
+ * @type {Command}
  */
 export const ConfigCmd: Command = {
     config: {
@@ -147,10 +147,8 @@ export const ConfigCmd: Command = {
     },
 
     /**
-     * Executes the configuration command.
-     * @param {ChatInputCommandInteraction} interaction - The command interaction.
-     * @param {KiwiClient} client - The Kiwi client.
-     * @returns {Promise<void>}
+     * @param {ChatInputCommandInteraction} interaction
+     * @param {KiwiClient} client
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);

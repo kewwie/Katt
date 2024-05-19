@@ -19,6 +19,9 @@ import { ValorantUser } from "../../../data/entities/ValorantUser";
 
 import { Regions } from "unofficial-valorant-api";
 
+/**
+ * @type {Command}
+ */
 export const ValorantCmd: Command = {
 	config: {
         name: "valorant",

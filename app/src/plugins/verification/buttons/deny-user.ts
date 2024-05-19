@@ -13,6 +13,9 @@ import { Button } from "../../../types/component";
 import { dataSource } from "../../../data/datasource";
 import { GuildConfig } from "../../../data/entities/GuildConfig";
 
+/**
+ * @type {Button}
+ */
 export const DenyUser: Button = {
     config: {
         type: ComponentType.Button,

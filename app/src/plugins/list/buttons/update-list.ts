@@ -12,6 +12,9 @@ import { Button } from "../../../types/component";
 import { dataSource } from "../../../data/datasource";
 import { GuildConfig } from "../../../data/entities/GuildConfig";
 
+/**
+ * @type {Button}
+ */
 export const UpdateList: Button = {
     config: {
         type: ComponentType.Button,

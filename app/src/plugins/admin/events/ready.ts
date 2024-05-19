@@ -7,6 +7,9 @@ import { dataSource } from "../../../data/datasource";
 import { GuildAdmins } from "../../../data/entities/GuildAdmins";
 import { GuildConfig } from "../../../data/entities/GuildConfig";
 
+/**
+ * @type {Event}
+ */
 export const Ready: Event = {
     name: Events.Ready,
     once: true,

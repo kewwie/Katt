@@ -10,6 +10,9 @@ import { Event, Events } from "../../../types/event";
 import { dataSource } from "../../../data/datasource";
 import { GuildConfig } from "../../../data/entities/GuildConfig";
 
+/**
+ * @type {Event}
+ */
 export const GuildAdminRemove: Event = {
     name: Events.GuildAdminRemove,
 

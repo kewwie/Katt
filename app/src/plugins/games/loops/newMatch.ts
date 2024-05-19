@@ -8,6 +8,9 @@ import { ValorantUser } from '../../../data/entities/ValorantUser';
 
 import { Regions } from "unofficial-valorant-api";
 
+/**
+ * @type {Loop}
+ */
 export const newMatchLoop: Loop = {
     name: "newMatch",
     seconds: 60 * 2.5,
@@ -16,7 +19,10 @@ export const newMatchLoop: Loop = {
 
         const valorantUsers = await valorantUserRepo.find();
         for (var valorantUser of valorantUsers) {
-            var match: any = (await client.RiotApi.getMatchesByPUUID({ region: valorantUser.region as Regions, puuid: valorantUser.puuid })).data[0];
+            var matchs: any = (await client.RiotApi.getMatchesByPUUID({ region: valorantUser.region as Regions, puuid: valorantUser.puuid })).data;
+            if (!matchs) return;
+
+            var match = matchs[0];
             
             if (match.metadata?.matchid !== valorantUser.last_match) {
                 valorantUser.last_match = match.metadata.matchid;

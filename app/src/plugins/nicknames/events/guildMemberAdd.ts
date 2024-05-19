@@ -13,6 +13,9 @@ import { Event, Events } from "../../../types/event";
 import { dataSource } from "../../../data/datasource";
 import { Nickname } from "../../../data/entities/Nickname";
 
+/**
+ * @type {Event}
+ */
 export const GuildMemberAdd: Event = {
     name: Events.GuildMemberAdd,
 

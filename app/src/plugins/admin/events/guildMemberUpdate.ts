@@ -10,6 +10,9 @@ import { dataSource } from "../../../data/datasource";
 import { GuildConfig } from "../../../data/entities/GuildConfig";
 import { GuildAdmins } from "../../../data/entities/GuildAdmins";
 
+/**
+ * @type {Event}
+ */
 export const GuildMemberUpdate: Event = {
     name: Events.GuildMemberUpdate,
 

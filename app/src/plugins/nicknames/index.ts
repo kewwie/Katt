@@ -5,6 +5,9 @@ import { NicknameCmd } from "./commands/nickname";
 import { GuildMemberAdd } from "./events/guildMemberAdd";
 import { GuildMemberUpdate } from "./events/guildMemberUpdate";
 
+/**
+ * @type {Plugin}
+ */
 export const NicknamesPlugin: Plugin = {
     config: {
         name: "Nickname",

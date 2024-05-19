@@ -13,12 +13,15 @@ import {
 } from "../../../types/command";
 
 import { dataSource } from "../../../data/datasource";
-import { VoiceActivity } from "../../../data/entities/VoiceActivity";
+import { MessageActivity } from "../../../data/entities/MessageActivity";
 
-export const VoiceCmd: Command = {
+/**
+ * @type {Command}
+ */
+export const MessageCmd: Command = {
 	config: {
-        name: "voice",
-        description: "Voice Commands",
+        name: "message",
+        description: "Message Commands",
         type: CommandTypes.CHAT_INPUT,
         default_member_permissions: null,
         contexts: [SlashCommandContexts.GUILD],
@@ -27,7 +30,7 @@ export const VoiceCmd: Command = {
             {
                 type: OptionTypes.SUB_COMMAND,
                 name: "activity",
-                description: "View a users voice chat activity",
+                description: "View a users message activity",
                 options: [
                     {
                         type: OptionTypes.USER,
@@ -40,7 +43,7 @@ export const VoiceCmd: Command = {
             {
                 type: OptionTypes.SUB_COMMAND,
                 name: "leaderboard",
-                description: "View the voice chat leaderboard",
+                description: "View the message leaderboard",
             }
         ]
     },
@@ -50,7 +53,8 @@ export const VoiceCmd: Command = {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        const VoiceActivityRepository = await dataSource.getRepository(VoiceActivity);
+        const MessageActivityRepository = await dataSource.getRepository(MessageActivity);
+
         switch (interaction.options.getSubcommand()) {
             case "activity": {
                 var user = interaction.options.getUser("user") || interaction.user;
@@ -59,30 +63,30 @@ export const VoiceCmd: Command = {
                     return;
                 } 
 
-                var voiceActivity = await VoiceActivityRepository.findOne(
+                var messageActivity = await MessageActivityRepository.findOne(
                     { where: { userId: user.id, guildId: interaction.guild.id } }
                 );
 
-                if (!voiceActivity || voiceActivity.minutes < 0) {
+                if (!messageActivity || messageActivity.messages < 0) {
                     interaction.reply("No voice activity found for this user");
                     return;
                 }
                 
                 
                 var uTag= await client.getTag({ username: user.username, discriminator: user.discriminator });
-                interaction.reply(`**${uTag}** has been in voice chat for **${new Intl.NumberFormat("en-US").format(Math.floor(voiceActivity.minutes))}** minutes`);
+                interaction.reply(`**${uTag}** has sent **${new Intl.NumberFormat("en-US").format(Math.floor(messageActivity.messages))}** ${messageActivity.messages === 1 ? 'message' : 'messages'} in the server`);
                 break;
             }
             case "leaderboard": {
-                var voiceActivities = await VoiceActivityRepository.find(
-                    { where: { guildId: interaction.guild.id }, order: { minutes: "DESC" }, take: 10 }
+                var messageActivities = await MessageActivityRepository.find(
+                    { where: { guildId: interaction.guild.id }, order: { messages: "DESC" }, take: 10 }
                 );
 
-                var leaderboard = voiceActivities.map((va, i) => {
-                    return `${i + 1}. **${va.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(va.minutes))} minutes`;
+                var leaderboard = messageActivities.map((ma, i) => {
+                    return `${i + 1}. **${ma.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(ma.messages))} ${ma.messages === 1 ? 'message' : 'messages'}`;
                 }).join("\n");
 
-                interaction.reply(`**Voice Chat Leaderboard**\n${leaderboard}`);
+                interaction.reply(`**Message Leaderboard**\n${leaderboard}`);
                 break;
             }
         }

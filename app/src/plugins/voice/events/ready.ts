@@ -7,6 +7,9 @@ import { VoiceActivity } from "../../../data/entities/VoiceActivity";
 
 import { VoicePlugin } from "..";
 
+/**
+ * @type {Event}
+ */
 export const Ready: Event = {
     name: Events.Ready,
     once: true,
