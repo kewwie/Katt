@@ -54,7 +54,7 @@ export const List: Command = {
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
 		switch (interaction.options.getSubcommand()) {
-            case "add": {
+            case "create": {
 				var usersString = interaction.options.getString('users');
 				var users = usersString.split(",");
 
