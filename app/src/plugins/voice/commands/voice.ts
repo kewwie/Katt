@@ -54,6 +54,12 @@ export const VoiceCmd: Command = {
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         const VoiceActivityRepository = await dataSource.getRepository(VoiceActivity);
+
+        const formatter = new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
         switch (interaction.options.getSubcommand()) {
             case "activity": {
                 var user = interaction.options.getUser("user") || interaction.user;
@@ -74,7 +80,7 @@ export const VoiceCmd: Command = {
                 
                 var uTag= await client.getTag({ username: user.username, discriminator: user.discriminator });
                 var hours = voiceActivity.seconds / (60 * 60);
-                interaction.reply(`**${uTag}** has been in voice chat for **${new Intl.NumberFormat("en-US").format(Number(hours.toFixed(2)))}** seconds`);
+                interaction.reply(`**${uTag}** has been in voice chat for **${formatter.format(hours)}** hours`);
                 break;
             }
             case "leaderboard": {
@@ -83,7 +89,7 @@ export const VoiceCmd: Command = {
                 );
 
                 var leaderboard = voiceActivities.map((va, i) => {
-                    return `${i + 1}. **${va.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(Number((va.seconds / (60 * 60)).toFixed(2))))} seconds`;
+                    return `${i + 1}. **${va.username}** - ${formatter.format(va.seconds / (60 * 60))} hours`;
                 }).join("\n");
 
                 interaction.reply(`**Voice Chat Leaderboard**\n${leaderboard}`);
