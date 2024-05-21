@@ -40,7 +40,7 @@ export const voiceStateUpdate: Event = {
                 seconds = 0;
             }
 
-            var secondsSinceLastUpdate = (new Date().getTime() - pvs.joinTime.getTime()) / (1000 * 60);
+            var secondsSinceLastUpdate = (new Date().getTime() - pvs.joinTime.getTime()) / 1000;
             var newSeconds = secondsSinceLastUpdate + seconds;
 
             if (pva) {
