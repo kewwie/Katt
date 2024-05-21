@@ -66,23 +66,23 @@ export const VoiceCmd: Command = {
                     { where: { userId: user.id, guildId: interaction.guild.id } }
                 );
 
-                if (!voiceActivity || voiceActivity.minutes < 0) {
+                if (!voiceActivity || voiceActivity.seconds < 0) {
                     interaction.reply("No voice activity found for this user");
                     return;
                 }
                 
                 
                 var uTag= await client.getTag({ username: user.username, discriminator: user.discriminator });
-                interaction.reply(`**${uTag}** has been in voice chat for **${new Intl.NumberFormat("en-US").format(Math.floor(voiceActivity.minutes))}** minutes`);
+                interaction.reply(`**${uTag}** has been in voice chat for **${new Intl.NumberFormat("en-US").format(Math.floor(voiceActivity.seconds))}** seconds`);
                 break;
             }
             case "leaderboard": {
                 var voiceActivities = await VoiceActivityRepository.find(
-                    { where: { guildId: interaction.guild.id }, order: { minutes: "DESC" }, take: 10 }
+                    { where: { guildId: interaction.guild.id }, order: { seconds: "DESC" }, take: 10 }
                 );
 
                 var leaderboard = voiceActivities.map((va, i) => {
-                    return `${i + 1}. **${va.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(va.minutes))} minutes`;
+                    return `${i + 1}. **${va.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(va.seconds))} seconds`;
                 }).join("\n");
 
                 interaction.reply(`**Voice Chat Leaderboard**\n${leaderboard}`);
