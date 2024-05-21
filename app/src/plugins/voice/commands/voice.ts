@@ -56,7 +56,7 @@ export const VoiceCmd: Command = {
         const VoiceActivityRepository = await dataSource.getRepository(VoiceActivity);
 
         const formatter = new Intl.NumberFormat("en-US", {
-            minimumFractionDigits: 2,
+            minimumFractionDigits: 1,
             maximumFractionDigits: 2
         });
 
