@@ -73,7 +73,8 @@ export const VoiceCmd: Command = {
                 
                 
                 var uTag= await client.getTag({ username: user.username, discriminator: user.discriminator });
-                interaction.reply(`**${uTag}** has been in voice chat for **${new Intl.NumberFormat("en-US").format(Math.floor(voiceActivity.seconds))}** seconds`);
+                var hours = voiceActivity.seconds / (60 * 60);
+                interaction.reply(`**${uTag}** has been in voice chat for **${new Intl.NumberFormat("en-US").format(Number(hours.toFixed(2)))}** seconds`);
                 break;
             }
             case "leaderboard": {
@@ -82,7 +83,7 @@ export const VoiceCmd: Command = {
                 );
 
                 var leaderboard = voiceActivities.map((va, i) => {
-                    return `${i + 1}. **${va.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(va.seconds))} seconds`;
+                    return `${i + 1}. **${va.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(Number((va.seconds / (60 * 60)).toFixed(2))))} seconds`;
                 }).join("\n");
 
                 interaction.reply(`**Voice Chat Leaderboard**\n${leaderboard}`);
