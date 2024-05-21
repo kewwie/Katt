@@ -92,7 +92,7 @@ export const VoiceCmd: Command = {
                     return `${i + 1}. **${va.username}** - ${formatter.format(va.seconds / (60 * 60))} hours`;
                 }).join("\n");
 
-                interaction.reply(`**Voice Chat Leaderboard**\n${leaderboard}`);
+                interaction.reply(`**Voice Leaderboard**\n${leaderboard}`);
                 break;
             }
         }
