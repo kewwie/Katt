@@ -7,7 +7,7 @@ export class CreateGuilds1712735349383 implements MigrationInterface {
             new Table({
                 name: "guilds",
                 columns: [
-                    {
+                    { 
                         name: "guildId",
                         type: "varchar",
                         isPrimary: true,
@@ -50,6 +50,7 @@ export class CreateGuilds1712735349383 implements MigrationInterface {
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.dropTable("guilds");
+        
     }
 
 }

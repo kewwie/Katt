@@ -6,7 +6,7 @@ export class CreateVoiceChannels1712736122504 implements MigrationInterface {
         await queryRunner.createTable(
             new Table({
                 name: "voiceChannels",
-                columns: [
+                columns: [ 
                     {
                         name: "id",
                         type: "int",
@@ -33,6 +33,7 @@ export class CreateVoiceChannels1712736122504 implements MigrationInterface {
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.dropTable("voiceChannels");
+
     }
 
 }

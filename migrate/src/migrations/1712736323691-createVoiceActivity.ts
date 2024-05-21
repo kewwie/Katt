@@ -38,6 +38,7 @@ export class CreateVoiceActivity1712736323691 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.dropTable("voiceActivity");
     }
 
 }
