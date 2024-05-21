@@ -33,15 +33,15 @@ export const voiceStateUpdate: Event = {
                 { where: { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }}
             );
 
-            var minutes;
+            var seconds;
             if (pva) {
-                minutes = pva.minutes;
+                seconds = pva.seconds;
             } else {
-                minutes = 0;
+                seconds = 0;
             }
 
-            var minutesSinceLastUpdate = (new Date().getTime() - pvs.joinTime.getTime()) / (1000 * 60);
-            var newMinutes = minutesSinceLastUpdate + minutes;
+            var secondsSinceLastUpdate = (new Date().getTime() - pvs.joinTime.getTime()) / (1000 * 60);
+            var newSeconds = secondsSinceLastUpdate + seconds;
 
             if (pva) {
                 await VoiceActivityDB.update(
@@ -50,14 +50,14 @@ export const voiceStateUpdate: Event = {
                         userId: oldVoiceState.id,
                         username: oldVoiceState.member.user.username
                     },
-                    { minutes: newMinutes }
+                    { seconds: newSeconds }
                 );
             } else {
                 await VoiceActivityDB.insert({ 
                     guildId: oldVoiceState.guild.id,
                     userId: oldVoiceState.id,
                     username: oldVoiceState.member.user.username,
-                    minutes: newMinutes 
+                    seconds: newSeconds 
                 });
             }
 
