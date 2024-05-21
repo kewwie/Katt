@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'voiceActivity' })
+@Entity({ name: 'voice_activity' })
 export class VoiceActivity {
     @PrimaryGeneratedColumn()
     id: number;
@@ -15,5 +15,5 @@ export class VoiceActivity {
     username: string;
 
     @Column({ type: 'int', nullable: false, default: 0 })
-    minutes: number;
+    seconds: number;
 }
