@@ -3,7 +3,9 @@ import {
     AutocompleteInteraction,
     EmbedBuilder,
     resolveColor,
-    ColorResolvable
+    ColorResolvable,
+    ActionRowBuilder,
+    ButtonBuilder
 } from "discord.js";
 
 import { 
@@ -19,6 +21,10 @@ import { KiwiClient } from "../../../client";
 import { dataSource } from "../../../data/datasource";
 import { Group } from "../../../data/entities/Group";
 import { GroupMember } from "../../../data/entities/GroupMember";
+import { GroupInvite } from "../../../data/entities/GroupInvite";
+
+import { AcceptInvite } from "../buttons/accept-invite";
+import { DenyInvite } from "../buttons/deny-invite";
 
 /**
  * @type {Command}
@@ -261,6 +267,7 @@ export const GroupCommand: Command =  {
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
         const GroupRepository = await dataSource.getRepository(Group);
         const GroupMembersRepository = await dataSource.getRepository(GroupMember);
+        const GroupInvitesRepository = await dataSource.getRepository(GroupInvite);
         
         switch (interaction.options.getSubcommand()) {
             case "create": {
@@ -409,14 +416,33 @@ export const GroupCommand: Command =  {
                         return;
                     }
 
-                    await GroupMembersRepository.insert({
-                        groupId: existingGroup.groupId,
-                        userId: user.id,
-                        username: user.username
+                    var rows = new Array();
+
+                    rows.push(new ActionRowBuilder()
+                        .addComponents([
+                            new ButtonBuilder(AcceptInvite.config)
+                                .setCustomId("accept-invite_" + user.id),
+                            new ButtonBuilder(DenyInvite.config)
+                                .setCustomId("deny-invite_" + user.id)
+                    ]));
+
+                    var message = await user.send({
+                        content: `You have been invited to group **${name}** by **${interaction.user.username}**. Do you accept?`,
+                        components: rows
+                    }).catch(() => {
+                        interaction.reply("I was unable to send a DM to the user");
                     });
-                    await interaction.guild.members.cache.get(user.id).roles.add(existingGroup.roleId);
+
+                    if (!message) return;
+
+                    await GroupInvitesRepository.insert({
+                        group_id: existingGroup.groupId,
+                        user_id: user.id,
+                        inviter_id: interaction.user.id,
+                        message_id: message.id
+                    });
                     let userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
-                    await interaction.reply(`**${userTag}** has been added to group **${name}**`);
+                    await interaction.reply(`**${userTag}** has been invited to group **${name}**`);
         
                 } else {
                     await interaction.reply(`Group **${name}** does not exist`);
