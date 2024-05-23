@@ -74,50 +74,43 @@ export const GroupCommand: Command =  {
                 ]
             },
             {
-                type: OptionTypes.SUB_COMMAND_GROUP,
-                name: "member",
-                description: "Manage members of a group",
+                type: OptionTypes.SUB_COMMAND,
+                name: "invite",
+                description: "Invite a user to a group",
                 options: [
                     {
-                        type: OptionTypes.SUB_COMMAND,
-                        name: "add",
-                        description: "Add a user to a group",
-                        options: [
-                            {
-                                type: OptionTypes.STRING,
-                                name: "name",
-                                description: "Name of the group",
-                                autocomplete: true,
-                                required: true
-                            },
-                            {
-                                type: OptionTypes.USER,
-                                name: "user",
-                                description: "The user to add to the group",
-                                required: true
-                            }
-                        ]
+                        type: OptionTypes.STRING,
+                        name: "name",
+                        description: "Name of the group",
+                        autocomplete: true,
+                        required: true
                     },
                     {
-                        type: OptionTypes.SUB_COMMAND,
-                        name: "remove",
-                        description: "Remove a user from a group",
-                        options: [
-                            {
-                                type: OptionTypes.STRING,
-                                name: "name",
-                                description: "Name of the group",
-                                autocomplete: true,
-                                required: true
-                            },
-                            {
-                                type: OptionTypes.USER,
-                                name: "user",
-                                description: "The user to remove from the group",
-                                required: true
-                            }
-                        ]
+                        type: OptionTypes.USER,
+                        name: "user",
+                        description: "The user to invite to the group",
+                        required: true
+                    }
+                ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
+                name: "kick",
+                description: "Kick a user from a group",
+                options: [
+                    {
+                        type: OptionTypes.STRING,
+                        name: "name",
+                        description: "Name of the group",
+                        autocomplete: true,
+                        required: true
                     },
+                    {
+                        type: OptionTypes.USER,
+                        name: "user",
+                        description: "The user to remove from the group",
+                        required: true
+                    }
                 ]
             },
             {
@@ -385,7 +378,7 @@ export const GroupCommand: Command =  {
                 break;
             }
 
-            case "add": {
+            case "invite": {
                 var name = interaction.options.getString('name');
                 var user = interaction.options.getUser('user');
 
@@ -403,12 +396,14 @@ export const GroupCommand: Command =  {
 
                 if (existingGroup) {
                     var group = await GroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
-                    if (group.ownerId !== interaction.user.id) {
-                        await interaction.reply(`You do not have permission to add members to group **${name}**`);
+                    var groupMembers = await GroupMembersRepository.find({ where: { groupId: existingGroup.groupId }});
+
+                    if (groupMembers.find(member => member.userId === interaction.user.id)) {
+                        await interaction.reply(`You do not have permission to invite members to group **${name}**`);
                         return;
                     }
-                    const groupMember = await GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
-                    if (groupMember) {
+                
+                    if (groupMembers.find(member => member.userId === user.id)) {
                         let userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
                         await interaction.reply(`**${userTag}** is already a member of group **${name}**`);
                         return;
@@ -429,7 +424,7 @@ export const GroupCommand: Command =  {
                 break;
             }
 
-            case "remove": {
+            case "kick": {
                 var name = interaction.options.getString('name');
                 var user = interaction.options.getUser('user');
 
@@ -446,8 +441,7 @@ export const GroupCommand: Command =  {
                         return;
                     }
 
-                    var group = await GroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
-                    if (group.ownerId !== interaction.user.id) {
+                    if (existingGroup.ownerId !== interaction.user.id) {
                         await interaction.reply(`You do not have permission to remove members from group **${name}**`);
                         return;
                     }
@@ -595,6 +589,37 @@ export const GroupCommand: Command =  {
                 break;
             }
 
+            case "delete": {
+                var name = interaction.options.getString('name');
+
+                const existingGroup = await GroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        name: name
+                    }
+                });
+
+                if (existingGroup) {
+                    if (existingGroup.ownerId !== interaction.user.id) {
+                        await interaction.reply("You are not the owner of this group");
+                        return;
+                    }
+
+                    const role = interaction.guild.roles.cache.get(existingGroup.roleId);
+                    if (role) {
+                        await role.delete();
+                    }
+
+                    await GroupRepository.delete({ guildId: interaction.guild.id, groupId: existingGroup.groupId });
+                    await GroupMembersRepository.delete({ groupId: existingGroup.groupId });
+
+                    await interaction.reply(`Group **${name}** has been deleted`);
+                } else {
+                    await interaction.reply("This group doesnt exist");
+                }
+                break;
+            }
+
             case "list": {
                 const groups = await GroupRepository.find({ where: { guildId: interaction.guild.id } });
                 if (groups.length > 0) {
@@ -631,37 +656,6 @@ export const GroupCommand: Command =  {
                     await interaction.reply({ embeds: [em] });
                 } else {
                     await interaction.reply("Group does not exist");
-                }
-                break;
-            }
-
-            case "delete": {
-                var name = interaction.options.getString('name');
-
-                const existingGroup = await GroupRepository.findOne({
-                    where: {
-                        guildId: interaction.guild.id,
-                        name: name
-                    }
-                });
-
-                if (existingGroup) {
-                    if (existingGroup.ownerId !== interaction.user.id) {
-                        await interaction.reply("You are not the owner of this group");
-                        return;
-                    }
-
-                    const role = interaction.guild.roles.cache.get(existingGroup.roleId);
-                    if (role) {
-                        await role.delete();
-                    }
-
-                    await GroupRepository.delete({ guildId: interaction.guild.id, groupId: existingGroup.groupId });
-                    await GroupMembersRepository.delete({ groupId: existingGroup.groupId });
-
-                    await interaction.reply(`Group **${name}** has been deleted`);
-                } else {
-                    await interaction.reply("This group doesnt exist");
                 }
                 break;
             }
