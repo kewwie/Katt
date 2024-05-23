@@ -9,8 +9,6 @@ import {
 import { Button } from "../../../types/component";
 
 import { dataSource } from "../../../data/datasource";
-import { Group } from "../../../data/entities/Group";
-import { GroupMember } from "../../../data/entities/GroupMember";
 import { GroupInvite } from "../../../data/entities/GroupInvite";
 
 /**
@@ -23,6 +21,7 @@ export const DenyInvite: Button = {
         style: ButtonStyle.Danger,
         label: "Deny"
     },
+    dms: true,
     
     /**
     * @param {ButtonInteraction} interaction
@@ -32,8 +31,12 @@ export const DenyInvite: Button = {
         interaction.deferUpdate();
         var userId = interaction.customId.split("_")[1];
 
-        const GroupRepository = await dataSource.getRepository(Group);
-        const GroupMembersRepository = await dataSource.getRepository(GroupMember);
         const GroupInvitesRepository = await dataSource.getRepository(GroupInvite);
+
+        await GroupInvitesRepository.delete({ user_id: userId, message_id: interaction.message.id });
+        var message = await interaction.channel.messages.fetch(interaction.message.id);
+        if (message) {
+            await message.delete();
+        }
     }
 }

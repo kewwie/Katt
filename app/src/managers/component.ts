@@ -28,7 +28,7 @@ export class ComponentManager {
 
             try {
                 if (button.plugin) {
-                    if (!this.client.PluginManager.plugins.find(plugin => plugin.config.name === button.plugin).config.disableable) {
+                    if (button.dms || !this.client.PluginManager.plugins.find(plugin => plugin.config.name === button.plugin).config.disableable) {
                         await button.execute(interaction, this.client);
                     } else {
                         if (interaction.guild) {

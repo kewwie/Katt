@@ -6,6 +6,7 @@ import { APIButtonComponent, APIButtonComponentWithCustomId, ComponentType } fro
 export interface Button {
     config: APIButtonComponentWithCustomId;
     plugin?: string;
+    dms?: boolean;
     execute: (interaction: any, client: KiwiClient) => void;
 }
 

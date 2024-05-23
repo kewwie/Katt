@@ -309,7 +309,7 @@ export const GroupCommand: Command =  {
                     username: interaction.user.username
                 });
 
-                await interaction.reply(`Group ${name} has been created.`);
+                await interaction.reply(`Group **${name}** has been created.`);
                 break;
             }
     
@@ -404,8 +404,8 @@ export const GroupCommand: Command =  {
                 if (existingGroup) {
                     var group = await GroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
                     var groupMembers = await GroupMembersRepository.find({ where: { groupId: existingGroup.groupId }});
-
-                    if (groupMembers.find(member => member.userId === interaction.user.id)) {
+                    
+                    if (!groupMembers.find(member => member.userId === interaction.user.id)) {
                         await interaction.reply(`You do not have permission to invite members to group **${name}**`);
                         return;
                     }
@@ -413,6 +413,11 @@ export const GroupCommand: Command =  {
                     if (groupMembers.find(member => member.userId === user.id)) {
                         let userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
                         await interaction.reply(`**${userTag}** is already a member of group **${name}**`);
+                        return;
+                    }
+
+                    if (await GroupInvitesRepository.findOne({ where: { group_id: existingGroup.groupId, user_id: user.id }})) {
+                        await interaction.reply(`**${user.username}** has already been invited to group **${name}**`);
                         return;
                     }
 
@@ -427,7 +432,7 @@ export const GroupCommand: Command =  {
                     ]));
 
                     var message = await user.send({
-                        content: `You have been invited to group **${name}** by **${interaction.user.username}**. Do you accept?`,
+                        content: `You have been invited to the group **${name}** by **${interaction.user.username}** in **${interaction.guild.name}**.`,
                         components: rows
                     }).catch(() => {
                         interaction.reply("I was unable to send a DM to the user");
