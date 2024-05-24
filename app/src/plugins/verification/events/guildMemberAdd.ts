@@ -52,6 +52,20 @@ export const GuildMemberAdd: Event = {
                     }
                 }
 
+                var AutoApprovedEmbed = new EmbedBuilder()
+                    .setTitle("You've Been Approved")
+                    .setThumbnail(member.guild.iconURL())
+                    .addFields(
+                        { name: "Server ID", value: member.guild.id },
+                        { name: "Server Name", value: member.guild.name },
+                        { name: "Type", value: "Admin" },
+                        { name: "Auto", value: "True" }
+                    )
+                    .setFooter({ text: "Enjoy your stay!" })
+                    .setColor(0x90EE90);
+
+                await member.send({ embeds: [AutoApprovedEmbed] }).catch(() => {});
+
                 if (g.logsChannel) {
                     var log = await member.guild.channels.fetch(g.logsChannel) as TextChannel;
                     if (!log) return;
