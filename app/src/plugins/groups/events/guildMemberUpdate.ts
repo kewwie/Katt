@@ -27,8 +27,8 @@ export const GuildMemberUpdate: Event = {
         const GroupsRepository = await dataSource.getRepository(Group);
         const GroupMembersRepository = await dataSource.getRepository(GroupMember);
 
-        if (await client.getGuildPlugin(newMember.id, GroupsPlugin.config.name)) {
-        
+        if (await client.getGuildPlugin(newMember.guild.id, GroupsPlugin.config.name)) {
+            
             newMember.roles.cache.forEach(async (role) => {
                 var group = await GroupsRepository.findOne({ where: { roleId: role.id } });
                 if (group) {
