@@ -23,19 +23,15 @@ export const GuildAdminAdd: Event = {
     * @param {User} user
     */
     async execute(client: KiwiClient, guild: Guild, user: User) {
-        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
         const GuildRepository = await dataSource.getRepository(GuildConfig);
+
         var g = await GuildRepository.findOne({ where: { guildId: guild.id}});
+        var guildMember = await guild.members.fetch(user.id);
 
-        if (g && await GuildAdminsRepository.findOne({ where: { guildId: guild.id, userId: user.id } })) {
-
-            var guildMember = await guild.members.fetch(user.id);
-
-            if (guildMember) {
-                var adminRole = guildMember.roles.cache.find(role => role.id === g.adminRole);
-                if (!adminRole) {
-                    await guildMember.roles.add(g.adminRole).catch(() => {});
-                }
+        if (g && guildMember) {
+            var adminRole = guildMember.roles.cache.find(role => role.id === g.adminRole);
+            if (!adminRole) {
+                await guildMember.roles.add(g.adminRole).catch(() => {});
             }
         }
     }
