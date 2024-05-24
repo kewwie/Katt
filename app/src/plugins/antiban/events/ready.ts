@@ -9,7 +9,6 @@ import { AntiBanPlugin } from "..";
 export const Ready: Event = {
     name: Events.Ready,
     once: true,
-    manualCheck: true,
 
     /**
      * @param {KiwiClient} client

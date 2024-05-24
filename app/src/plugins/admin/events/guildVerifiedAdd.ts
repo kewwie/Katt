@@ -1,6 +1,6 @@
 import {
     Guild,
-    User,
+    GuildMember
 } from "discord.js";
 
 import { KiwiClient } from "../../../client";
@@ -21,15 +21,16 @@ export const GuildVerifiedAdd: Event = {
     /**
     * @param {KiwiClient} client
     * @param {Guild} user
-    * @param {User} user
+    * @param {GuildMember} member
     */
-    async execute(client: KiwiClient, guild: Guild, user: User) {
+    async execute(client: KiwiClient, guild: Guild, member: GuildMember) {
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
         const GuildRepository = await dataSource.getRepository(GuildConfig);
         var g = await GuildRepository.findOne({ where: { guildId: guild.id}});
+        console.log(guild, 10010, member);
 
-        if (g && await GuildAdminsRepository.findOne({ where: { guildId: guild.id, userId: user.id } })) {
-            var guildMember = await guild.members.fetch(user.id);
+        if (g && await GuildAdminsRepository.findOne({ where: { guildId: guild.id, userId: member.id } })) {
+            var guildMember = await guild.members.fetch(member.id);
 
             if (guildMember) {
                 var adminRole = guildMember.roles.cache.find(role => role.id === g.adminRole);

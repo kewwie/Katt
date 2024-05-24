@@ -11,6 +11,7 @@ import { dataSource } from "../../../data/datasource";
 import { Group } from "../../../data/entities/Group";
 import { GroupMember } from "../../../data/entities/GroupMember";
 
+import { GroupsPlugin } from "..";
 
 /**
  * @type {Event}
@@ -27,17 +28,20 @@ export const GuildVerifiedAdd: Event = {
         const GroupRepository = await dataSource.getRepository(Group);
         const GroupMembersRepository = await dataSource.getRepository(GroupMember);
 
-        var groups = await GroupMembersRepository.find({ where: { userId: user.id }});
+        if (await client.getGuildPlugin(guild.id, GroupsPlugin.config.name)) {
 
-        for (let group of groups) {
-            var g = await GroupRepository.findOne({ where: { groupId: group.groupId }});
-            if (g) {
-                var guildMember = await guild.members.fetch(user.id);
+            var groups = await GroupMembersRepository.find({ where: { userId: user.id }});
 
-                if (guildMember) {
-                    var role = guildMember.roles.cache.find(role => role.id === g.roleId);
-                    if (!role) {
-                        await guildMember.roles.add(g.roleId).catch(() => {});
+            for (let group of groups) {
+                var g = await GroupRepository.findOne({ where: { groupId: group.groupId }});
+                if (g) {
+                    var guildMember = await guild.members.fetch(user.id);
+
+                    if (guildMember) {
+                        var role = guildMember.roles.cache.find(role => role.id === g.roleId);
+                        if (!role) {
+                            await guildMember.roles.add(g.roleId).catch(() => {});
+                        }
                     }
                 }
             }

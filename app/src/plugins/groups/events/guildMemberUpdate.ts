@@ -10,6 +10,8 @@ import { dataSource } from "../../../data/datasource";
 import { Group } from "../../../data/entities/Group";
 import { GroupMember } from "../../../data/entities/GroupMember";
 
+import { GroupsPlugin } from "..";
+
 /**
  * @type {Event}
  */
@@ -24,15 +26,18 @@ export const GuildMemberUpdate: Event = {
     async execute(client: KiwiClient, oldMember: GuildMember, newMember: GuildMember) {
         const GroupsRepository = await dataSource.getRepository(Group);
         const GroupMembersRepository = await dataSource.getRepository(GroupMember);
-    
-        newMember.roles.cache.forEach(async (role) => {
-            var group = await GroupsRepository.findOne({ where: { roleId: role.id } });
-            if (group) {
-                var groupMember = await GroupMembersRepository.findOne({ where: { groupId: group.groupId, userId: newMember.id } });
-                if (!groupMember) {
-                    newMember.roles.remove(role.id, "User is not in the group");
+
+        if (await client.getGuildPlugin(newMember.id, GroupsPlugin.config.name)) {
+        
+            newMember.roles.cache.forEach(async (role) => {
+                var group = await GroupsRepository.findOne({ where: { roleId: role.id } });
+                if (group) {
+                    var groupMember = await GroupMembersRepository.findOne({ where: { groupId: group.groupId, userId: newMember.id } });
+                    if (!groupMember) {
+                        newMember.roles.remove(role.id, "User is not in the group");
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

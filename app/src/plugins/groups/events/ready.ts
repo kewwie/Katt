@@ -15,7 +15,6 @@ import { GroupsPlugin } from "..";
 export const Ready: Event = {
     name: Events.Ready,
     once: true,
-    manualCheck: true,
 
     /**
     * @param {KiwiClient} client
@@ -34,7 +33,7 @@ export const Ready: Event = {
                     var members = await GroupMembersRepository.find({ where: { groupId: group.groupId }});
 
                     for (let member of members) {
-                        var guildMember = await g.members.fetch(member.userId);
+                        var guildMember = await g.members.fetch(member.userId).catch(() => {});
 
                         if (guildMember) {
                             var role = guildMember.roles.cache.find(role => role.id === group.roleId);

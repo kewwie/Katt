@@ -1,6 +1,8 @@
 import { KiwiClient } from "../../../client";
 import { Events, Event } from "../../../types/event";
 
+import { AntiBanPlugin } from "..";
+
 import {
     GuildBan,
     PermissionFlagsBits
@@ -17,8 +19,10 @@ export const GuildBanAdd: Event = {
      * @param {GuildBan} guildBan
      */
     async execute(client: KiwiClient, guildBan: GuildBan): Promise<void> {
-        if (guildBan.guild.members.me?.permissions.has(PermissionFlagsBits.BanMembers)) {
-            await guildBan.guild.members.unban(guildBan.user);
+        if (await client.getGuildPlugin(guildBan.guild.id, AntiBanPlugin.config.name)) {
+            if (guildBan.guild.members.me?.permissions.has(PermissionFlagsBits.BanMembers)) {
+                await guildBan.guild.members.unban(guildBan.user);
+            }
         }
     }
 }

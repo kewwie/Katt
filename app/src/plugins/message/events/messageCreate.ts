@@ -8,6 +8,8 @@ import {
 import { dataSource } from "../../../data/datasource";
 import { MessageActivity } from "../../../data/entities/MessageActivity";
 
+import { MessagePlugin } from "..";
+
 /**
  * @type {Event}
  */
@@ -19,7 +21,9 @@ export const MessageCreate: Event = {
     * @param {Message} message
     */
     async execute(client: KiwiClient, message: Message) {
-        const MessageActivityRepository = await dataSource.getRepository(MessageActivity)
+        const MessageActivityRepository = await dataSource.getRepository(MessageActivity);
+
+        if (!await client.getGuildPlugin(message.guild.id, MessagePlugin.config.name)) return;
 
         var ma = await MessageActivityRepository.findOne(
             { where: { userId: message.author.id, guildId: message.guild.id }}
