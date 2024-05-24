@@ -2,19 +2,6 @@ version: "3"
 name: "kewi"
 
 services:
-  nginx:
-    container_name: nginx
-    restart: unless-stopped
-    build:
-      context: ./nginx/dev
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/dev:/kewi/nginx
-    depends_on:
-      - api
-      
   mysql:
     image: mysql:8
     container_name: mysql
@@ -42,19 +29,6 @@ services:
       mysql:
         condition: service_healthy
     command: ["npm", "run", "migrate:run"]
-
-  api:
-    container_name: api
-    restart: unless-stopped
-    build:
-      context: .
-      dockerfile: ./api/.docker/Dockerfile
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
-    ports:
-      - "2000:2000"
-    command: ["npm", "run", "start"]
 
   app:
     container_name: app
