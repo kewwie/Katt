@@ -173,18 +173,18 @@ export const AdminCmd: Command = {
             }
 
             case "remove": {
-                var user = interaction.options.getUser("user");
+                var userId = interaction.options.getString("user");
 
                 var res = await GuildAdminsRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
-                        userId: user.id
+                        userId: userId
                     }
                 });
 
                 if (!res) {
                     interaction.reply({
-                        content: `**${user.username}** is not an admin`,
+                        content: `**${res.username}** is not an admin`,
                         ephemeral: true
                     });
                     return;
@@ -198,9 +198,9 @@ export const AdminCmd: Command = {
                     return;
                 }
 
-                if (user.bot || user.id === interaction.user.id) {
+                if (userId === interaction.user.id) {
                     interaction.reply({
-                        content: "You can't remove a bot or yourself as an admin",
+                        content: "You can't remove yourself as an admin",
                         ephemeral: true
                     });
                     return;
@@ -208,13 +208,15 @@ export const AdminCmd: Command = {
 
                 await GuildAdminsRepository.delete({
                     guildId: interaction.guild.id,
-                    userId: user.id
+                    userId: userId
                 });
+
+                var user = await client.users.fetch(userId);
 
                 client.emit(Events.GuildAdminRemove, interaction.guild, user);
 
                 interaction.reply({
-                    content: `Removed **${user.username}** as an admin`,
+                    content: `Removed **${res.username}** as an admin`,
                     ephemeral: true
                 });
                 break;
