@@ -4,6 +4,7 @@ export enum Events {
     GuildBanAdd = "guildBanAdd",
     GuildMemberAdd = "guildMemberAdd",
     GuildMemberUpdate = "guildMemberUpdate",
+    GuildMemberRemove = "guildMemberRemove",
     InteractionCreate = "interactionCreate",
     Ready = "ready",
     VoiceStateUpdate = "voiceStateUpdate",
