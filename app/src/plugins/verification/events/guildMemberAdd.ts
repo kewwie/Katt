@@ -17,6 +17,8 @@ import { GuildAdmins } from "../../../data/entities/GuildAdmins";
 import { ApproveGuest } from "../buttons/approve-guest";
 import { ApproveMember } from "../buttons/approve-member";
 import { DenyUser } from "../buttons/deny-user";
+import { Group } from "../../../data/entities/Group";
+import { GroupMember } from "../../../data/entities/GroupMember";
 
 /**
  * @type {Event}
@@ -31,13 +33,23 @@ export const GuildMemberAdd: Event = {
     async execute(client: KiwiClient, member: GuildMember) {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfig);
         const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
+        const GroupsRepository = await dataSource.getRepository(Group);
+        const GroupMembersRepository = await dataSource.getRepository(GroupMember);
+
         var g = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
         var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
 
-        if (isAdmin) {
+        if (isAdmin && g && g.adminRole) {
             var adminRole = await member.guild.roles.fetch(g.adminRole);
             if (adminRole) {
-                await member.roles.add(adminRole).catch(() => {});
+                member.roles.add(adminRole.id).catch(() => {});
+
+                for (var groupMembers of await GroupMembersRepository.find({ where: { userId: member.id } })) {
+                    var group = await GroupsRepository.findOne({ where: { groupId: groupMembers.groupId } });
+                    if (group) {
+                        member.roles.add(group.roleId).catch(() => {});
+                    }
+                }
 
                 if (g.logsChannel) {
                     var log = await member.guild.channels.fetch(g.logsChannel) as TextChannel;
@@ -59,7 +71,7 @@ export const GuildMemberAdd: Event = {
                 }
             }
         } else {
-            if (g.pendingChannel) {
+            if (g && g.pendingChannel) {
                 var pending = await member.guild.channels.fetch(g.pendingChannel) as TextChannel;
                 if (!pending) return;
     
