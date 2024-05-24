@@ -8,18 +8,15 @@ import {
     TextChannel
 } from "discord.js";
 
-import { env } from "../../../env";
-
 import { Button } from "../../../types/component";
 
 import { dataSource } from "../../../data/datasource";
 import { GuildConfig } from "../../../data/entities/GuildConfig";
-import { AuthUser } from "../../../data/entities/AuthUser";
 import { Group } from "../../../data/entities/Group";
 import { GroupMember } from "../../../data/entities/GroupMember";
 
-import axios from "axios";
 import { Events } from "../../../types/event";
+import { PendingMessage } from "../../../data/entities/PendingMessage";
 
 /**
  * @type {Button}
@@ -29,7 +26,7 @@ export const ApproveGuest: Button = {
         type: ComponentType.Button,
         custom_id: "approve-guest",
         style: ButtonStyle.Success,
-        label: "Approve as Guest"
+        label: "Approve"
     },
     
     /**
@@ -37,20 +34,20 @@ export const ApproveGuest: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
-        interaction.deferUpdate();
+        await interaction.deferReply({ ephemeral: true });
         var userId = interaction.customId.split("_")[1];
 
         const GuildRepository = await dataSource.getRepository(GuildConfig);
-        const AuthUserRepository = await dataSource.getRepository(AuthUser);
         const GroupRepository = await dataSource.getRepository(Group);
         const GroupMembersRepository = await dataSource.getRepository(GroupMember);
+        const PendingMessagesRepository = await dataSource.getRepository(PendingMessage);
+        
         var guild = await GuildRepository.findOne({ where: { guildId: interaction.guild.id } });
-        var authUser = await AuthUserRepository.findOne({ where: { userId: userId } });
 
         var roles = new Array();
 
         if (!guild.guestRole) {
-            interaction.followUp("Guest role is not set in the dashboard")
+            interaction.followUp({ content: "Guest role is not set in the dashboard", ephemeral: true })
             return;
         }
             
@@ -63,43 +60,36 @@ export const ApproveGuest: Button = {
             }
         }
 
-        var guildMember = await interaction.guild.members.fetch(userId);
-        if (guildMember) {
-            await guildMember.roles.add(roles).catch(() => {});
-        } else {
-            await axios.put(
-                `https://discord.com/api/guilds/${guild.guildId}/members/${userId}`, 
-                {
-                    access_token: authUser.accessToken,
-                    roles: roles
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'authorization': `Bot ${env.CLIENT_TOKEN}`
-                    }
-                }
-            ).then((response) => {
-                return response.data;
-            }).catch((error) => {
-                return null;
-            });
-        } 
-
-        var member = await interaction.guild.members.fetch(userId);
-        if (!member) {
-            interaction.followUp("Member didnt join the server");
-            return;
-        }
-
-        client.emit(Events.GuildVerifiedAdd, interaction.guild, member, "guest");
-        
-        await member.send(`You have been **verified** in **${interaction.guild.name}**`).catch(() => {});
-
         var message = await interaction.channel.messages.fetch(interaction.message.id);
         if (message) {
             await message.delete();
         }
+        PendingMessagesRepository.delete({ user_id: userId, guild_id: interaction.guild.id });
+
+        var member = await interaction.guild.members.fetch(userId).catch(() => {});
+        if (member) {
+            await member.roles.add(roles).catch(() => {});
+        } else {
+            interaction.followUp({ content: "Cant find the user in the server", ephemeral: true });
+            return;
+        }
+
+        client.emit(Events.GuildVerifiedAdd, interaction.guild, member, "guest");
+
+        var ApprovedEmbed = new EmbedBuilder()
+            .setTitle("You've Been Approved")
+            .setThumbnail(interaction.guild.iconURL())
+            .addFields(
+                { name: "Server ID", value: interaction.guild.id },
+                { name: "Server Name", value: interaction.guild.name },
+                { name: "Type", value: "Guest" }
+            )
+            .setFooter({ text: "Enjoy your stay!" })
+            .setColor(0x90EE90);
+        
+        await member.send({ embeds: [ApprovedEmbed] }).catch(() => {});
+
+        interaction.followUp({ content: `**${member.user.username}** has been approved as a guest`, ephemeral: true});
 
         if (guild.logsChannel) {
             var log = await interaction.guild.channels.fetch(guild.logsChannel) as TextChannel;
@@ -111,7 +101,7 @@ export const ApproveGuest: Button = {
                 .setColor(0x90EE90)
                 .addFields(
                     { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
-                    { name: "Verified By", value: `<@${interaction.member.user.id}>\n${interaction.member.user.username}` },
+                    { name: "Approved By", value: `<@${interaction.member.user.id}>\n${interaction.member.user.username}` },
                     { name: "Type", value: "Guest" },
                 )
 

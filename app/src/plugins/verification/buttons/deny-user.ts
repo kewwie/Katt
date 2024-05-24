@@ -12,6 +12,7 @@ import { Button } from "../../../types/component";
 
 import { dataSource } from "../../../data/datasource";
 import { GuildConfig } from "../../../data/entities/GuildConfig";
+import { PendingMessage } from "../../../data/entities/PendingMessage";
 
 /**
  * @type {Button}
@@ -29,28 +30,44 @@ export const DenyUser: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
-        interaction.deferUpdate();
+        await interaction.deferReply({ ephemeral: true });
         const GuildRepository = await dataSource.getRepository(GuildConfig);
+        const PendingMessagesRepository = await dataSource.getRepository(PendingMessage);
 
-        var memberId = interaction.customId.split("_")[1];
+        var userId = interaction.customId.split("_")[1];
 
         var message = await interaction.channel.messages.fetch(interaction.message.id);
         if (message) {
             await message.delete();
         }
+        PendingMessagesRepository.delete({ user_id: userId, guild_id: interaction.guild.id });
 
-        var member = await interaction.guild.members.fetch(memberId);
+        var member = await interaction.guild.members.fetch(userId);
         if (member) {
+            var DeniedEmbed = new EmbedBuilder()
+                .setTitle("You've Been Denied")
+                .setThumbnail(interaction.guild.iconURL())
+                .addFields(
+                    { name: "Server ID", value: interaction.guild.id },
+                    { name: "Server Name", value: interaction.guild.name },
+                    { name: "Type", value: "Guest" }
+                )
+                .setFooter({ text: "Sorry!" })
+                .setColor(0xFF474D);
+
+            await member.send({ embeds: [DeniedEmbed] }).catch(() => {});
             await member.kick("Denied");
         }
 
         const guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
 
+        interaction.followUp({ content: "User has been denied and kicked from the server", ephemeral: true });
+
         if (guild?.logsChannel) {
             var log = await interaction.guild.channels.fetch(guild.logsChannel) as TextChannel;
             if (!log) return;
 
-            var user = await client.users.fetch(memberId);
+            var user = await client.users.fetch(userId);
 
             var em = new EmbedBuilder()
                 .setTitle("Denied User")
