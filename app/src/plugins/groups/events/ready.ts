@@ -15,6 +15,7 @@ import { GroupsPlugin } from "..";
 export const Ready: Event = {
     name: Events.Ready,
     once: true,
+    manualCheck: true,
 
     /**
     * @param {KiwiClient} client
@@ -48,8 +49,8 @@ export const Ready: Event = {
                     member[1].roles.cache.forEach(async (role) => {
                         var group = await GroupsRepository.findOne({ where: { roleId: role.id } });
                         if (group) {
-                            var member = await GroupMembersRepository.findOne({ where: { groupId: group.groupId, userId: member[1].id } });
-                            if (!member) {
+                            var groupMember = await GroupMembersRepository.findOne({ where: { groupId: group.groupId, userId: member[0] } });
+                            if (!groupMember) {
                                 member[1].roles.remove(role.id, "User is not in the group");
                             }
                         }

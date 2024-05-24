@@ -28,8 +28,8 @@ export const GuildMemberUpdate: Event = {
         newMember.roles.cache.forEach(async (role) => {
             var group = await GroupsRepository.findOne({ where: { roleId: role.id } });
             if (group) {
-                var member = await GroupMembersRepository.findOne({ where: { groupId: group.groupId, userId: newMember.id } });
-                if (!member) {
+                var groupMember = await GroupMembersRepository.findOne({ where: { groupId: group.groupId, userId: newMember.id } });
+                if (!groupMember) {
                     newMember.roles.remove(role.id, "User is not in the group");
                 }
             }
