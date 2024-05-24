@@ -292,7 +292,7 @@ export const GroupCommand: Command =  {
                     mentionable: true
                 });
 
-                await interaction.guild.members.cache.get(interaction.member.user.id).roles.add(role);
+                await interaction.guild.members.cache.get(interaction.member.user.id).roles.add(role).catch(() => {});
 
                 var ResGroup = await GroupRepository.insert({
                     groupId: String(Date.now() - 1000),
@@ -337,7 +337,7 @@ export const GroupCommand: Command =  {
                         await interaction.reply("You are already a member of this group.");
                         return;
                     }
-                    await interaction.guild.members.cache.get(interaction.user.id).roles.add(existingGroup.roleId);
+                    await interaction.guild.members.cache.get(interaction.user.id).roles.add(existingGroup.roleId).catch(() => {});
 
                     await GroupMembersRepository.insert({
                         groupId: existingGroup.groupId,
@@ -372,7 +372,7 @@ export const GroupCommand: Command =  {
                     });
 
                     if (groupMember) {
-                        await interaction.guild.members.cache.get(interaction.user.id).roles.remove(existingGroup.roleId);
+                        await interaction.guild.members.cache.get(interaction.user.id).roles.remove(existingGroup.roleId).catch(() => {});
                         
                         await GroupMembersRepository.delete({ groupId: existingGroup.groupId, userId: interaction.user.id })
                         await interaction.reply(`You have left the group **${name}**`);
@@ -480,7 +480,7 @@ export const GroupCommand: Command =  {
                     var userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
                     const groupMember = await GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
                     if (groupMember) {
-                        await interaction.guild.members.cache.get(user.id).roles.remove(existingGroup.roleId);
+                        await interaction.guild.members.cache.get(user.id).roles.remove(existingGroup.roleId).catch(() => {});
                         await GroupMembersRepository.delete({ groupId: existingGroup.groupId, userId: user.id })
                         await interaction.reply(`**${userTag}** has been removed from group **${name}**`);
                     } else {
