@@ -38,6 +38,16 @@ export const GuildMemberUpdate: Event = {
                     }
                 }
             });
+
+            for (var groupMember of await GroupMembersRepository.find({ where: { userId: newMember.id } })) {
+                var group = await GroupsRepository.findOne({ where: { guildId: newMember.guild.id, groupId: groupMember.groupId } });
+                if (group) {
+                    var role = newMember.guild.roles.cache.get(group.roleId);
+                    if (role && !newMember.roles.cache.has(role.id)) {
+                        newMember.roles.add(role.id, "User is a member of the group");
+                    }
+                }
+            }
         }
     }
 }

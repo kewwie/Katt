@@ -54,6 +54,16 @@ export const Ready: Event = {
                             }
                         }
                     });
+
+                    for (let memberGroup of await GroupMembersRepository.find({ where: { userId: member[0] } })) {
+                        var group = await GroupsRepository.findOne({ where: { guildId: g.id, groupId: memberGroup.groupId } });
+                        if (group) {
+                            var role = member[1].roles.cache.find(role => role.id === group.roleId);
+                            if (!role) {
+                                await member[1].roles.add(group.roleId).catch(() => {});
+                            }
+                        }
+                    }
                 }
             }
         }
