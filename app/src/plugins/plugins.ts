@@ -2,7 +2,6 @@ import { Plugin } from "../types/plugin";
 
 import { AdminPlugin } from "./admin"
 import { AntiBanPlugin } from "./antiban"
-import { GamesPlugin } from "./games"
 import { GroupsPlugin } from "./groups"
 import { LevelsPlugin } from "./levels";
 import { ListPlugin } from "./list"
@@ -14,10 +13,9 @@ import { VoicePlugin } from "./voice"
 /**
  * @type {Array<Plugin>}
  */
-export const Plugins = [
+export const Plugins: Array<Plugin> = [
     AdminPlugin,
     AntiBanPlugin,
-    GamesPlugin,
     GroupsPlugin,
     LevelsPlugin,
     ListPlugin,
