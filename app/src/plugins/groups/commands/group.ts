@@ -120,96 +120,29 @@ export const GroupCommand: SlashCommand =  {
                 ]
             },
             {
-                type: OptionTypes.SUB_COMMAND_GROUP,
-                name: "modify",
-                description: "Modify a group",
+                type: OptionTypes.SUB_COMMAND,
+                name: "private",
+                description: "Change the privacy of the group",
                 options: [
                     {
-                        type: OptionTypes.SUB_COMMAND,
-                        name: "color",
-                        description: "Change the color of the group",
-                        options: [
-                            {
-                                type: OptionTypes.STRING,
-                                name: "name",
-                                description: "Name of the group",
-                                autocomplete: true,
-                                required: true
-                            },
-                            {
-                                type: OptionTypes.STRING,
-                                name: "color",
-                                description: "Color of the group",
-                                required: true
-                            }
-                        ]
-                    },
-                    {
-                        type: OptionTypes.SUB_COMMAND,
+                        type: OptionTypes.STRING,
                         name: "name",
-                        description: "Change the name of the group",
-                        options: [
-                            {
-                                type: OptionTypes.STRING,
-                                name: "name",
-                                description: "Name of the group",
-                                autocomplete: true,
-                                required: true
-                            },
-                            {
-                                type: OptionTypes.STRING,
-                                name: "newname",
-                                description: "New name of the group",
-                                required: true
-                            }
-                        ]
+                        description: "Name of the group",
+                        autocomplete: true,
+                        required: true
                     },
                     {
-                        type: OptionTypes.SUB_COMMAND,
+                        type: OptionTypes.STRING,
                         name: "private",
-                        description: "Change the privacy of the group",
-                        options: [
-                            {
-                                type: OptionTypes.STRING,
-                                name: "name",
-                                description: "Name of the group",
-                                autocomplete: true,
-                                required: true
-                            },
-                            {
-                                type: OptionTypes.STRING,
-                                name: "private",
-                                description: "true or false",
-                                choices: [
-                                    { name: "True", value: "true" },
-                                    { name: "False", value: "false" }
-                                ],
-                                required: true
-                            }
-                        ]
-                    },
-                    {
-                        type: OptionTypes.SUB_COMMAND,
-                        name: "owner",
-                        description: "Transfer ownership of the group",
-                        options: [
-                            {
-                                type: OptionTypes.STRING,
-                                name: "name",
-                                description: "Name of the group",
-                                autocomplete: true,
-                                required: true
-                            },
-                            {
-                                type: OptionTypes.USER,
-                                name: "user",
-                                description: "A user to transfer ownership to",
-                                required: true
-                            }
-                        ]
-                    },
+                        description: "true or false",
+                        choices: [
+                            { name: "True", value: "true" },
+                            { name: "False", value: "false" }
+                        ],
+                        required: true
+                    }
                 ]
-            },
+            },         
             {
                 type: OptionTypes.SUB_COMMAND,
                 name: "list",
@@ -492,73 +425,6 @@ export const GroupCommand: SlashCommand =  {
                 break;
             }
 
-            case "color": {
-                var name = interaction.options.getString('name');
-                var color = interaction.options.getString('color');
-
-                const existingGroup = await GroupRepository.findOne({
-                    where: {
-                        guildId: interaction.guild.id,
-                        name: name
-                    }
-                });
-
-                if (existingGroup) {
-                    var group = await GroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
-                    if (group.ownerId !== interaction.user.id) {
-                        await interaction.reply(`You do not have permission to change the color of the group **${name}**`);
-                        return;
-                    }
-                    const role = interaction.guild.roles.cache.get(existingGroup.roleId);
-                    if (role) {
-                        await role.setColor(resolveColor(color as ColorResolvable));
-                        await interaction.reply(`Color of group **${name}** has been changed to **${color}**`);
-                    } else {
-                        await interaction.reply("Group role not found");
-                    }
-                } else {
-                    await interaction.reply("You are not the owner of this group");
-                }
-                break;
-            }
-
-            case "name": {
-                var name = interaction.options.getString('name');
-                var newName = interaction.options.getString('newname');
-
-                const existingGroup = await GroupRepository.findOne({
-                    where: {
-                        guildId: interaction.guild.id,
-                        name: name
-                    }
-                });
-
-                if (existingGroup) {
-                    var group = await GroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
-                    if (group.ownerId !== interaction.user.id) {
-                        await interaction.reply(`You do not have permission to change the name of the group **${name}**`);
-                        return;
-                    }
-                    const role = interaction.guild.roles.cache.get(existingGroup.roleId);
-                    if (role) {
-                        await role.edit({ name: `Group ${newName}` });
-                    } else {
-                        await interaction.reply("Group role not found");
-                        return;
-                    }
-
-                    await GroupRepository.update(
-                        { groupId: existingGroup.groupId },
-                        { name: newName }
-                    );
-
-                    await interaction.reply(`Group **${name}** has been renamed to **${newName}**`);
-                } else {
-                    await interaction.reply("This group doesnt exist");
-                }
-                break;
-            }
-
             case "private": {
                 var name = interaction.options.getString('name');
                 var isPrivate = interaction.options.getString('private');
@@ -579,41 +445,6 @@ export const GroupCommand: SlashCommand =  {
 
                     await GroupRepository.update({ groupId: existingGroup.groupId }, { private: (isPrivate === "true") });
                     await interaction.reply(`Group **${name}** privacy has been updated`);
-                } else {
-                    await interaction.reply("This group doesnt exist");
-                }
-                break;
-            }
-
-            case "owner": {
-                var user = interaction.options.getUser('user');
-                var name = interaction.options.getString('name');
-
-                if (user.bot) {
-                    await interaction.reply("Bots cannot have ownership of a group");
-                    return;
-                }
-
-                const existingGroup = await GroupRepository.findOne({
-                    where: {
-                        guildId: interaction.guild.id,
-                        name: name
-                    }
-                });
-
-                if (existingGroup) {
-                    if (existingGroup.ownerId !== interaction.user.id) {
-                        await interaction.reply("You are not the owner of this group");
-                        return;
-                    }
-                    
-                    await GroupRepository.update({ groupId: existingGroup.groupId }, { ownerId: user.id });
-                    await GroupMembersRepository.upsert(
-                        { groupId: existingGroup.groupId, userId: user.id, username: user.username },
-                        ["groupId", "userId"]
-                    );
-
-                    await interaction.reply(`Ownership of group **${name}** has been transferred to **${user.username}**`);
                 } else {
                     await interaction.reply("This group doesnt exist");
                 }
