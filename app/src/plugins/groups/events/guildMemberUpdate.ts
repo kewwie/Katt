@@ -6,9 +6,9 @@ import { KiwiClient } from "../../../client";
 
 import { Events, Event } from "../../../types/event";
 
-import { dataSource } from "../../../data/datasource";
-import { Group } from "../../../data/entities/Group";
-import { GroupMember } from "../../../data/entities/GroupMember";
+import { dataSource } from "../../../datasource";
+import { Group } from "../../../entities/Group";
+import { GroupMember } from "../../../entities/GroupMember";
 
 /**
  * @type {Event}

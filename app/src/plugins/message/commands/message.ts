@@ -12,8 +12,8 @@ import {
     SlashCommand
 } from "../../../types/command";
 
-import { dataSource } from "../../../data/datasource";
-import { MessageActivity } from "../../../data/entities/MessageActivity";
+import { dataSource } from "../../../datasource";
+import { MessageActivity } from "../../../entities/MessageActivity";
 
 /**
  * @type {SlashCommand}

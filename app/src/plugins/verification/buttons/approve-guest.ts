@@ -10,13 +10,13 @@ import {
 
 import { Button } from "../../../types/component";
 
-import { dataSource } from "../../../data/datasource";
-import { GuildConfig } from "../../../data/entities/GuildConfig";
-import { Group } from "../../../data/entities/Group";
-import { GroupMember } from "../../../data/entities/GroupMember";
+import { dataSource } from "../../../datasource";
+import { GuildConfig } from "../../../entities/GuildConfig";
+import { Group } from "../../../entities/Group";
+import { GroupMember } from "../../../entities/GroupMember";
 
 import { Events } from "../../../types/event";
-import { PendingMessage } from "../../../data/entities/PendingMessage";
+import { PendingMessage } from "../../../entities/PendingMessage";
 
 /**
  * @type {Button}

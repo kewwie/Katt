@@ -1,8 +1,8 @@
 import { KiwiClient } from "../client";
 import { Button } from "../types/component";
 
-import { dataSource } from "../data/datasource";
-import { GuildPlugins } from "../data/entities/GuildPlugins";
+import { dataSource } from "../datasource";
+import { GuildPlugins } from "../entities/GuildPlugins";
 
 export class ComponentManager {
     public client: KiwiClient;

@@ -4,8 +4,8 @@ import { env } from "../env";
 import { KiwiClient } from "../client";
 import { SlashCommand } from "../types/command";
 
-import { dataSource } from "../data/datasource";
-import { GuildPlugins } from "../data/entities/GuildPlugins";
+import { dataSource } from "../datasource";
+import { GuildPlugins } from "../entities/GuildPlugins";
 
 export class CommandManager {
     public client: KiwiClient;

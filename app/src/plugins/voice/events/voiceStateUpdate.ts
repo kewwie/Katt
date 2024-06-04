@@ -5,9 +5,9 @@ import {
     VoiceState
 } from "discord.js";
 
-import { dataSource } from "../../../data/datasource";
-import { VoiceChannel } from "../../../data/entities/VoiceChannel";
-import { VoiceActivity } from "../../../data/entities/VoiceActivity";
+import { dataSource } from "../../../datasource";
+import { VoiceChannel } from "../../../entities/VoiceChannel";
+import { VoiceActivity } from "../../../entities/VoiceActivity";
 
 /**
  * @type {Event}

@@ -18,10 +18,10 @@ import {
 } from "../../../types/command";
 import { KiwiClient } from "../../../client";
 
-import { dataSource } from "../../../data/datasource";
-import { Group } from "../../../data/entities/Group";
-import { GroupMember } from "../../../data/entities/GroupMember";
-import { GroupInvite } from "../../../data/entities/GroupInvite";
+import { dataSource } from "../../../datasource";
+import { Group } from "../../../entities/Group";
+import { GroupMember } from "../../../entities/GroupMember";
+import { GroupInvite } from "../../../entities/GroupInvite";
 
 import { AcceptInvite } from "../buttons/accept-invite";
 import { DenyInvite } from "../buttons/deny-invite";

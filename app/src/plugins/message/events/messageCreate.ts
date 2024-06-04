@@ -5,10 +5,8 @@ import {
     Message
 } from "discord.js";
 
-import { dataSource } from "../../../data/datasource";
-import { MessageActivity } from "../../../data/entities/MessageActivity";
-
-import { MessagePlugin } from "..";
+import { dataSource } from "../../../datasource";
+import { MessageActivity } from "../../../entities/MessageActivity";
 
 /**
  * @type {Event}

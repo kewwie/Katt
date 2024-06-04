@@ -10,9 +10,9 @@ import {
 
 import { Button } from "../../../types/component";
 
-import { dataSource } from "../../../data/datasource";
-import { GuildConfig } from "../../../data/entities/GuildConfig";
-import { PendingMessage } from "../../../data/entities/PendingMessage";
+import { dataSource } from "../../../datasource";
+import { GuildConfig } from "../../../entities/GuildConfig";
+import { PendingMessage } from "../../../entities/PendingMessage";
 
 /**
  * @type {Button}

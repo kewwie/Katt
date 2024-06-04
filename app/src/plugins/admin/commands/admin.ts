@@ -14,8 +14,8 @@ import {
     Permissions
 } from "../../../types/command";
 
-import { dataSource } from "../../../data/datasource";
-import { GuildAdmins } from "../../../data/entities/GuildAdmins";
+import { dataSource } from "../../../datasource";
+import { GuildAdmins } from "../../../entities/GuildAdmins";
 import { Events } from "../../../types/event";
 
 /**

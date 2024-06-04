@@ -10,7 +10,7 @@ import {
 import { Button } from "../../../types/component";
 
 import { dataSource } from "../../../data/datasource";
-import { GuildConfig } from "../../../data/entities/GuildConfig";
+import { GuildConfig } from "../../../entities/GuildConfig";
 
 /**
  * @type {Button}

@@ -12,8 +12,8 @@ import {
     SlashCommand
 } from "../../../types/command";
 
-import { dataSource } from "../../../data/datasource";
-import { VoiceActivity } from "../../../data/entities/VoiceActivity";
+import { dataSource } from "../../../datasource";
+import { VoiceActivity } from "../../../entities/VoiceActivity";
 
 /**
  * @type {SlashCommand}

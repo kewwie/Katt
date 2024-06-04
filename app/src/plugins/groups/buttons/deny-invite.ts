@@ -8,8 +8,8 @@ import {
 
 import { Button } from "../../../types/component";
 
-import { dataSource } from "../../../data/datasource";
-import { GroupInvite } from "../../../data/entities/GroupInvite";
+import { dataSource } from "../../../datasource";
+import { GroupInvite } from "../../../entities/GroupInvite";
 
 /**
  * @type {Button}

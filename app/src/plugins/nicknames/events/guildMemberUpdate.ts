@@ -4,8 +4,8 @@ import { KiwiClient } from "../../../client";
 
 import { Events, Event } from "../../../types/event";
 
-import { dataSource } from "../../../data/datasource";
-import { Nickname } from "../../../data/entities/Nickname";
+import { dataSource } from "../../../datasource";
+import { Nickname } from "../../../entities/Nickname";
 
 /**
  * @type {Event}

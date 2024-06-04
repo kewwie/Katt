@@ -10,15 +10,15 @@ import { KiwiClient } from "../../../client";
 
 import { Events, Event } from "../../../types/event";
 
-import { dataSource } from "../../../data/datasource";
-import { GuildConfig } from "../../../data/entities/GuildConfig";
-import { GuildAdmins } from "../../../data/entities/GuildAdmins";
+import { dataSource } from "../../../datasource";
+import { GuildConfig } from "../../../entities/GuildConfig";
+import { GuildAdmins } from "../../../entities/GuildAdmins";
 
 import { ApproveGuest } from "../buttons/approve-guest";
 import { DenyUser } from "../buttons/deny-user";
-import { Group } from "../../../data/entities/Group";
-import { GroupMember } from "../../../data/entities/GroupMember";
-import { PendingMessage } from "../../../data/entities/PendingMessage";
+import { Group } from "../../../entities/Group";
+import { GroupMember } from "../../../entities/GroupMember";
+import { PendingMessage } from "../../../entities/PendingMessage";
 
 /**
  * @type {Event}

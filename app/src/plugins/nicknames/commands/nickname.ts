@@ -14,8 +14,8 @@ import {
     SlashCommand
 } from "../../../types/command";
 
-import { dataSource } from "../../../data/datasource";
-import { Nickname } from "../../../data/entities/Nickname";
+import { dataSource } from "../../../datasource";
+import { Nickname } from "../../../entities/Nickname";
 
 /**
  * @type {SlashCommand}

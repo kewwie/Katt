@@ -3,8 +3,8 @@ import { Guild } from "discord.js";
 import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
-import { dataSource } from "../../../data/datasource";
-import { VoiceChannel } from "../../../data/entities/VoiceChannel";
+import { dataSource } from "../../../datasource";
+import { VoiceChannel } from "../../../entities/VoiceChannel";
 
 /**
  * @type {Event}

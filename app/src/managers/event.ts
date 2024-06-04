@@ -1,8 +1,8 @@
 import { KiwiClient } from "../client";
 import { Event } from "../types/event";
 
-import { dataSource } from "../data/datasource";
-import { GuildPlugins } from "../data/entities/GuildPlugins";
+import { dataSource } from "../datasource";
+import { GuildPlugins } from "../entities/GuildPlugins";
 
 export class EventManager {
     private client: KiwiClient;

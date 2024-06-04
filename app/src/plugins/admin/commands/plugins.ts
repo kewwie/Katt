@@ -1,8 +1,8 @@
 import { KiwiClient } from "../../../client";
 
-import { dataSource } from "../../../data/datasource";
-import { GuildPlugins } from "../../../data/entities/GuildPlugins";
-import { GuildAdmins } from "../../../data/entities/GuildAdmins";
+import { dataSource } from "../../../datasource";
+import { GuildPlugins } from "../../../entities/GuildPlugins";
+import { GuildAdmins } from "../../../entities/GuildAdmins";
 
 import {
     AutocompleteInteraction,
