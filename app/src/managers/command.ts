@@ -56,7 +56,8 @@ export class CommandManager {
 
             try {
                 if (command.plugin) {
-                    if (!this.client.PluginManager.plugins.find(plugin => plugin.config.name === command.plugin).config.disableable) {
+                    var plugin = this.client.PluginManager.plugins.find(plugin => plugin.config.name === command.plugin);
+                    if (!plugin.config.disableable) {
                         await command.execute(interaction, this.client);
                     } else {
                         if (interaction.guild) {
