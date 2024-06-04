@@ -4,10 +4,10 @@ import { AdminPlugin } from "./admin"
 import { AntiBanPlugin } from "./antiban"
 import { GamesPlugin } from "./games"
 import { GroupsPlugin } from "./groups"
+import { LevelsPlugin } from "./levels";
 import { ListPlugin } from "./list"
 import { MessagePlugin } from "./message"
 import { NicknamesPlugin } from "./nicknames"
-import { ReadyPlugin } from "./ready"
 import { VerificationPlugin } from "./verification"
 import { VoicePlugin } from "./voice"
 
@@ -19,10 +19,10 @@ export const Plugins = [
     AntiBanPlugin,
     GamesPlugin,
     GroupsPlugin,
+    LevelsPlugin,
     ListPlugin,
     MessagePlugin,
     NicknamesPlugin,
-    ReadyPlugin,
     VerificationPlugin,
     VoicePlugin
 ]

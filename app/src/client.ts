@@ -20,7 +20,7 @@ import RiotAPI from "unofficial-valorant-api";
 
 import { Button } from "./types/component";
 import { SlashCommand } from "./types/command";
-import { Event } from "./types/event";
+import { Event, Events } from "./types/event";
 import { Loop } from "./types/loop";
 
 import { dataSource } from "./data/datasource";
@@ -95,8 +95,15 @@ export class KiwiClient extends Client {
         this.RiotApi = new RiotAPI();
 
         // Load all plugins
-        this.PluginManager.loadAll(Plugins)
-        this.PluginManager.registerCommands([...this.SlashCommands.values()], env.TEST_GUILD);
+        this.PluginManager.loadAll(Plugins);
+
+        this.on(Events.Ready, async () => {
+            console.log(`${this.user?.username} is Online`);
+            for (let guild of await this.guilds.fetch()) {
+                this.CommandManager.register([...this.SlashCommands.values()], guild[0]);
+                this.emit(Events.GuildReady, this, guild[1]);
+            }
+        });
     }
 
     public async getAvatarUrl(user: { id: string; avatar: string; }) {

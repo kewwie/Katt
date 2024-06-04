@@ -1,28 +1,34 @@
 import { KiwiClient } from "../client";
-import { Command } from "../types/command";
+import { SlashCommand } from "../types/command";
 import { Events } from "../types/event";
 import { Plugin } from "../types/plugin";
 
 export class PluginManager {
     public client: KiwiClient
     public plugins: Plugin[];
+    public EventHandlersSet: boolean;
 
     constructor(client: KiwiClient) {
         this.client = client;
         this.plugins = [];
+        this.EventHandlersSet = false;
     }
 
     load(plugin: Plugin) {
         plugin.beforeLoad?.(this.client);
         this.plugins.push(plugin);
 
-        if (plugin.commands) {
-            var commands = new Array();
-            for (let command of plugin.commands) {
+        if (plugin.SlashCommands) {
+            var SlashCommands = new Array();
+            for (let command of plugin.SlashCommands) {
                 command.plugin = plugin.config.name;
-                commands.push(command);
+                SlashCommands.push(command);
             }
-            this.client.CommandManager.load(commands);
+            this.client.CommandManager.load(SlashCommands);
+
+            if (!this.EventHandlersSet) {
+                this.client.on(Events.InteractionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
+            }
         }
 
         if (plugin.buttons) {
@@ -32,6 +38,10 @@ export class PluginManager {
                 buttons.push(button);
             }
             this.client.ComponentManager.loadButtons(buttons);
+
+            if (!this.EventHandlersSet) {
+                this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));
+            }
         }
 
         if (plugin.events) {
@@ -59,17 +69,5 @@ export class PluginManager {
         for (let plugin of plugins) {
             this.load(plugin);
         }
-
-        this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));
-    }
-
-    async registerCommands(commands: Command[], guildId?: string | null) {
-        if (guildId) {
-            await this.client.CommandManager.unregisterAll();
-        } else {
-            await this.client.CommandManager.unregisterAllGuild();
-        }
-        this.client.CommandManager.register(commands, guildId);
-        this.client.on(Events.InteractionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
     }
 }
