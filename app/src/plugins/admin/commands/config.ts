@@ -127,19 +127,6 @@ export const ConfigCmd: SlashCommand = {
             },
             {
                 type: OptionTypes.SUB_COMMAND,
-                name: "vanity",
-                description: "Set the server vanity for the server (Owner only)",
-                options: [
-                    {
-                        type: OptionTypes.STRING,
-                        name: "vanity",
-                        description: "The role to assign to admins",
-                        required: false
-                    }
-                ]
-            },
-            {
-                type: OptionTypes.SUB_COMMAND,
                 name: "view",
                 description: "View the server configuration (Owner only)"
             }
@@ -316,38 +303,6 @@ export const ConfigCmd: SlashCommand = {
                 }
                 break;
             
-            case "vanity":
-                var vanity = interaction.options.getString("vanity");
-
-                if (vanity) {
-                    const existingGuild = await GuildRepository.findOne({ where: { vanity } });
-                    if (existingGuild) {
-                        await interaction.reply({
-                            content: "Vanity is already in use!",
-                            ephemeral: true
-                        });
-                        return;
-                    }
-                    await GuildRepository.upsert(
-                        { guildId: interaction.guildId, vanity },
-                        ["guildId"]
-                    )
-                    await interaction.reply({
-                        content: "Vanity url has been set to `" + `${env.URL}/join/${vanity}` + "`",
-                        ephemeral: true
-                    });
-                } else {
-                    await GuildRepository.upsert(
-                        { guildId: interaction.guildId, vanity },
-                        ["guildId"]
-                    )
-                    await interaction.reply({
-                        content: "Vanity url has been unset!",
-                        ephemeral: true
-                    });
-                }
-                break;
-            
             case "view":
                 var guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
                 if (!guild) {
@@ -400,12 +355,6 @@ export const ConfigCmd: SlashCommand = {
                     rows.push(`**Admin Role**\n<@&${guild.adminRole}>`);
                 } else {
                     rows.push(`**Admin Role**\nNot Set`);
-                }
-
-                if (guild.vanity) {
-                    rows.push("**Vanity**\n`" + `${env.URL}/join/${guild.vanity}` + "`");
-                } else {
-                    rows.push(`**Vanity**\nNot Set`);
                 }
 
                 await interaction.reply({
