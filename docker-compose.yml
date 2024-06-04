@@ -17,8 +17,9 @@ services:
       - ./mysql/data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
+      interval: 1s
+      timeout: 5s
+      retries: 60
 
   migrate:
     container_name: migrate
