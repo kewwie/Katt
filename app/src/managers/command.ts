@@ -29,6 +29,11 @@ export class CommandManager {
 
         const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
 
+        await rest.put(
+            Routes.applicationCommands(env.CLIENT_ID),
+            { body: [] }
+        )
+
         var data: any = await rest.put(
             Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
             { body: cmds }
