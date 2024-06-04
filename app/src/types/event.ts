@@ -19,8 +19,7 @@ export enum Events {
 
 export interface Event {
     name: string;
-    once?: boolean;
     plugin?: string;
-    getGuildId?: (...args: any) => Promise<any>;
+    getGuildId?: (...args: any) => Promise<string>;
     execute: (client: KiwiClient, ...args: any) => void;
 }
