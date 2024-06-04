@@ -1,7 +1,7 @@
 import { Plugin } from "../../types/plugin";
 
 import { UpdateList } from "./buttons/update-list";
-import { List } from "./commands/list";
+import { ListSlash } from "./commands/list";
 
 /**
  * @type {Plugin}
@@ -14,8 +14,8 @@ export const ListPlugin: Plugin = {
     buttons: [
         UpdateList
     ],
-    commands: [
-        List
+    SlashCommands: [
+        ListSlash
     ],
     afterLoad: () => {
         console.log("Loaded List Plugin")

@@ -15,14 +15,14 @@ import {
     IntegrationTypes,
     OptionTypes,
     Permissions,
-    Command
+    SlashCommand
 } from "../../../types/command";
 
 
 /**
- * @type {Command}
+ * @type {SlashCommand}
  */
-export const PluginsCmd: Command = {
+export const PluginsCmd: SlashCommand = {
     config: {
         name: "plugins",
         description: "Plugins Commands",

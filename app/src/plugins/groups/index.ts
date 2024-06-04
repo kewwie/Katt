@@ -19,7 +19,7 @@ export const GroupsPlugin: Plugin = {
         AcceptInvite,
         DenyInvite
     ],
-    commands: [
+    SlashCommands: [
         GroupCommand
     ],
     events: [

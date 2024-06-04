@@ -1,6 +1,6 @@
 import { Plugin } from "../../types/plugin";
 
-import { MessageCmd } from "./commands/message";
+import { MessageSlash } from "./commands/message";
 
 import { MessageCreate } from "./events/messageCreate";
 
@@ -12,8 +12,8 @@ export const MessagePlugin: Plugin = {
         name: "Message",
         disableable: true
     },
-    commands: [
-        MessageCmd
+    SlashCommands: [
+        MessageSlash
     ],
     events: [
         MessageCreate

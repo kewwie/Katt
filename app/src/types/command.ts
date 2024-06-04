@@ -98,7 +98,7 @@ export enum Permissions {
     SendVoiceMessages = 0x0000400000000000
 }
 
-export interface Command {
+export interface SlashCommand {
     plugin?: string;
     config: {
         type: CommandTypes;

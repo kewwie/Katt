@@ -1,6 +1,6 @@
 import { Plugin } from "../../types/plugin";
 
-import { VoiceCmd } from "./commands/voice";
+import { VoiceSlash } from "./commands/voice";
 
 import { Ready } from "./events/ready";
 import { voiceStateUpdate } from "./events/voiceStateUpdate";
@@ -13,8 +13,8 @@ export const VoicePlugin: Plugin = {
         name: "Voice",
         disableable: true
     },
-    commands: [
-        VoiceCmd
+    SlashCommands: [
+        VoiceSlash
     ],
     events: [
         Ready,

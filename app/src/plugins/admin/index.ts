@@ -18,7 +18,7 @@ export const AdminPlugin: Plugin = {
     config: {
         name: "Admin"
     },
-    commands: [
+    SlashCommands: [
         AdminCmd,
         ConfigCmd,
         PluginsCmd

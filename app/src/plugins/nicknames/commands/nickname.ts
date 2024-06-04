@@ -11,16 +11,16 @@ import {
     ChannelTypes,
 	OptionTypes,
 	Permissions,
-    Command
+    SlashCommand
 } from "../../../types/command";
 
 import { dataSource } from "../../../data/datasource";
 import { Nickname } from "../../../data/entities/Nickname";
 
 /**
- * @type {Command}
+ * @type {SlashCommand}
  */
-export const NicknameCmd: Command = {
+export const NicknameSlash: SlashCommand = {
 	config: {
         name: "nickname",
         description: "Nickname Commands",

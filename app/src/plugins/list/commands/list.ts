@@ -12,7 +12,7 @@ import {
 	IntegrationTypes,
 	OptionTypes,
 	Permissions,
-	Command
+	SlashCommand
 } from "../../../types/command";
 
 import { UpdateList } from "../buttons/update-list";
@@ -20,9 +20,9 @@ import { UpdateList } from "../buttons/update-list";
 import { RowBuilder } from "../../../builders/row";
 
 /**
- * @type {Command}
+ * @type {SlashCommand}
  */
-export const List: Command = {
+export const ListSlash: SlashCommand = {
 	config: {
         name: "list",
         description: "List Commands",

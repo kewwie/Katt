@@ -18,10 +18,8 @@ import { LoopManager } from "./managers/loop";
 
 import RiotAPI from "unofficial-valorant-api";
 
-//import { RiotAPI } from "./managers/riotApi";
-
 import { Button } from "./types/component";
-import { Command } from "./types/command";
+import { SlashCommand } from "./types/command";
 import { Event } from "./types/event";
 import { Loop } from "./types/loop";
 
@@ -34,7 +32,8 @@ export class KiwiClient extends Client {
     };
 
     public buttons: Collection<string, Button>;
-    public commands: Collection<string, Command>;
+    public SlashCommands: Collection<string, SlashCommand>;
+    public PrefixCommands: Collection<string, SlashCommand>;
     public events: Collection<string, Event>;
     public loops: Collection<string, Loop>;
 
@@ -71,7 +70,8 @@ export class KiwiClient extends Client {
             color: "#2b2d31"
         }
 
-        this.commands = new Collection();
+        this.SlashCommands = new Collection();
+        this.PrefixCommands = new Collection();
         this.events = new Collection();
         this.buttons = new Collection();
         this.loops = new Collection();
@@ -96,7 +96,7 @@ export class KiwiClient extends Client {
 
         // Load all plugins
         this.PluginManager.loadAll(Plugins)
-        this.PluginManager.registerCommands([...this.commands.values()], env.TEST_GUILD);
+        this.PluginManager.registerCommands([...this.SlashCommands.values()], env.TEST_GUILD);
     }
 
     public async getAvatarUrl(user: { id: string; avatar: string; }) {
@@ -116,5 +116,9 @@ export class KiwiClient extends Client {
         const GuildPluginsRepository = await dataSource.getRepository(GuildPlugins);
         var enabled = await GuildPluginsRepository.findOne({ where: { guild_id: guildId, plugin: pluginName } });
         return enabled;
+    }
+
+    public async calculateXP(level: number) {
+        return 5 * (level ** 2) + 50 * level + 100;
     }
 };

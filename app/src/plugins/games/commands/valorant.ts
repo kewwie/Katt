@@ -12,7 +12,7 @@ import {
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes,
-    Command
+    SlashCommand
 } from "../../../types/command"
 import { dataSource } from "../../../data/datasource";
 import { ValorantUser } from "../../../data/entities/ValorantUser";
@@ -20,9 +20,9 @@ import { ValorantUser } from "../../../data/entities/ValorantUser";
 import { Regions } from "unofficial-valorant-api";
 
 /**
- * @type {Command}
+ * @type {SlashCommand}
  */
-export const ValorantCmd: Command = {
+export const ValorantCommand: SlashCommand = {
 	config: {
         name: "valorant",
         description: "VALORANT Commands",

@@ -14,7 +14,7 @@ import {
     IntegrationTypes,
     OptionTypes,
     Permissions,
-    Command
+    SlashCommand
 } from "../../../types/command";
 import { KiwiClient } from "../../../client";
 
@@ -27,9 +27,9 @@ import { AcceptInvite } from "../buttons/accept-invite";
 import { DenyInvite } from "../buttons/deny-invite";
 
 /**
- * @type {Command}
+ * @type {SlashCommand}
  */
-export const GroupCommand: Command =  {
+export const GroupCommand: SlashCommand =  {
 	config: {
         name: "group",
         description: "Group Commands",

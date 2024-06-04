@@ -10,7 +10,7 @@ import {
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes,
-    Command,
+    SlashCommand,
     Permissions
 } from "../../../types/command";
 
@@ -19,9 +19,9 @@ import { GuildAdmins } from "../../../data/entities/GuildAdmins";
 import { Events } from "../../../types/event";
 
 /**
- * @type {Command}
+ * @type {SlashCommand}
  */
-export const AdminCmd: Command = {
+export const AdminCmd: SlashCommand = {
 	config: {
         name: "admin",
         description: "Admin Commands",

@@ -1,6 +1,6 @@
 import { Plugin } from "../../types/plugin";
 
-import { ValorantCmd } from "./commands/valorant";
+import { ValorantCommand } from "./commands/valorant";
 
 import { newMatchLoop } from "./loops/newMatch";
 
@@ -12,8 +12,8 @@ export const GamesPlugin: Plugin = {
         name: "Games",
         disableable: false
     },
-    commands: [
-       ValorantCmd
+    SlashCommands: [
+        ValorantCommand
     ],
     loops: [
         newMatchLoop

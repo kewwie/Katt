@@ -9,16 +9,16 @@ import {
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes,
-    Command
+    SlashCommand
 } from "../../../types/command";
 
 import { dataSource } from "../../../data/datasource";
 import { MessageActivity } from "../../../data/entities/MessageActivity";
 
 /**
- * @type {Command}
+ * @type {SlashCommand}
  */
-export const MessageCmd: Command = {
+export const MessageSlash: SlashCommand = {
 	config: {
         name: "message",
         description: "Message Commands",

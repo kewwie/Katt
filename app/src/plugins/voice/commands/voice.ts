@@ -9,16 +9,16 @@ import {
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes,
-    Command
+    SlashCommand
 } from "../../../types/command";
 
 import { dataSource } from "../../../data/datasource";
 import { VoiceActivity } from "../../../data/entities/VoiceActivity";
 
 /**
- * @type {Command}
+ * @type {SlashCommand}
  */
-export const VoiceCmd: Command = {
+export const VoiceSlash: SlashCommand = {
 	config: {
         name: "voice",
         description: "Voice Commands",

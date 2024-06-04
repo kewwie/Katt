@@ -1,6 +1,6 @@
 import { Plugin } from "../../types/plugin";
 
-import { NicknameCmd } from "./commands/nickname";
+import { NicknameSlash } from "./commands/nickname";
 
 import { GuildMemberAdd } from "./events/guildMemberAdd";
 import { GuildMemberUpdate } from "./events/guildMemberUpdate";
@@ -13,8 +13,8 @@ export const NicknamesPlugin: Plugin = {
         name: "Nickname",
         disableable: true
     },
-    commands: [
-        NicknameCmd
+    SlashCommands: [
+        NicknameSlash
     ],
     events: [
         GuildMemberAdd,

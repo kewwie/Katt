@@ -16,14 +16,14 @@ import {
     ChannelTypes,
     OptionTypes,
     Permissions,
-    Command
+    SlashCommand
 } from "../../../types/command";
 import { env } from "../../../env";
 
 /**
- * @type {Command}
+ * @type {SlashCommand}
  */
-export const ConfigCmd: Command = {
+export const ConfigCmd: SlashCommand = {
     config: {
         name: "config",
         description: "Config Commands",
