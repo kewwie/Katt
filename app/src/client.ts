@@ -101,6 +101,10 @@ export class KiwiClient extends Client {
                 this.emit(Events.GuildReady, await guild[1].fetch());
             }
         });
+
+        this.on(Events.GuildCreate, async (guild) => {
+            this.CommandManager.register([...this.SlashCommands.values()], guild.id);
+        });
     }
 
     public async getAvatarUrl(user: { id: string; avatar: string; }) {
