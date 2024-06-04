@@ -27,6 +27,13 @@ export const GuildMemberAdd: Event = {
     name: Events.GuildMemberAdd,
 
     /**
+     * @param {GuildMember} member
+     */
+    async getGuildId(member: GuildMember) {
+        return member.guild.id;
+    },
+
+    /**
     * @param {Client} client
     * @param {GuildMember} member
     */

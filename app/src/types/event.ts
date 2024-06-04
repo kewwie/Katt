@@ -21,5 +21,6 @@ export interface Event {
     name: string;
     once?: boolean;
     plugin?: string;
+    getGuildId?: (...args: any) => Promise<any>;
     execute: (client: KiwiClient, ...args: any) => void;
 }

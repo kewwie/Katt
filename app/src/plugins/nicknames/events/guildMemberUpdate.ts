@@ -18,16 +18,20 @@ export const GuildMemberUpdate: Event = {
     name: Events.GuildMemberUpdate,
 
     /**
+     * @param {GuildMember} member
+     */
+    async getGuildId(member: GuildMember) {
+        return member.guild.id;
+    },
+
+    /**
     * @param {Client} client
     * @param {GuildMember} oldMember
     * @param {GuildMember} newMember
     */
     async execute(client: KiwiClient, oldMember: GuildMember, newMember: GuildMember) {
         const NicknameRepository = await dataSource.getRepository(Nickname);
-
-        if (!await client.getGuildPlugin(newMember.guild.id, NicknamesPlugin.config.name)) return;
-
-
+        
         if (newMember.nickname && oldMember.nickname !== newMember.nickname) {
             await NicknameRepository.upsert({
                 guildId: newMember.guild.id,

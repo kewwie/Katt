@@ -2,7 +2,7 @@ import { Plugin } from "../../types/plugin";
 
 import { VoiceSlash } from "./commands/voice";
 
-import { Ready } from "./events/ready";
+import { GuildReady } from "./events/guildReady";
 import { voiceStateUpdate } from "./events/voiceStateUpdate";
 
 /**
@@ -17,7 +17,7 @@ export const VoicePlugin: Plugin = {
         VoiceSlash
     ],
     events: [
-        Ready,
+        GuildReady,
         voiceStateUpdate
     ],
     afterLoad: () => {

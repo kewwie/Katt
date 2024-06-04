@@ -11,8 +11,6 @@ import { dataSource } from "../../../data/datasource";
 import { Group } from "../../../data/entities/Group";
 import { GroupMember } from "../../../data/entities/GroupMember";
 
-import { GroupsPlugin } from "..";
-
 /**
  * @type {Event}
  */
@@ -20,28 +18,32 @@ export const GuildVerifiedAdd: Event = {
     name: Events.GuildVerifiedAdd,
 
     /**
-    * @param {KiwiClient} client
-    * @param {Guild} user
-    * @param {User} user
-    */
+     * @param {Guild} guild
+     */
+    async getGuildId(guild: Guild) {
+        return guild.id;
+    },
+
+    /**
+     * @param {KiwiClient} client
+     * @param {Guild} guild
+     * @param {User} user
+     */
     async execute(client: KiwiClient, guild: Guild, user: User) {
         const GroupRepository = await dataSource.getRepository(Group);
         const GroupMembersRepository = await dataSource.getRepository(GroupMember);
 
-        if (await client.getGuildPlugin(guild.id, GroupsPlugin.config.name)) {
+        var groups = await GroupMembersRepository.find({ where: { userId: user.id }});
 
-            var groups = await GroupMembersRepository.find({ where: { userId: user.id }});
+        for (let group of groups) {
+            var g = await GroupRepository.findOne({ where: { groupId: group.groupId }});
+            if (g) {
+                var guildMember = await guild.members.fetch(user.id);
 
-            for (let group of groups) {
-                var g = await GroupRepository.findOne({ where: { groupId: group.groupId }});
-                if (g) {
-                    var guildMember = await guild.members.fetch(user.id);
-
-                    if (guildMember) {
-                        var role = guildMember.roles.cache.find(role => role.id === g.roleId);
-                        if (!role) {
-                            await guildMember.roles.add(g.roleId).catch(() => {});
-                        }
+                if (guildMember) {
+                    var role = guildMember.roles.cache.find(role => role.id === g.roleId);
+                    if (!role) {
+                        await guildMember.roles.add(g.roleId).catch(() => {});
                     }
                 }
             }

@@ -22,14 +22,19 @@ export const GuildMemberAdd: Event = {
     name: Events.GuildMemberAdd,
 
     /**
+     * @param {GuildMember} member
+     */
+    async getGuildId(member: GuildMember) {
+        return member.guild.id;
+    },
+
+    /**
     * 
     * @param {KiwiClient} client
     * @param {GuildMember} member
     */
     async execute(client: KiwiClient, member: GuildMember) {
         const NicknameRepository = await dataSource.getRepository(Nickname);
-
-        if (!await client.getGuildPlugin(member.guild.id, NicknamesPlugin.config.name)) return;
 
         var m = await NicknameRepository.findOne(
             { where: { userId: member.id, guildId: member.guild.id } }

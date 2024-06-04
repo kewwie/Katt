@@ -17,13 +17,18 @@ export const MessageCreate: Event = {
     name: Events.MessageCreate,
 
     /**
+     * @param {Message} message
+     */
+    async getGuildId(message: Message) {
+        return message.guild.id;
+    },
+
+    /**
     * @param {KiwiClient} client
     * @param {Message} message
     */
     async execute(client: KiwiClient, message: Message) {
         const MessageActivityRepository = await dataSource.getRepository(MessageActivity);
-
-        if (!await client.getGuildPlugin(message.guild.id, MessagePlugin.config.name)) return;
 
         var ma = await MessageActivityRepository.findOne(
             { where: { userId: message.author.id, guildId: message.guild.id }}
