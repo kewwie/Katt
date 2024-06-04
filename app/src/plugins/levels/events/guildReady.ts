@@ -15,6 +15,6 @@ export const GuildReady: Event = {
     async execute(client: KiwiClient, guild: OAuth2Guild) {
         console.log("Ready event fired");
         console.log(guild.name);
-        console.log(guild, client);
+        console.log(guild);
     }
 }

@@ -101,7 +101,7 @@ export class KiwiClient extends Client {
             console.log(`${this.user?.username} is Online`);
             for (let guild of await this.guilds.fetch()) {
                 this.CommandManager.register([...this.SlashCommands.values()], guild[0]);
-                this.emit(Events.GuildReady, this, guild[1]);
+                this.emit(Events.GuildReady, guild[1]);
             }
         });
     }
