@@ -9,13 +9,18 @@ import { dataSource } from "../../../data/datasource";
 import { VoiceChannel } from "../../../data/entities/VoiceChannel";
 import { VoiceActivity } from "../../../data/entities/VoiceActivity";
 
-import { VoicePlugin } from "..";
-
 /**
  * @type {Event}
  */
 export const voiceStateUpdate: Event = {
     name: Events.VoiceStateUpdate,
+
+    /**
+     * @param {VoiceState} voiceState
+     */
+    async getGuildId(voiceState: VoiceState) {
+        return voiceState.guild.id;
+    },
 
     /**
     * @param {KiwiClient} client
@@ -25,8 +30,6 @@ export const voiceStateUpdate: Event = {
     async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
         const VoiceChannelsDB = await dataSource.getRepository(VoiceChannel)
         const VoiceActivityDB = await dataSource.getRepository(VoiceActivity)
-
-        if (!await client.getGuildPlugin(newVoiceState.guild.id, VoicePlugin.config.name)) return;
 
         var pvs = await VoiceChannelsDB.findOne(
             { where: { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }}
