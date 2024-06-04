@@ -33,7 +33,7 @@ export class CommandManager {
             Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
             { body: cmds }
         )
-        console.log(`Successfully reloaded ${data.length} guild (/) commands.`);
+        console.log(`Successfully reloaded ${data.length} (/) commands in ${guildId}`);
     }
 
     async unregister(guildId: string) {
@@ -43,6 +43,8 @@ export class CommandManager {
             Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
             { body: [] }
         )
+
+        console.log(`Successfully removed all (/) commands in ${guildId}`);
     }
 
     async onInteraction(interaction: any) {
