@@ -103,6 +103,7 @@ export class KiwiClient extends Client {
         });
 
         this.on(Events.GuildCreate, async (guild) => {
+            console.log(`Joined ${guild.name}`);
             this.CommandManager.register([...this.SlashCommands.values()], guild.id);
         });
     }
