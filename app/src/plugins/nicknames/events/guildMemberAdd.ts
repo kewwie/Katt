@@ -1,10 +1,4 @@
-import {
-	ButtonBuilder,
-	ActionRowBuilder,
-    EmbedBuilder,
-    GuildMember,
-    TextChannel
-} from "discord.js";
+import { GuildMember } from "discord.js";
 
 import { KiwiClient } from "../../../client";
 
@@ -12,8 +6,6 @@ import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../data/datasource";
 import { Nickname } from "../../../data/entities/Nickname";
-
-import { NicknamesPlugin } from "..";
 
 /**
  * @type {Event}
