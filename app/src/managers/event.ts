@@ -15,11 +15,19 @@ export class EventManager {
         for (let event of events) {
             this.client.events.set(event.name, event);
 
-            if (event.once) {
-                this.client.once(event.name, (...args: any[]) => event.execute(this.client, ...args));
-            } else {
-                this.client.on(event.name, (...args: any[]) => event.execute(this.client, ...args));
-            }
+            this.client.on(event.name, async (...args: any[]) => {
+                var plugin = this.client.PluginManager.plugins.find(plugin => plugin.config.name === event.plugin);
+
+                if (plugin.config.disableable) {
+                    const GuildPluginsRepository = await dataSource.getRepository(GuildPlugins);
+                    if (await GuildPluginsRepository.findOne({ where: { guild_id: (await event.getGuildId(...args)), plugin: event.plugin } })) {
+                        event.execute(this.client, ...args);
+                    }
+                    
+                } else {
+                    event.execute(this.client, ...args);
+                }
+            });
         }
     }
 };
