@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryColumn } from "typeorm";
 @Entity("groups")
 export class Group {
     @PrimaryColumn({ type: "varchar", length: 255 })
-    groupId: string;;
+    groupId: string;
 
     @Column({ type: "varchar", length: 255 })
     name: string;
