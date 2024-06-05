@@ -6,8 +6,6 @@ import {
     ColorResolvable
 } from "discord.js";
 
-import { env } from "./env";
-
 import { PluginManager } from "./managers/plugin";
 import { Plugins } from "./plugins/plugins";
 
@@ -15,8 +13,6 @@ import { CommandManager } from "./managers/command";
 import { ComponentManager } from "./managers/component";
 import { EventManager } from "./managers/event";
 import { LoopManager } from "./managers/loop";
-
-import RiotAPI from "unofficial-valorant-api";
 
 import { Button } from "./types/component";
 import { SlashCommand } from "./types/command";
@@ -39,7 +35,6 @@ export class KiwiClient extends Client {
     public ComponentManager: ComponentManager;
     public EventManager: EventManager;
     public LoopManager: LoopManager;
-    public RiotApi: RiotAPI;
 
     constructor() {
         super({
@@ -87,9 +82,6 @@ export class KiwiClient extends Client {
 
         // Loop Manager
         this.LoopManager = new LoopManager(this);
-
-        // RiotAPI
-        this.RiotApi = new RiotAPI();
 
         // Load all plugins
         this.PluginManager.loadAll(Plugins);
