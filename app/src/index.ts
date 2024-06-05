@@ -1,7 +1,7 @@
 import { KiwiClient } from "./client";
 import { env } from "./env";
 
-import { dataSource } from "./data/datasource";
+import { dataSource } from "./datasource";
 
 const client = new KiwiClient();
 dataSource.initialize();

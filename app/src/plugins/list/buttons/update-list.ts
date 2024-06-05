@@ -9,7 +9,7 @@ import {
 
 import { Button } from "../../../types/component";
 
-import { dataSource } from "../../../data/datasource";
+import { dataSource } from "../../../datasource";
 import { GuildConfig } from "../../../entities/GuildConfig";
 
 /**
