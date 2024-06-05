@@ -22,4 +22,10 @@ export class GuildConfig {
 
     @Column({ type: 'varchar', length: 255, nullable: true })
     pendingChannel: string | null;
+
+    @Column({ name: "voice_category", type: "bigint" })
+    voiceCategory: string;
+
+    @Column({ name: "voice_channel", type: "bigint" })
+    voiceChannel: string;
 }
