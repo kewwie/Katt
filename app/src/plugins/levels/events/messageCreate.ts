@@ -33,22 +33,22 @@ export const MessageCreate: Event = {
         var LevelUser = await UserLevelRepository.findOne({ where: { guildId: message.guild.id, userId: message.author.id } });
         if (LevelUser) {
             if (new Date().getMinutes() !== LevelUser.updatedAt.getMinutes()) {
-                var levelXp = LevelUser.levelXp - newXp;
+                var levelXp = LevelUser.levelXp;
                 var userXp = LevelUser.userXp + newXp;
                 var level = LevelUser.level;
+                var xp = LevelUser.xp + newXp;
 
-                if (levelXp <= 0) {
+                if (userXp >= levelXp) {
                     level = LevelUser.level + 1;
-                    levelXp = await client.calculateXP(level) - LevelUser.xp;
-                    userXp= await client.calculateXP(level - 1) - LevelUser.xp;
-
-                    // Add level up message here
+                    levelXp = await client.calculateXP(level);
+                    userXp = await client.calculateXP(level) - xp;
                 }
 
                 await UserLevelRepository.update(LevelUser._id, {
-                    xp: userXp,
-                    level: level,
-                    levelXp: levelXp,
+                    xp,
+                    level,
+                    levelXp,
+                    userXp,
                     updatedAt: new Date()
                 });
             }
@@ -58,6 +58,8 @@ export const MessageCreate: Event = {
                 userId: message.author.id,
                 level: 0,
                 xp: newXp,
+                userXp: newXp,
+                levelXp: await client.calculateXP(1),
                 updatedAt: new Date()
             });
         }
