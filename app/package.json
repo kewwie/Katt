@@ -4,12 +4,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "typeorm": "npx typeorm",
-    "migrate:create": "npm run typeorm -- migration:create",
-    "migrate:generate": "npm run typeorm -- migration:generate -d dist/data/datasource.js",
-    "migrate:run": "npm run typeorm -- migration:run -d dist/data/datasource.js",
-    "migrate:revert": "npm run typeorm -- migration:revert -d dist/data/datasource.js"
+    "start": "node dist/index.js"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",
