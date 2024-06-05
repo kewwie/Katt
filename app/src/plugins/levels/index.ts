@@ -1,5 +1,6 @@
 import { Plugin } from "../../types/plugin";
 
+import { LevelsSlash } from "./commands/levels";
 
 import { MessageCreate } from "./events/messageCreate";
 
@@ -11,6 +12,9 @@ export const LevelsPlugin: Plugin = {
         name: "Levels",
         disableable: true
     },
+    SlashCommands: [
+        LevelsSlash
+    ],
     events: [
         MessageCreate
     ],
