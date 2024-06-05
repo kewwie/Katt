@@ -1,8 +1,6 @@
 import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
 	ChatInputCommandInteraction,
+    EmbedBuilder
 } from "discord.js";
 
 import { KiwiClient } from "../../../client";
@@ -56,7 +54,14 @@ export const LevelsSlash: SlashCommand = {
 
         var LevelUser = await UserLevelRepository.findOne({ where: { guildId: interaction.guild.id, userId: user.id } });
         if (LevelUser) {
-            await interaction.reply(`**${user.username}** is level **${LevelUser.level}**`);
+            var username = user.username.charAt(0).toUpperCase() + user.username.slice(1);
+            var levelRank = (await UserLevelRepository.find({ where: { guildId: interaction.guild.id }, order: { xp: "DESC" } })).findIndex(u => u.userId === user.id)
+            var LevelEmbed = new EmbedBuilder()
+                .setThumbnail(user.displayAvatarURL())
+                .setDescription(`# ${username}\n* **Rank: #${levelRank}**\n* **Level: ${LevelUser.level}**\n* **XP: ${LevelUser.userXp}/${LevelUser.levelXp}**`)
+                .setColor("#2b2d31")
+
+            interaction.reply({ embeds: [LevelEmbed] });
         } else {
             interaction.reply(`**${user.username}** has not gained any xp yet`);
         }	
