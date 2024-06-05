@@ -26,6 +26,8 @@ export const MessageCreate: Event = {
     async execute(client: KiwiClient, message: Message) {
         const UserLevelRepository = await dataSource.getRepository(UserLevel);
 
+        if (message.author.bot) return;
+
         var newXp = 50;
 
         // Add boosts here

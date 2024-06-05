@@ -28,6 +28,8 @@ export const MessageCreate: Event = {
     async execute(client: KiwiClient, message: Message) {
         const MessageActivityRepository = await dataSource.getRepository(MessageActivity);
 
+        if (message.author.bot) return;
+
         var ma = await MessageActivityRepository.findOne(
             { where: { userId: message.author.id, guildId: message.guild.id }}
         );
