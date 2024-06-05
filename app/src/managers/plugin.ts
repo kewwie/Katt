@@ -6,12 +6,14 @@ import { Plugin } from "../types/plugin";
 export class PluginManager {
     public client: KiwiClient
     public plugins: Plugin[];
-    public EventHandlersSet: boolean;
+    public SlashEventSet: boolean;
+    public ButtonEventSet: boolean;
 
     constructor(client: KiwiClient) {
         this.client = client;
         this.plugins = [];
-        this.EventHandlersSet = false;
+        this.SlashEventSet = false;
+        this.ButtonEventSet = false;
     }
 
     load(plugin: Plugin) {
@@ -26,8 +28,9 @@ export class PluginManager {
             }
             this.client.CommandManager.load(SlashCommands);
 
-            if (!this.EventHandlersSet) {
+            if (!this.SlashEventSet) {
                 this.client.on(Events.InteractionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
+                this.SlashEventSet = true;
             }
         }
 
@@ -39,8 +42,9 @@ export class PluginManager {
             }
             this.client.ComponentManager.loadButtons(buttons);
 
-            if (!this.EventHandlersSet) {
+            if (!this.ButtonEventSet) {
                 this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));
+                this.ButtonEventSet = true;
             }
         }
 
