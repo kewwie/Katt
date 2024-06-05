@@ -33,11 +33,22 @@ export class CreateUserLevelsTable1717547802604 implements MigrationInterface {
                         name: "xp",
                         type: "int",
                         unsigned: true,
-                        isNullable: false,
-                        default: 0
+                        isNullable: false
                     },
                     {
-                        name: "last_updated",
+                        name: "user_xp",
+                        type: "int",
+                        unsigned: true,
+                        isNullable: false
+                    },
+                    {
+                        name: "level_xp",
+                        type: "int",
+                        unsigned: true,
+                        isNullable: false
+                    },
+                    {
+                        name: "updated_at",
                         type: "datetime",
                         isNullable: false,
                         default: "CURRENT_TIMESTAMP"
