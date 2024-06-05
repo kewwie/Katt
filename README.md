@@ -24,10 +24,11 @@ cd kewiapp
 
 - Verification System
 - Voice Tracker
-- Valorant Tracker
+- Message Tracker
 - Lists for custom names
 - Nickname Saver
 - Server Groups
+- Leveling System
 
 ## Contributing
 
@@ -52,5 +53,4 @@ Project Link: [https://github.com/kewwie/kewiapp](https://github.com/kewwie/kewi
 ## Acknowledgments
 
 - [Denbeigh2000](https://github.com/denbeigh2000) - Verification System Idea
-- [unofficial-valorant-api](https://github.com/Henrik-3/unofficial-valorant-api) - For the Valorant Tracker
 
