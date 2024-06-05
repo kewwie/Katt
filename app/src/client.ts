@@ -122,6 +122,6 @@ export class KiwiClient extends Client {
     }
 
     public async calculateXP(level: number) {
-        return 5 * (level ** 2) + 50 * level + 100;
+        return 100 + 120 * (level - 1) ** 2;
     }
 };
