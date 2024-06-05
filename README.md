@@ -1,6 +1,6 @@
 # Kewi App
 
-One or two paragraphs providing an overview of your project. This should include what your project does and the problem it solves.
+Custom Discord application designed for stuff I need.
 
 ## Table of Contents
 
