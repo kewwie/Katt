@@ -24,11 +24,6 @@ export class CreateGuilds1712735349383 implements MigrationInterface {
                         isNullable: true
                     },
                     {
-                        name: "botRole",
-                        type: "varchar",
-                        isNullable: true
-                    },
-                    {
                         name: "adminRole",
                         type: "varchar",
                         isNullable: true

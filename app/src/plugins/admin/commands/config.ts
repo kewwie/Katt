@@ -18,7 +18,6 @@ import {
     Permissions,
     SlashCommand
 } from "../../../types/command";
-import { env } from "../../../env";
 
 /**
  * @type {SlashCommand}
@@ -95,19 +94,6 @@ export const ConfigCmd: SlashCommand = {
                         type: OptionTypes.ROLE,
                         name: "role",
                         description: "The role to assign to members",
-                        required: false
-                    }
-                ]
-            },
-            {
-                type: OptionTypes.SUB_COMMAND,
-                name: "bot",
-                description: "Set the bot role for the server (Owner only)",
-                options: [
-                    {
-                        type: OptionTypes.ROLE,
-                        name: "role",
-                        description: "The role to assign to bots",
                         required: false
                     }
                 ]
@@ -259,28 +245,6 @@ export const ConfigCmd: SlashCommand = {
                 }
                 break;
 
-            case "bot":
-                var role = interaction.options.getRole("role");
-                var value = role ? role.id : null;
-
-                await GuildRepository.upsert(
-                    { guildId: interaction.guildId, botRole: value },
-                    ["guildId"]
-                );
-
-                if (value) {
-                    await interaction.reply({
-                        content: `Bot role has been set to <@&${value}>!`,
-                        ephemeral: true
-                    });
-                } else {
-                    await interaction.reply({
-                        content: `Bot role has been unset!`,
-                        ephemeral: true
-                    });
-                }  
-                break;
-
             case "admin":
                 var role = interaction.options.getRole("role");
                 var value = role ? role.id : null;
@@ -343,12 +307,6 @@ export const ConfigCmd: SlashCommand = {
                     rows.push(`**Member Role**\n<@&${guild.memberRole}>`);
                 } else {
                     rows.push(`**Member Role**\nNot Set`);
-                }
-
-                if (guild.botRole) {
-                    rows.push(`**Bot Role**\n<@&${guild.botRole}>`);
-                } else {
-                    rows.push(`**Bot Role**\nNot Set`);
                 }
 
                 if (guild.adminRole) {
