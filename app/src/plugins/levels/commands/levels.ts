@@ -11,11 +11,11 @@ import {
 	SlashCommandContexts,
 	IntegrationTypes,
 	OptionTypes,
-	Permissions,
 	SlashCommand
 } from "../../../types/command";
 
-import { RowBuilder } from "../../../builders/row";
+import { dataSource } from "../../../datasource";
+import { UserLevel } from "../../../entities/UserLevel";
 
 /**
  * @type {Command}
@@ -50,10 +50,15 @@ export const LevelsSlash: SlashCommand = {
     * @param {Client} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
-        const user = interaction.options.getUser("user") || interaction.user;
+        const UserLevelRepository = await dataSource.getRepository(UserLevel);
 
-        await interaction.reply({
-            content: `**${user.username}** is level **${45}**`
-        });		
+        var user = interaction.options.getUser("user") || interaction.user;
+
+        var LevelUser = await UserLevelRepository.findOne({ where: { guildId: interaction.guild.id, userId: user.id } });
+        if (LevelUser) {
+            await interaction.reply(`**${user.username}** is level **${LevelUser.level}**`);
+        } else {
+            interaction.reply(`**${user.username}** has not gained any xp yet`);
+        }	
 	},
 }
