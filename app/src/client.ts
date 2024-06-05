@@ -53,7 +53,10 @@ export class KiwiClient extends Client {
                 Partials.Channel,
                 Partials.Message,
                 Partials.User,
-            ]
+            ],
+            presence: {
+                status: "idle"
+            }
         });
 
         this.setMaxListeners(25);
