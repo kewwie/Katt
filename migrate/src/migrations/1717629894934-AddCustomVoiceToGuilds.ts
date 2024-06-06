@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class AddCustomVcToGuilds1717629894934 implements MigrationInterface {
+export class AddCustomVoiceToGuilds1717629894934 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE guilds ADD COLUMN voice_category BIGINT NULL`);
