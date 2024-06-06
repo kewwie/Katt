@@ -35,6 +35,7 @@ export class CreateMessageTable1715758033998 implements MigrationInterface {
                     {
                         name: "amount",
                         type: "int",
+                        unsigned: true,
                         isNullable: false,
                         default: 0
                     }

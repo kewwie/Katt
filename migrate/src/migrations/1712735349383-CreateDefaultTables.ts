@@ -115,7 +115,6 @@ export class CreateDefaultTables1712735349383 implements MigrationInterface {
                     {
                         name: "level",
                         type: "int",
-                        default: 1,
                         unsigned: true,
                         isNullable: false
                     }

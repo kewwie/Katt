@@ -67,6 +67,7 @@ export class CreateVoiceTables1712736122504 implements MigrationInterface {
                     {
                         name: "seconds",
                         type: "int",
+                        unsigned: true,
                         isNullable: false,
                         default: 0
                     }
