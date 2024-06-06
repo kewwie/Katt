@@ -20,8 +20,8 @@ export const DeleteChannels: Loop = {
                 var ownerChannel = (await guild.channels.fetch()).find(channel => channel.type === ChannelType.GuildVoice && channel.members.has(customChannel.userId));
 
                 if (members.length === 0 && !ownerChannel) {
-                    await channel.delete("No members in channel").catch(() => {});
                     CustomChannelsRepository.update({ channelId: channel.id }, { channelId: null });
+                    await channel.delete("No members in channel").catch(() => {});
                 }
             }
         }
