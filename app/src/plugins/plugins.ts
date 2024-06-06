@@ -2,6 +2,7 @@ import { Plugin } from "../types/plugin";
 
 import { AdminPlugin } from "./admin"
 import { AntiBanPlugin } from "./antiban"
+import { CustomVoicePlugin } from "./customvoice";
 import { GroupsPlugin } from "./groups"
 import { LevelsPlugin } from "./levels";
 import { ListPlugin } from "./list"
@@ -16,6 +17,7 @@ import { VoicePlugin } from "./voice"
 export const Plugins: Array<Plugin> = [
     AdminPlugin,
     AntiBanPlugin,
+    CustomVoicePlugin,
     GroupsPlugin,
     LevelsPlugin,
     ListPlugin,
