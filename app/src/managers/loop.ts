@@ -1,7 +1,7 @@
 import { KiwiClient } from "../client";
 import { dataSource } from "../datasource";
 
-import { GuildPlugins } from "../entities/GuildPlugins";
+import { GuildPluginEntity } from "../entities/GuildPlugin";
 import { Loop } from "../types/loop";
 
 export class LoopManager {
@@ -12,7 +12,7 @@ export class LoopManager {
     }
 
     async load(loops: Loop[]) {
-        const GuildPluginsRepository = await dataSource.getRepository(GuildPlugins);
+        const GuildPluginsRepository = await dataSource.getRepository(GuildPluginEntity);
 
         for (let loop of loops) {
             this.client.loops.set(loop.name, loop);
@@ -23,9 +23,9 @@ export class LoopManager {
                     var g = await guild.fetch();
 
                     if (!plugin.config.disableable) {
-                        
+                        await loop.execute(this.client, g);
                     } else {
-                        var isEnabled = await GuildPluginsRepository.findOne({ where: { guild_id: g.id, plugin: loop.plugin } });
+                        var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: g.id, pluginName: loop.plugin } });
                         if (isEnabled) {
                             await loop.execute(this.client, g);
                         }

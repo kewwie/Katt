@@ -4,7 +4,7 @@ import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { CustomChannels } from "../../../entities/CustomChannels";
+import { CustomChannel } from "../../../entities/CustomChannel";
 import { GuildConfig } from "../../../entities/GuildConfig";
 
 /**
@@ -25,7 +25,7 @@ export const GuildReady: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, guild: Guild) {
-        const CustomChannelsRepository = await dataSource.getRepository(CustomChannels);
+        const CustomChannelsRepository = await dataSource.getRepository(CustomChannel);
         const GuildConfigRepository = await dataSource.getRepository(GuildConfig);
 
         var customChannels = await CustomChannelsRepository.find({ where: { guildId: guild.id } });
@@ -76,7 +76,7 @@ export const GuildReady: Event = {
 
                 else if (customChannel && !customChannel.channelId && vs.channelId) {
                     var newChannel = await vs.guild.channels.create({
-                        name: !customChannel.name ? `${vs.member.displayName}'s Channel` : customChannel.name,
+                        name: !customChannel.channelName ? `${vs.member.displayName}'s Channel` : customChannel.channelName,
                         type: ChannelType.GuildVoice,
                         parent: await vs.guild.channels.fetch(guildConfig.voiceCategory) as CategoryChannelResolvable,
                         permissionOverwrites: [
@@ -112,7 +112,7 @@ export const GuildReady: Event = {
                         guildId: vs.guild.id,
                         userId: vs.member.id,
                         channelId: newChannel.id,
-                        name: `${vs.member.displayName}'s Channel`
+                        channelName: `${vs.member.displayName}'s Channel`
                     });
 
                     if (vs.channelId === guildConfig.voiceChannel) {

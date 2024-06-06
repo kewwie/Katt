@@ -4,7 +4,7 @@ import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { VoiceChannel } from "../../../entities/VoiceChannel";
+import { VoiceStateEntity } from "../../../entities/VoiceState";
 
 /**
  * @type {Event}
@@ -24,22 +24,22 @@ export const GuildReady: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, guild: Guild) {
-        const VoiceChannelsDB = await dataSource.getRepository(VoiceChannel)
+        const VoiceStateRepository = await dataSource.getRepository(VoiceStateEntity)
 
-        for (var vs of await VoiceChannelsDB.find({ where: { guildId: guild.id } })) {
+        for (var vs of await VoiceStateRepository.find({ where: { guildId: guild.id } })) {
             if (!guild.voiceStates.cache.get(vs.userId)) {
-                await VoiceChannelsDB.delete({ userId: vs.userId, guildId: vs.guildId });
+                await VoiceStateRepository.delete({ userId: vs.userId, guildId: vs.guildId });
             }
         }
 
         for (var voiceState of guild.voiceStates.cache.values()) {
 
-            var vs = await VoiceChannelsDB.findOne(
+            var vs = await VoiceStateRepository.findOne(
                 { where: { userId: voiceState.id, guildId: voiceState.guild.id }}
             );
 
             if (!vs) {
-                await VoiceChannelsDB.upsert(
+                await VoiceStateRepository.upsert(
                     { userId: voiceState.id, guildId: voiceState.guild.id, joinTime: new Date() },
                     ["userId", "guildId"]
                 );

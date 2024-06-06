@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity("voice_activity")
-export class VoiceActivityEntity {
+@Entity("custom_channels")
+export class CustomChannelEntity {
     @PrimaryGeneratedColumn()
     _id: number;
 
@@ -11,9 +11,9 @@ export class VoiceActivityEntity {
     @Column({ name: "user_id", type: 'bigint' })
     userId: string;
 
-    @Column({ name: "user_name", type: 'varchar' })
-    userName: string;
+    @Column({ name: "channel_id", type: 'bigint' })
+    channelId: string;
 
-    @Column({ name: "seconds", type: 'int' })
-    seconds: number;
+    @Column({ name: "channel_name", type: 'varchar' })
+    channelName: string;
 }

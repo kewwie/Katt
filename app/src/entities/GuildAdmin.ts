@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'custom_channels' })
-export class CustomChannels {
+@Entity({ name: 'guild_admins' })
+export class GuildAdminEntity {
     @PrimaryGeneratedColumn()
     _id: number;
 
@@ -11,9 +11,9 @@ export class CustomChannels {
     @Column({ name: "user_id", type: 'bigint' })
     userId: string;
 
-    @Column({ name: "channel_id", type: 'bigint' })
-    channelId: string;
+    @Column({ name: "user_name", type: 'varchar' })
+    userName: string;
 
-    @Column({ name: "name", type: 'varchar' })
-    name: string;
+    @Column({ name: "level", type: 'int' })
+    level: number;
 }

@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 
 import { dataSource } from "../../../datasource";
-import { MessageActivity } from "../../../entities/MessageActivity";
+import { MessageActivityEntity } from "../../../entities/MessageActivity";
 
 /**
  * @type {Event}
@@ -26,7 +26,7 @@ export const MessageCreate: Event = {
     * @param {Message} message
     */
     async execute(client: KiwiClient, message: Message) {
-        const MessageActivityRepository = await dataSource.getRepository(MessageActivity);
+        const MessageActivityRepository = await dataSource.getRepository(MessageActivityEntity);
 
         if (message.author.bot) return;
 
@@ -39,16 +39,16 @@ export const MessageCreate: Event = {
                 { 
                     guildId: message.guild.id,
                     userId: message.author.id,
-                    username: message.author.username
+                    userName: message.author.username
                 },
-                { messages: ma.messages + 1 }
+                { amount: ma.amount + 1 }
             );
         } else {
             await MessageActivityRepository.insert({ 
                 guildId: message.guild.id,
                 userId: message.author.id,
-                username: message.author.username,
-                messages: 1
+                userName: message.author.username,
+                amount: 1
             });
         }
     }

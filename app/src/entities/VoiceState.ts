@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity("pending_messages")
-export class PendingMessageEntity {
+@Entity("voice_states")
+export class VoiceStateEntity {
     @PrimaryGeneratedColumn()
     _id: number;
 
@@ -11,6 +11,6 @@ export class PendingMessageEntity {
     @Column({ name: "user_id", type: 'bigint' })
     userId: string;
 
-    @Column({ name: "message_id", type: 'bigint' })
-    messageId: string;
+    @Column({ name: "join_time", type: 'datetime' })
+    joinTime: Date;
 }

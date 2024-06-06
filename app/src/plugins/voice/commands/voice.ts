@@ -77,10 +77,8 @@ export const VoiceSlash: SlashCommand = {
                     return;
                 }
                 
-                
-                var uTag= await client.getTag({ username: user.username, discriminator: user.discriminator });
                 var hours = voiceActivity.seconds / (60 * 60);
-                interaction.reply(`**${uTag}** has been in voice chat for **${formatter.format(hours)}** hours`);
+                interaction.reply(`**${voiceActivity.userName}** has been in voice chat for **${formatter.format(hours)}** hours`);
                 break;
             }
             case "leaderboard": {
@@ -89,7 +87,7 @@ export const VoiceSlash: SlashCommand = {
                 );
 
                 var leaderboard = voiceActivities.map((va, i) => {
-                    return `${i + 1}. **${va.username}** - ${formatter.format(va.seconds / (60 * 60))} hours`;
+                    return `${i + 1}. **${va.userName}** - ${formatter.format(va.seconds / (60 * 60))} hours`;
                 }).join("\n");
 
                 interaction.reply(`**Voice Leaderboard**\n${leaderboard}`);

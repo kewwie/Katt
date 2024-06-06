@@ -5,7 +5,7 @@ import { KiwiClient } from "../client";
 import { SlashCommand } from "../types/command";
 
 import { dataSource } from "../datasource";
-import { GuildPlugins } from "../entities/GuildPlugins";
+import { GuildPluginEntity } from "../entities/GuildPlugin";
 
 export class CommandManager {
     public client: KiwiClient;
@@ -48,7 +48,7 @@ export class CommandManager {
     }
 
     async onInteraction(interaction: any) {
-        const GuildPluginsRepository = await dataSource.getRepository(GuildPlugins);
+        const GuildPluginsRepository = await dataSource.getRepository(GuildPluginEntity);
 
         if (interaction.isChatInputCommand()) {
 
@@ -63,7 +63,7 @@ export class CommandManager {
                         await command.execute(interaction, this.client);
                     } else {
                         if (interaction.guild) {
-                            const status = await GuildPluginsRepository.findOne({ where: { guild_id: interaction.guild.id, plugin: command.plugin } });
+                            const status = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: command.plugin } });
                             if (status) {
                                 await command.execute(interaction, this.client);
                             } else {

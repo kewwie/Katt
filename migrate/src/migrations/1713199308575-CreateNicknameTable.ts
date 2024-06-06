@@ -1,36 +1,36 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateMessagesTable1715758033998 implements MigrationInterface {
+export class CreateNicknameTable1713199308575 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: "message_activity",
+                name: "nicknames",
                 columns: [
                     {
-                        name: "id",
+                        name: "_id",
                         type: "int",
                         isPrimary: true,
                         isGenerated: true,
                         generationStrategy: "increment"
                     },
                     {
-                        name: "guildId",
-                        type: "varchar",
+                        name: "user_id",
+                        type: "bigint",
+                        unsigned: true,
+                        isNullable: false
                     },
                     {
-                        name: "userId",
-                        type: "varchar",
+                        name: "guild_id",
+                        type: "bigint",
+                        unsigned: true,
+                        isNullable: false
                     },
                     {
-                        name: "username",
+                        name: "name",
                         type: "varchar",
-                    },
-                    {
-                        name: "messages",
-                        type: "int",
-                        isNullable: false,
-                        default: 0
+                        length: "32",
+                        isNullable: false
                     }
                 ]
             })
@@ -38,7 +38,6 @@ export class CreateMessagesTable1715758033998 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("message_activity");
+        await queryRunner.dropTable("nicknames");
     }
-
 }

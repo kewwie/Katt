@@ -5,7 +5,7 @@ import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { Nickname } from "../../../entities/Nickname";
+import { NicknameEntity } from "../../../entities/Nickname";
 
 /**
  * @type {Event}
@@ -26,13 +26,13 @@ export const GuildMemberAdd: Event = {
     * @param {GuildMember} member
     */
     async execute(client: KiwiClient, member: GuildMember) {
-        const NicknameRepository = await dataSource.getRepository(Nickname);
+        const NicknameRepository = await dataSource.getRepository(NicknameEntity);
 
         var m = await NicknameRepository.findOne(
             { where: { userId: member.id, guildId: member.guild.id } }
         );
         if (m) {
-            member.setNickname(m.nickname);
+            member.setNickname(m.name);
         }
     }
 }

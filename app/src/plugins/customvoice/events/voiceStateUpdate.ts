@@ -8,8 +8,8 @@ import {
 } from "discord.js";
 
 import { dataSource } from "../../../datasource";
-import { CustomChannels } from "../../../entities/CustomChannels";
-import { GuildConfig } from "../../../entities/GuildConfig";
+import { CustomChannelEntity } from "../../../entities/CustomChannel";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
 
 /**
  * @type {Event}
@@ -30,8 +30,8 @@ export const VoiceStateUpdate: Event = {
     * @param {VoiceState} newVoiceState
     */
     async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
-        const CustomChannelsRepository = await dataSource.getRepository(CustomChannels);
-        const GuildConfigRepository = await dataSource.getRepository(GuildConfig);
+        const CustomChannelsRepository = await dataSource.getRepository(CustomChannelEntity);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
 
         var customChannel = await CustomChannelsRepository.findOne({
             where: {
@@ -69,7 +69,7 @@ export const VoiceStateUpdate: Event = {
 
             if (customChannel && !customChannel.channelId && newVoiceState.channelId) {
                 var newChannel = await newVoiceState.guild.channels.create({
-                    name: !customChannel.name ? `${newVoiceState.member.displayName}'s Channel` : customChannel.name,
+                    name: !customChannel.channelName ? `${newVoiceState.member.displayName}'s Channel` : customChannel.channelName,
                     type: ChannelType.GuildVoice,
                     parent: await newVoiceState.guild.channels.fetch(guildConfig.voiceCategory) as CategoryChannelResolvable,
                     permissionOverwrites: [
@@ -105,7 +105,7 @@ export const VoiceStateUpdate: Event = {
                     guildId: newVoiceState.guild.id,
                     userId: newVoiceState.member.id,
                     channelId: newChannel.id,
-                    name: `${newVoiceState.member.displayName}'s Channel`
+                    channelName: `${newVoiceState.member.displayName}'s Channel`
                 });
 
                 if (newVoiceState.channelId === guildConfig.voiceChannel) {

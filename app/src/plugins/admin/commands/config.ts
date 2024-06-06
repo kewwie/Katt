@@ -1,8 +1,8 @@
 import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../datasource";
-import { GuildConfig } from "../../../entities/GuildConfig";
-import { GuildAdmins } from "../../../entities/GuildAdmins";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { GuildAdminEntity } from "../../../entities/GuildAdmin";
 
 import {
     AutocompleteInteraction,
@@ -71,7 +71,7 @@ export const ConfigCmd: SlashCommand = {
         switch (focused.name) {
             case "option": {
                 const options = [
-                    { name: "Logs Channel", value: "logs_channel" },
+                    { name: "Log Channel", value: "log_channel" },
                     { name: "Pending Channel", value: "pending_channel" },
                     { name: "Verification Ping", value: "verification_ping" },
                     { name: "Guest Role", value: "guest_role" },
@@ -89,7 +89,7 @@ export const ConfigCmd: SlashCommand = {
 
             case "value": {
                 const valueTypes = [
-                    { name: "logs_channel", types: ["text_channel"] },
+                    { name: "log_channel", types: ["text_channel"] },
                     { name: "pending_channel", types: ["text_channel"] },
                     { name: "verification_ping", types: ["role"] },
                     { name: "guest_role", types: ["role"] },
@@ -146,7 +146,6 @@ export const ConfigCmd: SlashCommand = {
                 await interaction.respond(choices.flat());
             }
         }
-
     },
     
     /**
@@ -154,21 +153,21 @@ export const ConfigCmd: SlashCommand = {
      * @param {KiwiClient} client
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
-        var guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
+        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
+        var guildAdmin = await GuildAdminRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
 
         if (!guildAdmin || guildAdmin.level < 3) {
             interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
             return;
         }
 
-        const GuildRepository = await dataSource.getRepository(GuildConfig);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
 
         switch (interaction.options.getSubcommand()) {
             case "set":
-                var guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
+                var guild = await GuildConfigRepository.findOne({ where: { guildId: interaction.guildId } });
                 if (!guild) {
-                    guild = new GuildConfig();
+                    guild = new GuildConfigEntity();
                     guild.guildId = interaction.guildId;
                 }
 
@@ -176,11 +175,11 @@ export const ConfigCmd: SlashCommand = {
                 var value = interaction.options.getString("value");
 
                 switch (option.value) {
-                    case "logs_channel":
+                    case "log_channel":
                         if (value) {
-                            guild.logsChannel = value;
+                            guild.logChannel = value;
                         } else {
-                            guild.logsChannel = null;
+                            guild.logChannel = null;
                         }
                         break;
 
@@ -241,7 +240,7 @@ export const ConfigCmd: SlashCommand = {
                         break;
                 }
 
-                await GuildRepository.save(guild);
+                await GuildConfigRepository.save(guild);
                 await interaction.reply({
                     content: `Updated **${option.value}** successfully!`,
                     ephemeral: true
@@ -249,7 +248,7 @@ export const ConfigCmd: SlashCommand = {
                 break;
 
             case "view":
-                var guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
+                var guild = await GuildConfigRepository.findOne({ where: { guildId: interaction.guildId } });
                 if (!guild) {
                     await interaction.reply({
                         content: "No configuration found for this server!",

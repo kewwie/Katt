@@ -4,8 +4,8 @@ import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { GuildAdmins } from "../../../entities/GuildAdmins";
-import { GuildConfig } from "../../../entities/GuildConfig";
+import { GuildAdminEntity } from "../../../entities/GuildAdmin";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
 
 /**
  * @type {Event}
@@ -17,16 +17,16 @@ export const GuildReady: Event = {
     * @param {KiwiClient} client
     */
     async execute(client: KiwiClient, guild: Guild) {
-        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
-        const GuildConfigRepository = await dataSource.getRepository(GuildConfig);
+        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
 
 
-            var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: guild.id } });
+            var guildAdmins = await GuildAdminRepository.find({ where: { guildId: guild.id } });
             if (guildAdmins) {
                 for (var guildAdmin of guildAdmins) {
                     if (guildAdmin.level === 4) {
                         if (guildAdmin.userId !== guild.ownerId) {
-                            await GuildAdminsRepository.delete({ guildId: guild.id, userId: guildAdmin.userId });
+                            await GuildAdminRepository.delete({ guildId: guild.id, userId: guildAdmin.userId });
                         }
                     }
                 }
@@ -36,24 +36,24 @@ export const GuildReady: Event = {
             if (user) {
                 var guildAdmin = guildAdmins.find(admin => admin.userId === guild.ownerId);
                 if (guildAdmin) {
-                    await GuildAdminsRepository.update({
+                    await GuildAdminRepository.update({
                         guildId: guild.id,
                         userId: user.id
                     }, {
-                        username: user.username,
+                        userName: user.username,
                         level: 4
                     });
                 } else {
-                    await GuildAdminsRepository.insert({
+                    await GuildAdminRepository.insert({
                         guildId: guild.id,
                         userId: user.id,
-                        username: user.username,
+                        userName: user.username,
                         level: 4
                     });
                 }
             }
 
-            var guildAdmins = await GuildAdminsRepository.find({ where: { guildId: guild.id } });
+            var guildAdmins = await GuildAdminRepository.find({ where: { guildId: guild.id } });
             var guildData = await GuildConfigRepository.findOne({ where: { guildId: guild[0] } });
             if (guildData) {
                 var adminRole = await guild.roles.fetch(guildData.adminRole);
@@ -61,7 +61,7 @@ export const GuildReady: Event = {
                     for (var member of adminRole.members) {
                         var m = await member[1].fetch();
                         if (m.roles.cache.find(role => role.id === guildData.adminRole)) {
-                            var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: guild[0], userId: m.id } });
+                            var isAdmin = await GuildAdminRepository.findOne({ where: { guildId: guild[0], userId: m.id } });
                             if (!isAdmin) {
                                 await m.roles.remove(adminRole).catch(() => {});
                             }

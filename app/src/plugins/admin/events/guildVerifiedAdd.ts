@@ -8,8 +8,8 @@ import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { GuildAdmins } from "../../../entities/GuildAdmins";
-import { GuildConfig } from "../../../entities/GuildConfig";
+import { GuildAdminEntity } from "../../../entities/GuildAdmin";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
 
 
 /**
@@ -24,11 +24,11 @@ export const GuildVerifiedAdd: Event = {
     * @param {GuildMember} member
     */
     async execute(client: KiwiClient, guild: Guild, member: GuildMember) {
-        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
-        const GuildRepository = await dataSource.getRepository(GuildConfig);
-        var g = await GuildRepository.findOne({ where: { guildId: guild.id}});
+        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        var g = await GuildConfigRepository.findOne({ where: { guildId: guild.id}});
 
-        if (g && await GuildAdminsRepository.findOne({ where: { guildId: guild.id, userId: member.id } })) {
+        if (g && await GuildAdminRepository.findOne({ where: { guildId: guild.id, userId: member.id } })) {
             var guildMember = await guild.members.fetch(member.id);
 
             if (guildMember) {

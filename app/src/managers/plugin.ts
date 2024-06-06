@@ -1,5 +1,4 @@
 import { KiwiClient } from "../client";
-import { SlashCommand } from "../types/command";
 import { Events } from "../types/event";
 import { Plugin } from "../types/plugin";
 

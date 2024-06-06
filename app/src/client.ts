@@ -102,21 +102,4 @@ export class KiwiClient extends Client {
             this.CommandManager.register([...this.SlashCommands.values()], guild.id);
         });
     }
-
-    public async getAvatarUrl(user: { id: string; avatar: string; }) {
-        return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`;
-    }
-    
-    public async getTag(user: { username: string; discriminator: string; }) {
-        var username = user.username.charAt(0).toUpperCase() + user.username.slice(1);
-        if (!["0", "0000"].includes(user.discriminator)) {
-            return `${username}#${user.discriminator}`;
-        } else {
-            return username;
-        }
-    }
-
-    public async calculateXP(level: number) {
-        return 100 + 120 * (level - 1) ** 2;
-    }
 };

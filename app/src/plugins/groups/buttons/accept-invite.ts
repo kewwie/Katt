@@ -9,9 +9,9 @@ import {
 import { Button } from "../../../types/component";
 
 import { dataSource } from "../../../datasource";
-import { Group } from "../../../entities/Group";
-import { GroupMember } from "../../../entities/GroupMember";
-import { GroupInvite } from "../../../entities/GroupInvite";
+import { GuildGroupEntity } from "../../../entities/GuildGroup";
+import { GroupMemberEntity } from "../../../entities/GroupMember";
+import { GroupInviteEntity } from "../../../entities/GroupInvite";
 
 /**
  * @type {Button}
@@ -30,13 +30,13 @@ export const AcceptInvite: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
-        const GroupRepository = await dataSource.getRepository(Group);
-        const GroupMembersRepository = await dataSource.getRepository(GroupMember);
-        const GroupInvitesRepository = await dataSource.getRepository(GroupInvite);
+        const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
+        const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
+        const GroupInviteRepository = await dataSource.getRepository(GroupInviteEntity);
 
-        var groupInvite = await GroupInvitesRepository.findOne({ where: { user_id: interaction.user.id, message_id: interaction.message.id }});
-        var groupMember = await GroupMembersRepository.findOne({ where: { userId: interaction.user.id, groupId: groupInvite.group_id }});
-        var group = await GroupRepository.findOne({ where: { groupId: groupInvite.group_id }});
+        var groupInvite = await GroupInviteRepository.findOne({ where: { userId: interaction.user.id, messageId: interaction.message.id }});
+        var groupMember = await GroupMemberRepository.findOne({ where: { userId: interaction.user.id, groupId: groupInvite.groupId }});
+        var group = await GuildGroupRepository.findOne({ where: { groupId: groupInvite.groupId }});
 
         if (!group) {
             await interaction.message.delete();
@@ -46,19 +46,19 @@ export const AcceptInvite: Button = {
         
         if (groupMember) {
             await interaction.message.delete();
-            await interaction.channel.send(`You are already a member of group **${group.name}**`);
+            await interaction.channel.send(`You are already a member of group **${group.groupName}**`);
             return;
         }
 
-        await GroupMembersRepository.insert({ 
+        await GroupMemberRepository.insert({ 
             userId: interaction.user.id,
-            groupId: groupInvite.group_id,
-            username: interaction.user.username,
+            groupId: groupInvite.groupId,
+            userName: interaction.user.username,
         });
 
-        await interaction.channel.send(`You have joined group **${group.name}**`);
+        await interaction.channel.send(`You have joined group **${group.groupName}**`);
 
-        await GroupInvitesRepository.delete({ user_id: interaction.user.id, message_id: interaction.message.id });
+        await GroupInviteRepository.delete({ userId: interaction.user.id, messageId: interaction.message.id });
         var message = await interaction.channel.messages.fetch(interaction.message.id);
         if (message) {
             await message.delete();

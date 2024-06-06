@@ -1,19 +1,19 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'message_activity' })
-export class MessageActivity {
+export class MessageActivityEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    _id: number;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ name: "guild_id", type: "bigint" })
     guildId: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ name: "user_id", type: 'bigint' })
     userId: string;
 
-    @Column({ type: 'varchar', length: 255 })
-    username: string;
+    @Column({ name: "user_name", type: 'varchar' })
+    userName: string;
 
-    @Column({ type: 'int', nullable: false, default: 0 })
-    messages: number;
+    @Column({ name: "amount", type: 'int' })
+    amount: number;
 }

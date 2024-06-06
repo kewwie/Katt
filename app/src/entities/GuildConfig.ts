@@ -1,27 +1,36 @@
-import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'guilds' })
-export class GuildConfig {
-    @PrimaryColumn({ type: 'varchar', length: 255 })
-    guildId: string; // Guild ID
+@Entity("guild_config")
+export class GuildConfigEntity {
+    @PrimaryGeneratedColumn()
+    _id: number;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    verificationPing: string | null;
+    @Column({ name: "guild_id", type: "bigint" })
+    guildId: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    guestRole: string | null;
+    @Column({ name: "guest_role", type: "bigint" })
+    guestRole: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    memberRole: string | null;
+    @Column({ name: "member_role", type: "bigint" })
+    memberRole: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    adminRole: string | null;
+    @Column({ name: "admin_role", type: "bigint" })
+    adminRole: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    logsChannel: string | null;
+    @Column({ name: "log_channel", type: "bigint" })
+    logChannel: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    pendingChannel: string | null;
+    @Column({ name: "pending_channel", type: "bigint" })
+    pendingChannel: string;
+
+    @Column({ name: "verification_ping", type: "bigint" })
+    verificationPing: string;
+
+    @Column({ name: "welcome_channel", type: "bigint" })
+    welcomeChannel: string;
+
+    @Column({ name: "welcome_message", type: "text" })
+    welcomeMessage: string;
 
     @Column({ name: "voice_category", type: "bigint" })
     voiceCategory: string;

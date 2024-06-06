@@ -2,7 +2,7 @@ import { KiwiClient } from "../client";
 import { Button } from "../types/component";
 
 import { dataSource } from "../datasource";
-import { GuildPlugins } from "../entities/GuildPlugins";
+import { GuildPluginEntity } from "../entities/GuildPlugin";
 
 export class ComponentManager {
     public client: KiwiClient;
@@ -18,7 +18,7 @@ export class ComponentManager {
     }
 
     async onInteraction(interaction: any) {
-        const GuildPluginsRepository = await dataSource.getRepository(GuildPlugins);
+        const GuildPluginsRepository = await dataSource.getRepository(GuildPluginEntity);
 
         if (interaction.isButton()) {
             const buttonId = (interaction.customId).split("_")[0];
@@ -32,8 +32,8 @@ export class ComponentManager {
                         await button.execute(interaction, this.client);
                     } else {
                         if (interaction.guild) {
-                            const status = await GuildPluginsRepository.findOne({ where: { guild_id: interaction.guild.id, plugin: button.plugin } });
-                            if (status) {
+                            var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: button.plugin } });
+                            if (isEnabled) {
                                 await button.execute(interaction, this.client);
                             } else {
                                 await interaction.reply({ content: 'This plugin is disabled!', ephemeral: true });

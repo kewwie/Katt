@@ -19,9 +19,9 @@ import {
 import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../datasource";
-import { Group } from "../../../entities/Group";
-import { GroupMember } from "../../../entities/GroupMember";
-import { GroupInvite } from "../../../entities/GroupInvite";
+import { GuildGroupEntity } from "../../../entities/GuildGroup";
+import { GroupMemberEntity } from "../../../entities/GroupMember";
+import { GroupInviteEntity } from "../../../entities/GroupInvite";
 
 import { AcceptInvite } from "../buttons/accept-invite";
 import { DenyInvite } from "../buttons/deny-invite";
@@ -184,12 +184,12 @@ export const GroupCommand: SlashCommand =  {
      * @param {KiwiClient} client
      */
     async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
-        const GroupRepository = await dataSource.getRepository(Group);
+        const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
         const focusedValue = interaction.options.getFocused();
-        const choices = await GroupRepository.find({ where: { guildId: interaction.guild.id } });
-		const filtered = choices.filter(choice => choice.name.startsWith(focusedValue));
+        const choices = await GuildGroupRepository.find({ where: { guildId: interaction.guild.id } });
+		const filtered = choices.filter(choice => choice.groupName.startsWith(focusedValue));
 		await interaction.respond(
-			filtered.map(choice => ({ name: choice.name, value: choice.name })),
+			filtered.map(choice => ({ name: choice.groupName, value: choice.groupName })),
 		);
     },
 
@@ -198,19 +198,19 @@ export const GroupCommand: SlashCommand =  {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
-        const GroupRepository = await dataSource.getRepository(Group);
-        const GroupMembersRepository = await dataSource.getRepository(GroupMember);
-        const GroupInvitesRepository = await dataSource.getRepository(GroupInvite);
+        const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
+        const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
+        const GroupInviteRepository = await dataSource.getRepository(GroupInviteEntity);
         
         switch (interaction.options.getSubcommand()) {
             case "create": {
                 var name = interaction.options.getString('name');
 
-                const existingGroup = await GroupRepository.findOne(
+                const existingGroup = await GuildGroupRepository.findOne(
                     {
                         where: {
                             guildId: interaction.guild.id,
-                            name: name
+                            groupName: name
                         }
                     }
                 )
@@ -227,19 +227,19 @@ export const GroupCommand: SlashCommand =  {
 
                 await interaction.guild.members.cache.get(interaction.member.user.id).roles.add(role).catch(() => {});
 
-                var ResGroup = await GroupRepository.insert({
+                var ResGroup = await GuildGroupRepository.insert({
                     groupId: String(Date.now() - 1000),
-                    name: name,
+                    groupName: name,
                     guildId: interaction.guild.id,
                     roleId: role.id,
                     ownerId: interaction.user.id,
                     private: false
                 });
 
-                await GroupMembersRepository.insert({
+                await GroupMemberRepository.insert({
                     groupId: ResGroup.identifiers[0].groupId,
                     userId: interaction.user.id,
-                    username: interaction.user.username
+                    userName: interaction.user.username
                 });
 
                 await interaction.reply(`Group **${name}** has been created.`);
@@ -249,10 +249,10 @@ export const GroupCommand: SlashCommand =  {
             case "join": {
                 var name = interaction.options.getString('name');
 
-                const existingGroup = await GroupRepository.findOne({
+                const existingGroup = await GuildGroupRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
-                        name: name
+                        groupName: name
                     }
                 });
 
@@ -262,7 +262,7 @@ export const GroupCommand: SlashCommand =  {
                         return;
                     }
 
-                    const groupMember = await GroupMembersRepository.findOne({
+                    const groupMember = await GroupMemberRepository.findOne({
                         where: { groupId: existingGroup.groupId, userId: interaction.user.id }
                     });
 
@@ -272,10 +272,10 @@ export const GroupCommand: SlashCommand =  {
                     }
                     await interaction.guild.members.cache.get(interaction.user.id).roles.add(existingGroup.roleId).catch(() => {});
 
-                    await GroupMembersRepository.insert({
+                    await GroupMemberRepository.insert({
                         groupId: existingGroup.groupId,
                         userId: interaction.user.id,
-                        username: interaction.user.username
+                        userName: interaction.user.username
                     });
                     await interaction.reply(`You have joined the group **${name}**.`);
                 } else {
@@ -287,10 +287,10 @@ export const GroupCommand: SlashCommand =  {
             case "leave": {
                 var name = interaction.options.getString('name');
 
-                const existingGroup = await GroupRepository.findOne({
+                const existingGroup = await GuildGroupRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
-                        name: name
+                        groupName: name
                     }
                 });
 
@@ -300,14 +300,14 @@ export const GroupCommand: SlashCommand =  {
                         return;
                     }
 
-                    const groupMember = await GroupMembersRepository.findOne({ 
+                    const groupMember = await GroupMemberRepository.findOne({ 
                         where: { groupId: existingGroup.groupId, userId: interaction.user.id }
                     });
 
                     if (groupMember) {
                         await interaction.guild.members.cache.get(interaction.user.id).roles.remove(existingGroup.roleId).catch(() => {});
                         
-                        await GroupMembersRepository.delete({ groupId: existingGroup.groupId, userId: interaction.user.id })
+                        await GroupMemberRepository.delete({ groupId: existingGroup.groupId, userId: interaction.user.id })
                         await interaction.reply(`You have left the group **${name}**`);
                     } else {
                         await interaction.reply(`You are not a member of the group **${name}**`);
@@ -322,10 +322,10 @@ export const GroupCommand: SlashCommand =  {
                 var name = interaction.options.getString('name');
                 var user = interaction.options.getUser('user');
 
-                const existingGroup = await GroupRepository.findOne({
+                const existingGroup = await GuildGroupRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
-                        name: name
+                        groupName: name
                     }
                 });
 
@@ -335,8 +335,8 @@ export const GroupCommand: SlashCommand =  {
                 }
 
                 if (existingGroup) {
-                    var group = await GroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
-                    var groupMembers = await GroupMembersRepository.find({ where: { groupId: existingGroup.groupId }});
+                    var group = await GuildGroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
+                    var groupMembers = await GroupMemberRepository.find({ where: { groupId: existingGroup.groupId }});
                     
                     if (!groupMembers.find(member => member.userId === interaction.user.id)) {
                         await interaction.reply(`You do not have permission to invite members to group **${name}**`);
@@ -344,12 +344,11 @@ export const GroupCommand: SlashCommand =  {
                     }
                 
                     if (groupMembers.find(member => member.userId === user.id)) {
-                        let userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
-                        await interaction.reply(`**${userTag}** is already a member of group **${name}**`);
+                        await interaction.reply(`**${user.username}** is already a member of group **${name}**`);
                         return;
                     }
 
-                    if (await GroupInvitesRepository.findOne({ where: { group_id: existingGroup.groupId, user_id: user.id }})) {
+                    if (await GroupInviteRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }})) {
                         await interaction.reply(`**${user.username}** has already been invited to group **${name}**`);
                         return;
                     }
@@ -373,14 +372,13 @@ export const GroupCommand: SlashCommand =  {
 
                     if (!message) return;
 
-                    await GroupInvitesRepository.insert({
-                        group_id: existingGroup.groupId,
-                        user_id: user.id,
-                        inviter_id: interaction.user.id,
-                        message_id: message.id
+                    await GroupInviteRepository.insert({
+                        groupId: existingGroup.groupId,
+                        userId: user.id,
+                        inviterId: interaction.user.id,
+                        messageId: message.id
                     });
-                    let userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
-                    await interaction.reply(`**${userTag}** has been invited to group **${name}**`);
+                    await interaction.reply(`**${user.username}** has been invited to group **${name}**`);
         
                 } else {
                     await interaction.reply(`Group **${name}** does not exist`);
@@ -392,10 +390,10 @@ export const GroupCommand: SlashCommand =  {
                 var name = interaction.options.getString('name');
                 var user = interaction.options.getUser('user');
 
-                const existingGroup = await GroupRepository.findOne({
+                const existingGroup = await GuildGroupRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
-                        name: name
+                        groupName: name
                     }
                 });
 
@@ -410,14 +408,13 @@ export const GroupCommand: SlashCommand =  {
                         return;
                     }
 
-                    var userTag = await client.getTag({username: user.username, discriminator: user.discriminator});
-                    const groupMember = await GroupMembersRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
+                    const groupMember = await GroupMemberRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
                     if (groupMember) {
                         await interaction.guild.members.cache.get(user.id).roles.remove(existingGroup.roleId).catch(() => {});
-                        await GroupMembersRepository.delete({ groupId: existingGroup.groupId, userId: user.id })
-                        await interaction.reply(`**${userTag}** has been removed from group **${name}**`);
+                        await GroupMemberRepository.delete({ groupId: existingGroup.groupId, userId: user.id })
+                        await interaction.reply(`**${user.username}** has been removed from group **${name}**`);
                     } else {
-                        await interaction.reply(`**${userTag}** is not a member of group **${name}**`);
+                        await interaction.reply(`**${user.username}** is not a member of group **${name}**`);
                     }
                 } else {
                     await interaction.reply(`Group **${name}** does not exist`);
@@ -429,21 +426,21 @@ export const GroupCommand: SlashCommand =  {
                 var name = interaction.options.getString('name');
                 var isPrivate = interaction.options.getString('private');
 
-                const existingGroup = await GroupRepository.findOne({
+                const existingGroup = await GuildGroupRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
-                        name: name
+                        groupName: name
                     }
                 });
 
                 if (existingGroup) {
-                    var group = await GroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
+                    var group = await GuildGroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
                     if (group.ownerId !== interaction.user.id) {
                         await interaction.reply(`You do not have permission to change the privacy of the group **${name}**`);
                         return;
                     }
 
-                    await GroupRepository.update({ groupId: existingGroup.groupId }, { private: (isPrivate === "true") });
+                    await GuildGroupRepository.update({ groupId: existingGroup.groupId }, { private: (isPrivate === "true") });
                     await interaction.reply(`Group **${name}** privacy has been updated`);
                 } else {
                     await interaction.reply("This group doesnt exist");
@@ -454,10 +451,10 @@ export const GroupCommand: SlashCommand =  {
             case "delete": {
                 var name = interaction.options.getString('name');
 
-                const existingGroup = await GroupRepository.findOne({
+                const existingGroup = await GuildGroupRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
-                        name: name
+                        groupName: name
                     }
                 });
 
@@ -472,8 +469,8 @@ export const GroupCommand: SlashCommand =  {
                         await role.delete();
                     }
 
-                    await GroupRepository.delete({ guildId: interaction.guild.id, groupId: existingGroup.groupId });
-                    await GroupMembersRepository.delete({ groupId: existingGroup.groupId });
+                    await GuildGroupRepository.delete({ guildId: interaction.guild.id, groupId: existingGroup.groupId });
+                    await GroupMemberRepository.delete({ groupId: existingGroup.groupId });
 
                     await interaction.reply(`Group **${name}** has been deleted`);
                 } else {
@@ -483,9 +480,9 @@ export const GroupCommand: SlashCommand =  {
             }
 
             case "list": {
-                const groups = await GroupRepository.find({ where: { guildId: interaction.guild.id } });
+                const groups = await GuildGroupRepository.find({ where: { guildId: interaction.guild.id } });
                 if (groups.length > 0) {
-                    await interaction.reply(`# Groups \n**${groups.map(group => group.name).join("\n")}**`);
+                    await interaction.reply(`# Groups \n**${groups.map(group => group.groupName).join("\n")}**`);
                 } else {
                     await interaction.reply("There are no groups in this guild");
                 }
@@ -495,21 +492,21 @@ export const GroupCommand: SlashCommand =  {
             case "info": {
                 var name = interaction.options.getString('name');
 
-                const existingGroup = await GroupRepository.findOne({
+                const existingGroup = await GuildGroupRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
-                        name: name
+                        groupName: name
                     }
                 });
 
                 if (existingGroup) {
-                    const groupMembers = await GroupMembersRepository.find({ where: { groupId: existingGroup.groupId } });
+                    const groupMembers = await GroupMemberRepository.find({ where: { groupId: existingGroup.groupId } });
 
                     var em = new EmbedBuilder()
-                        .setTitle("Group " + existingGroup.name)
+                        .setTitle("Group " + existingGroup.groupName)
                         .addFields(
                             { name: "Owner", value: `<@${existingGroup.ownerId}>` },
-                            { name: "Members", value: groupMembers.map(member => `${member.username}`).join(", ") },
+                            { name: "Members", value: groupMembers.map(member => `${member.userName}`).join(", ") },
                             { name: "Private", value: existingGroup.private ? "Yes" : "No" }
                         )
                         .setColor(client.embed.color)

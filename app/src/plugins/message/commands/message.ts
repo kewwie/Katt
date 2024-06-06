@@ -13,7 +13,7 @@ import {
 } from "../../../types/command";
 
 import { dataSource } from "../../../datasource";
-import { MessageActivity } from "../../../entities/MessageActivity";
+import { MessageActivityEntity } from "../../../entities/MessageActivity";
 
 /**
  * @type {SlashCommand}
@@ -53,7 +53,7 @@ export const MessageSlash: SlashCommand = {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        const MessageActivityRepository = await dataSource.getRepository(MessageActivity);
+        const MessageActivityRepository = await dataSource.getRepository(MessageActivityEntity);
 
         switch (interaction.options.getSubcommand()) {
             case "activity": {
@@ -67,23 +67,21 @@ export const MessageSlash: SlashCommand = {
                     { where: { userId: user.id, guildId: interaction.guild.id } }
                 );
 
-                if (!messageActivity || messageActivity.messages < 0) {
+                if (!messageActivity || messageActivity.amount < 0) {
                     interaction.reply("No voice activity found for this user");
                     return;
                 }
                 
-                
-                var uTag= await client.getTag({ username: user.username, discriminator: user.discriminator });
-                interaction.reply(`**${uTag}** has sent **${new Intl.NumberFormat("en-US").format(Math.floor(messageActivity.messages))}** ${messageActivity.messages === 1 ? 'message' : 'messages'} in the server`);
+                interaction.reply(`**${messageActivity.userName}** has sent **${new Intl.NumberFormat("en-US").format(Math.floor(messageActivity.amount))}** ${messageActivity.amount === 1 ? 'message' : 'messages'} in the server`);
                 break;
             }
             case "leaderboard": {
                 var messageActivities = await MessageActivityRepository.find(
-                    { where: { guildId: interaction.guild.id }, order: { messages: "DESC" }, take: 10 }
+                    { where: { guildId: interaction.guild.id }, order: { amount: "DESC" }, take: 10 }
                 );
 
                 var leaderboard = messageActivities.map((ma, i) => {
-                    return `${i + 1}. **${ma.username}** - ${new Intl.NumberFormat("en-US").format(Math.floor(ma.messages))} ${ma.messages === 1 ? 'message' : 'messages'}`;
+                    return `${i + 1}. **${ma.userName}** - ${new Intl.NumberFormat("en-US").format(Math.floor(ma.amount))} ${ma.amount === 1 ? 'message' : 'messages'}`;
                 }).join("\n");
 
                 interaction.reply(`**Message Leaderboard**\n${leaderboard}`);

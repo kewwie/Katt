@@ -7,8 +7,8 @@ import { KiwiClient } from "../../../client";
 import { Events, Event } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { GuildConfig } from "../../../entities/GuildConfig";
-import { GuildAdmins } from "../../../entities/GuildAdmins";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { GuildAdminEntity } from "../../../entities/GuildAdmin";
 
 /**
  * @type {Event}
@@ -22,12 +22,12 @@ export const GuildMemberUpdate: Event = {
     * @param {GuildMember} newMember
     */
     async execute(client: KiwiClient, oldMember: GuildMember, newMember: GuildMember) {
-        const GuildConfigRepository = await dataSource.getRepository(GuildConfig);
-        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
         var g = await GuildConfigRepository.findOne({ where: { guildId: newMember.guild.id } });
 
         if (g && newMember.roles.cache.has(g.adminRole)) {
-            var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: newMember.guild.id, userId: newMember.id } });
+            var isAdmin = await GuildAdminRepository.findOne({ where: { guildId: newMember.guild.id, userId: newMember.id } });
             if (!isAdmin) {
                 await newMember.roles.remove(g.adminRole).catch(() => {});
             }

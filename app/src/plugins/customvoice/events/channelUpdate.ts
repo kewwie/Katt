@@ -4,7 +4,7 @@ import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { CustomChannels } from "../../../entities/CustomChannels";
+import { CustomChannelEntity } from "../../../entities/CustomChannel";
 
 /**
  * @type {Event}
@@ -24,7 +24,7 @@ export const ChannelUpdate: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, oldChannel: GuildChannel, newChannel: GuildChannel) {
-        const CustomChannelsRepository = await dataSource.getRepository(CustomChannels);
+        const CustomChannelsRepository = await dataSource.getRepository(CustomChannelEntity);
 
         var customChannel = await CustomChannelsRepository.findOne({
             where: {
@@ -33,8 +33,8 @@ export const ChannelUpdate: Event = {
             }
         });
 
-        if (customChannel && customChannel.name !== newChannel.name) {
-            CustomChannelsRepository.update({ channelId: newChannel.id }, { name: newChannel.name });
+        if (customChannel && customChannel.channelName !== newChannel.name) {
+            CustomChannelsRepository.update({ channelId: newChannel.id }, { channelName: newChannel.name });
         }
     }
 }

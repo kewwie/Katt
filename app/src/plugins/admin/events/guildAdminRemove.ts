@@ -8,8 +8,7 @@ import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { GuildConfig } from "../../../entities/GuildConfig";
-import { GuildAdmins } from "../../../entities/GuildAdmins";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
 
 /**
  * @type {Event}
@@ -23,9 +22,9 @@ export const GuildAdminRemove: Event = {
     * @param {User} user
     */
     async execute(client: KiwiClient, guild: Guild, user: User) {
-        const GuildRepository = await dataSource.getRepository(GuildConfig);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
 
-        var g = await GuildRepository.findOne({ where: { guildId: guild.id}});
+        var g = await GuildConfigRepository.findOne({ where: { guildId: guild.id}});
         var guildMember = await guild.members.fetch(user.id);
 
         if (g && guildMember) {

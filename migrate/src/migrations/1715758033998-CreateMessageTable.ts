@@ -1,33 +1,39 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateVoiceActivity1712736323691 implements MigrationInterface {
+export class CreateMessageTable1715758033998 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: "voiceActivity",
+                name: "message_activity",
                 columns: [
                     {
-                        name: "id",
+                        name: "_id",
                         type: "int",
                         isPrimary: true,
                         isGenerated: true,
                         generationStrategy: "increment"
                     },
                     {
-                        name: "guildId",
-                        type: "varchar",
+                        name: "guild_id",
+                        type: "bigint",
+                        unsigned: true,
+                        isNullable: false
                     },
                     {
-                        name: "userId",
-                        type: "varchar",
+                        name: "user_id",
+                        type: "bigint",
+                        unsigned: true,
+                        isNullable: false
                     },
                     {
-                        name: "username",
+                        name: "user_name",
                         type: "varchar",
+                        length: "32",
+                        isNullable: false
                     },
                     {
-                        name: "minutes",
+                        name: "amount",
                         type: "int",
                         isNullable: false,
                         default: 0
@@ -38,7 +44,6 @@ export class CreateVoiceActivity1712736323691 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("voiceActivity");
+        await queryRunner.dropTable("message_activity");
     }
-
 }

@@ -11,14 +11,13 @@ import { KiwiClient } from "../../../client";
 import { Events, Event } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { GuildConfig } from "../../../entities/GuildConfig";
-import { GuildAdmins } from "../../../entities/GuildAdmins";
-
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { GuildAdminEntity } from "../../../entities/GuildAdmin";
+import { GuildGroupEntity } from "../../../entities/GuildGroup";
+import { GroupMemberEntity } from "../../../entities/GroupMember";
+import { PendingMessageEntity } from "../../../entities/PendingMessage";
 import { ApproveGuest } from "../buttons/approve-guest";
 import { DenyUser } from "../buttons/deny-user";
-import { Group } from "../../../entities/Group";
-import { GroupMember } from "../../../entities/GroupMember";
-import { PendingMessage } from "../../../entities/PendingMessage";
 
 /**
  * @type {Event}
@@ -38,22 +37,22 @@ export const GuildMemberAdd: Event = {
     * @param {GuildMember} member
     */
     async execute(client: KiwiClient, member: GuildMember) {
-        const GuildConfigRepository = await dataSource.getRepository(GuildConfig);
-        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
-        const GroupsRepository = await dataSource.getRepository(Group);
-        const GroupMembersRepository = await dataSource.getRepository(GroupMember);
-        const PendingMessagesRepository = await dataSource.getRepository(PendingMessage);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
+        const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
+        const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
+        const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
 
         var g = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
-        var isAdmin = await GuildAdminsRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
+        var isAdmin = await GuildAdminRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
 
         if (isAdmin && g && g.adminRole) {
             var adminRole = await member.guild.roles.fetch(g.adminRole);
             if (adminRole) {
                 member.roles.add(adminRole.id).catch(() => {});
 
-                for (var groupMembers of await GroupMembersRepository.find({ where: { userId: member.id } })) {
-                    var group = await GroupsRepository.findOne({ where: { groupId: groupMembers.groupId } });
+                for (var groupMembers of await GroupMemberRepository.find({ where: { userId: member.id } })) {
+                    var group = await GuildGroupRepository.findOne({ where: { groupId: groupMembers.groupId } });
                     if (group) {
                         member.roles.add(group.roleId).catch(() => {});
                     }
@@ -73,8 +72,8 @@ export const GuildMemberAdd: Event = {
 
                 await member.send({ embeds: [AutoApprovedEmbed] }).catch(() => {});
 
-                if (g.logsChannel) {
-                    var log = await member.guild.channels.fetch(g.logsChannel) as TextChannel;
+                if (g.logChannel) {
+                    var log = await member.guild.channels.fetch(g.logChannel) as TextChannel;
                     if (!log) return;
         
                     var em = new EmbedBuilder()
@@ -93,7 +92,7 @@ export const GuildMemberAdd: Event = {
             }
         } else {
             if (g && g.pendingChannel) {
-                var existingMessage = await PendingMessagesRepository.findOne({ where: { guild_id: member.guild.id, user_id: member.id } });
+                var existingMessage = await PendingMessageRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
                 if (existingMessage) return;
 
                 var pending = await member.guild.channels.fetch(g.pendingChannel) as TextChannel;
@@ -126,10 +125,10 @@ export const GuildMemberAdd: Event = {
                     components: rows
                 });
 
-                PendingMessagesRepository.insert({
-                    guild_id: member.guild.id,
-                    user_id: member.id,
-                    message_id: msg.id
+                PendingMessageRepository.insert({
+                    guildId: member.guild.id,
+                    userId: member.id,
+                    messageId: msg.id
                 });
             }     
         }  

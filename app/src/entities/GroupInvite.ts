@@ -1,22 +1,22 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "group_invites" })
-export class GroupInvite {
+export class GroupInviteEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    _id: number;
 
-    @Column({ type: "varchar", length: 255 })
-    group_id: string;
+    @Column({ name: "group_id", type: 'bigint' })
+    groupId: string;
 
-    @Column({ type: "varchar", length: 255 })
-    user_id: string;
+    @Column({ name: "user_id", type: 'bigint' })
+    userId: string;
 
-    @Column({ type: "varchar", length: 255 })
-    inviter_id: string;
+    @Column({ name: "inviter_id", type: 'bigint' })
+    inviterId: string;
 
-    @Column({ type: "varchar", length: 255 })
-    message_id: string;
+    @Column({ name: "message_id", type: 'bigint' })
+    messageId: string;
 
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-    created_at: Date;
+    @Column({ name: "created_at", type: "timestamp" })
+    createdAt: Date;
 }

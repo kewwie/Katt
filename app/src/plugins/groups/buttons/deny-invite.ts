@@ -9,7 +9,7 @@ import {
 import { Button } from "../../../types/component";
 
 import { dataSource } from "../../../datasource";
-import { GroupInvite } from "../../../entities/GroupInvite";
+import { GroupInviteEntity } from "../../../entities/GroupInvite";
 
 /**
  * @type {Button}
@@ -31,9 +31,9 @@ export const DenyInvite: Button = {
         interaction.deferUpdate();
         var userId = interaction.customId.split("_")[1];
 
-        const GroupInvitesRepository = await dataSource.getRepository(GroupInvite);
+        const GroupInviteRepository = await dataSource.getRepository(GroupInviteEntity);
 
-        await GroupInvitesRepository.delete({ user_id: userId, message_id: interaction.message.id });
+        await GroupInviteRepository.delete({ userId: userId, messageId: interaction.message.id });
         var message = await interaction.channel.messages.fetch(interaction.message.id);
         if (message) {
             await message.delete();

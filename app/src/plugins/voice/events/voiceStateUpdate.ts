@@ -6,8 +6,8 @@ import {
 } from "discord.js";
 
 import { dataSource } from "../../../datasource";
-import { VoiceChannel } from "../../../entities/VoiceChannel";
-import { VoiceActivity } from "../../../entities/VoiceActivity";
+import { VoiceStateEntity } from "../../../entities/VoiceState";
+import { VoiceActivityEntity } from "../../../entities/VoiceActivity";
 
 /**
  * @type {Event}
@@ -28,15 +28,15 @@ export const VoiceStateUpdate: Event = {
     * @param {VoiceState} newVoiceState
     */
     async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
-        const VoiceChannelsDB = await dataSource.getRepository(VoiceChannel)
-        const VoiceActivityDB = await dataSource.getRepository(VoiceActivity)
+        const VoiceStateRepository = await dataSource.getRepository(VoiceStateEntity)
+        const VoiceActivityRepository = await dataSource.getRepository(VoiceActivityEntity)
 
-        var pvs = await VoiceChannelsDB.findOne(
+        var pvs = await VoiceStateRepository.findOne(
             { where: { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }}
         );
 
         if (pvs && !newVoiceState.channelId) {
-            var pva = await VoiceActivityDB.findOne(
+            var pva = await VoiceActivityRepository.findOne(
                 { where: { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }}
             );
 
@@ -51,28 +51,28 @@ export const VoiceStateUpdate: Event = {
             var newSeconds = secondsSinceLastUpdate + seconds;
 
             if (pva) {
-                await VoiceActivityDB.update(
+                await VoiceActivityRepository.update(
                     { 
                         guildId: oldVoiceState.guild.id,
                         userId: oldVoiceState.id,
-                        username: oldVoiceState.member.user.username
+                        userName: oldVoiceState.member.user.username
                     },
                     { seconds: newSeconds }
                 );
             } else {
-                await VoiceActivityDB.insert({ 
+                await VoiceActivityRepository.insert({ 
                     guildId: oldVoiceState.guild.id,
                     userId: oldVoiceState.id,
-                    username: oldVoiceState.member.user.username,
+                    userName: oldVoiceState.member.user.username,
                     seconds: newSeconds 
                 });
             }
 
-            await VoiceChannelsDB.delete(
+            await VoiceStateRepository.delete(
                 { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }
             );
         } else if (!pvs && newVoiceState.channelId) {
-            await VoiceChannelsDB.upsert({
+            await VoiceStateRepository.upsert({
                 userId: newVoiceState.id,
                 guildId: newVoiceState.guild.id,
                 joinTime: new Date()

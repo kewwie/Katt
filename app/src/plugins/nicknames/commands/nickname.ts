@@ -15,7 +15,7 @@ import {
 } from "../../../types/command";
 
 import { dataSource } from "../../../datasource";
-import { Nickname } from "../../../entities/Nickname";
+import { NicknameEntity } from "../../../entities/Nickname";
 
 /**
  * @type {SlashCommand}
@@ -75,7 +75,7 @@ export const NicknameSlash: SlashCommand = {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
-        const NicknameRepository = await dataSource.getRepository(Nickname);
+        const NicknameRepository = await dataSource.getRepository(NicknameEntity);
 
         switch (interaction.options.getSubcommand()) {
             case "save": {
@@ -88,7 +88,7 @@ export const NicknameSlash: SlashCommand = {
                 }
 
                 await NicknameRepository.upsert(
-                    { userId: user.id, guildId: interaction.guildId, nickname: member.nickname },
+                    { userId: user.id, guildId: interaction.guildId, name: member.nickname },
                     ["userId", "guildId"]
                 );
                 interaction.reply(`Saved **${user.username}**'s nickname`);
@@ -99,7 +99,7 @@ export const NicknameSlash: SlashCommand = {
 
                     if (member.nickname) {
                         await NicknameRepository.upsert(
-                            { userId: member.id, guildId: interaction.guildId, nickname: member.nickname },
+                            { userId: member.id, guildId: interaction.guildId, name: member.nickname },
                             ["userId", "guildId"]
                         );
                     }
@@ -113,7 +113,7 @@ export const NicknameSlash: SlashCommand = {
                 var nickname = interaction.options.getString("nickname");
 
                 await NicknameRepository.upsert(
-                    { userId: user.id, guildId: interaction.guildId, nickname: nickname },
+                    { userId: user.id, guildId: interaction.guildId, name: nickname },
                     ["userId", "guildId"]
                 );
 

@@ -3,14 +3,14 @@ import { KiwiClient } from "../../../client";
 import { Loop } from "../../../types/loop";
 
 import { dataSource } from "../../../datasource";
-import { CustomChannels } from "../../../entities/CustomChannels";
+import { CustomChannelEntity } from "../../../entities/CustomChannel";
 
 export const DeleteChannels: Loop = {
     name: "DeleteChannels",
     seconds: 30,
 
     async execute(client: KiwiClient, guild: Guild) {
-        const CustomChannelsRepository = await dataSource.getRepository(CustomChannels);
+        const CustomChannelsRepository = await dataSource.getRepository(CustomChannelEntity);
 
         var customChannels = await CustomChannelsRepository.find({ where: { guildId: guild.id } });
         for (let customChannel of customChannels) {

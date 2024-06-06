@@ -5,7 +5,7 @@ import { KiwiClient } from "../../../client";
 import { Events, Event } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { Nickname } from "../../../entities/Nickname";
+import { NicknameEntity } from "../../../entities/Nickname";
 
 /**
  * @type {Event}
@@ -26,13 +26,13 @@ export const GuildMemberUpdate: Event = {
     * @param {GuildMember} newMember
     */
     async execute(client: KiwiClient, oldMember: GuildMember, newMember: GuildMember) {
-        const NicknameRepository = await dataSource.getRepository(Nickname);
+        const NicknameRepository = await dataSource.getRepository(NicknameEntity);
 
         if (newMember.nickname && oldMember.nickname !== newMember.nickname) {
             await NicknameRepository.upsert({
                 guildId: newMember.guild.id,
                 userId: newMember.id,
-                nickname: newMember.nickname
+                name: newMember.nickname
             }, ["guildId", "userId"])
         }
     }

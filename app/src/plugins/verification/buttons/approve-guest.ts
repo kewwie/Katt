@@ -9,14 +9,13 @@ import {
 } from "discord.js";
 
 import { Button } from "../../../types/component";
+import { Events } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { GuildConfig } from "../../../entities/GuildConfig";
-import { Group } from "../../../entities/Group";
-import { GroupMember } from "../../../entities/GroupMember";
-
-import { Events } from "../../../types/event";
-import { PendingMessage } from "../../../entities/PendingMessage";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { GuildGroupEntity } from "../../../entities/GuildGroup";
+import { GroupMemberEntity } from "../../../entities/GroupMember";
+import { PendingMessageEntity } from "../../../entities/PendingMessage";
 
 /**
  * @type {Button}
@@ -37,10 +36,10 @@ export const ApproveGuest: Button = {
         await interaction.deferReply({ ephemeral: true });
         var userId = interaction.customId.split("_")[1];
 
-        const GuildRepository = await dataSource.getRepository(GuildConfig);
-        const GroupRepository = await dataSource.getRepository(Group);
-        const GroupMembersRepository = await dataSource.getRepository(GroupMember);
-        const PendingMessagesRepository = await dataSource.getRepository(PendingMessage);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
+        const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
+        const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
         
         var guild = await GuildRepository.findOne({ where: { guildId: interaction.guild.id } });
 
@@ -64,7 +63,7 @@ export const ApproveGuest: Button = {
         if (message) {
             await message.delete();
         }
-        PendingMessagesRepository.delete({ user_id: userId, guild_id: interaction.guild.id });
+        PendingMessagesRepository.delete({ guildId: interaction.guild.id, userId: userId });
 
         var member = await interaction.guild.members.fetch(userId).catch(() => {});
         if (member) {
@@ -91,8 +90,8 @@ export const ApproveGuest: Button = {
 
         interaction.followUp({ content: `**${member.user.username}** has been approved as a guest`, ephemeral: true});
 
-        if (guild.logsChannel) {
-            var log = await interaction.guild.channels.fetch(guild.logsChannel) as TextChannel;
+        if (guild.logChannel) {
+            var log = await interaction.guild.channels.fetch(guild.logChannel) as TextChannel;
             if (!log) return;
 
             var em = new EmbedBuilder()

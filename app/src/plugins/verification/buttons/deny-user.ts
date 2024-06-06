@@ -11,8 +11,8 @@ import {
 import { Button } from "../../../types/component";
 
 import { dataSource } from "../../../datasource";
-import { GuildConfig } from "../../../entities/GuildConfig";
-import { PendingMessage } from "../../../entities/PendingMessage";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { PendingMessageEntity } from "../../../entities/PendingMessage";
 
 /**
  * @type {Button}
@@ -31,8 +31,8 @@ export const DenyUser: Button = {
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
         await interaction.deferReply({ ephemeral: true });
-        const GuildRepository = await dataSource.getRepository(GuildConfig);
-        const PendingMessagesRepository = await dataSource.getRepository(PendingMessage);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
 
         var userId = interaction.customId.split("_")[1];
 
@@ -40,7 +40,7 @@ export const DenyUser: Button = {
         if (message) {
             await message.delete();
         }
-        PendingMessagesRepository.delete({ user_id: userId, guild_id: interaction.guild.id });
+        PendingMessageRepository.delete({ guildId: interaction.guild.id, userId: userId });
 
         var member = await interaction.guild.members.fetch(userId);
         if (member) {
@@ -59,12 +59,12 @@ export const DenyUser: Button = {
             await member.kick("Denied");
         }
 
-        const guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
+        const guild = await GuildConfigRepository.findOne({ where: { guildId: interaction.guildId } });
 
         interaction.followUp({ content: "User has been denied and kicked from the server", ephemeral: true });
 
-        if (guild?.logsChannel) {
-            var log = await interaction.guild.channels.fetch(guild.logsChannel) as TextChannel;
+        if (guild?.logChannel) {
+            var log = await interaction.guild.channels.fetch(guild.logChannel) as TextChannel;
             if (!log) return;
 
             var user = await client.users.fetch(userId);

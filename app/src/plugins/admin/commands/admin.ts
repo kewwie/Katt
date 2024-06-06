@@ -15,7 +15,7 @@ import {
 } from "../../../types/command";
 
 import { dataSource } from "../../../datasource";
-import { GuildAdmins } from "../../../entities/GuildAdmins";
+import { GuildAdminEntity } from "../../../entities/GuildAdmin";
 import { Events } from "../../../types/event";
 
 /**
@@ -90,13 +90,13 @@ export const AdminCmd: SlashCommand = {
     * @param {KiwiClient} client
     */
     async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
-        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
+        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
 
         const choices = [];
 
-        for (var am of await GuildAdminsRepository.find({ where: { guildId: interaction.guildId }})) {
+        for (var am of await GuildAdminRepository.find({ where: { guildId: interaction.guildId }})) {
             if (am.level <= 3) {
-                choices.push({ name: `${am.username} (Level ${am.level})`, value: `${am.userId}`});
+                choices.push({ name: `${am.userName} (Level ${am.level})`, value: `${am.userId}`});
             };
         }
 
@@ -112,8 +112,8 @@ export const AdminCmd: SlashCommand = {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        const GuildAdminsRepository = await dataSource.getRepository(GuildAdmins);
-        var guildAdmin = await GuildAdminsRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
+        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
+        var guildAdmin = await GuildAdminRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
 
         if (!guildAdmin || guildAdmin.level < 3) {
             interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
@@ -141,7 +141,7 @@ export const AdminCmd: SlashCommand = {
                     return;
                 }
 
-                var u = await GuildAdminsRepository.findOne({
+                var u = await GuildAdminRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
                         userId: user.id
@@ -149,15 +149,15 @@ export const AdminCmd: SlashCommand = {
                 });
 
                 if (u) {
-                    GuildAdminsRepository.update({
+                    GuildAdminRepository.update({
                         guildId: interaction.guild.id,
                         userId: user.id
-                    }, { level, username: user.username });
+                    }, { level, userName: user.username });
                 } else {
-                    GuildAdminsRepository.insert({
+                    GuildAdminRepository.insert({
                         guildId: interaction.guild.id,
                         userId: user.id,
-                        username: user.username,
+                        userName: user.username,
                         level
                     });
                 }
@@ -175,7 +175,7 @@ export const AdminCmd: SlashCommand = {
             case "remove": {
                 var userId = interaction.options.getString("user");
 
-                var res = await GuildAdminsRepository.findOne({
+                var res = await GuildAdminRepository.findOne({
                     where: {
                         guildId: interaction.guild.id,
                         userId: userId
@@ -184,7 +184,7 @@ export const AdminCmd: SlashCommand = {
 
                 if (!res) {
                     interaction.reply({
-                        content: `**${res.username}** is not an admin`,
+                        content: `**${res.userName}** is not an admin`,
                         ephemeral: true
                     });
                     return;
@@ -206,7 +206,7 @@ export const AdminCmd: SlashCommand = {
                     return;
                 }
 
-                await GuildAdminsRepository.delete({
+                await GuildAdminRepository.delete({
                     guildId: interaction.guild.id,
                     userId: userId
                 });
@@ -216,14 +216,14 @@ export const AdminCmd: SlashCommand = {
                 client.emit(Events.GuildAdminRemove, interaction.guild, user);
 
                 interaction.reply({
-                    content: `Removed **${res.username}** as an admin`,
+                    content: `Removed **${res.userName}** as an admin`,
                     ephemeral: true
                 });
                 break;
             }
 
             case "list": {
-                var admins = await GuildAdminsRepository.find({
+                var admins = await GuildAdminRepository.find({
                     where: {
                         guildId: interaction.guild.id
                     },
@@ -241,7 +241,7 @@ export const AdminCmd: SlashCommand = {
                 }
 
                 var adminList = admins.map(admin => {
-                    return `**${admin.username}** - Level ${admin.level}`;
+                    return `**${admin.userName}** - Level ${admin.level}`;
                 });
 
                 interaction.reply({
