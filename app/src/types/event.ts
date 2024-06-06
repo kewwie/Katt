@@ -15,6 +15,7 @@ export enum Events {
     GuildVerifiedRemove = "guildVerifiedRemove",
     MessageCreate = "messageCreate",
     GuildCreate = "guildCreate",
+    ChannelUpdate = "channelUpdate",
 }
 
 export interface Event {
