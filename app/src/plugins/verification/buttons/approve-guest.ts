@@ -41,7 +41,7 @@ export const ApproveGuest: Button = {
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
         
-        var guild = await GuildRepository.findOne({ where: { guildId: interaction.guild.id } });
+        var guild = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
 
         var roles = new Array();
 
@@ -52,8 +52,8 @@ export const ApproveGuest: Button = {
             
         roles.push(guild.guestRole);
 
-        for (const g of await GroupMembersRepository.find({ where: { userId } })) {
-            const group = await GroupRepository.findOne({ where: { groupId: g.groupId } });
+        for (const g of await GroupMemberRepository.find({ where: { userId } })) {
+            const group = await GuildGroupRepository.findOne({ where: { groupId: g.groupId } });
             if (group) {
                 roles.push(group.roleId);
             }
@@ -63,7 +63,7 @@ export const ApproveGuest: Button = {
         if (message) {
             await message.delete();
         }
-        PendingMessagesRepository.delete({ guildId: interaction.guild.id, userId: userId });
+        PendingMessageRepository.delete({ guildId: interaction.guild.id, userId: userId });
 
         var member = await interaction.guild.members.fetch(userId).catch(() => {});
         if (member) {

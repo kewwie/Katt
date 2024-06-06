@@ -13,7 +13,7 @@ import {
 } from "../../../types/command";
 
 import { dataSource } from "../../../datasource";
-import { VoiceActivity } from "../../../entities/VoiceActivity";
+import { VoiceActivityEntity } from "../../../entities/VoiceActivity";
 
 /**
  * @type {SlashCommand}
@@ -53,7 +53,7 @@ export const VoiceSlash: SlashCommand = {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        const VoiceActivityRepository = await dataSource.getRepository(VoiceActivity);
+        const VoiceActivityRepository = await dataSource.getRepository(VoiceActivityEntity);
 
         const formatter = new Intl.NumberFormat("en-US", {
             minimumFractionDigits: 1,
