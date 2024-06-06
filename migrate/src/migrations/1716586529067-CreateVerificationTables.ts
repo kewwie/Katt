@@ -27,12 +27,6 @@ export class CreateVerificationTables1716586529067 implements MigrationInterface
                         isNullable: false
                     },
                     {
-                        name: "user_id",
-                        type: "bigint",
-                        unsigned: true,
-                        isNullable: false
-                    },
-                    {
                         name: "user_name",
                         type: "varchar",
                         length: "32",
