@@ -13,7 +13,9 @@ export class LoopManager {
             this.client.loops.set(loop.name, loop);
 
             setInterval(async () => {
-                await loop.execute(this.client);
+                for (let [_, guild] of await this.client.guilds.fetch()) {
+                    await loop.execute(this.client, await guild.fetch());
+                }
             }, loop.seconds * 1000);
         }
     }
