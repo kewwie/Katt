@@ -5,6 +5,8 @@ import { GuildConfig } from "../../../entities/GuildConfig";
 import { GuildAdmins } from "../../../entities/GuildAdmins";
 
 import {
+    AutocompleteInteraction,
+    ChannelType,
     ChatInputCommandInteraction
 } from "discord.js";
 
@@ -13,7 +15,6 @@ import {
     CommandTypes,
     SlashCommandContexts,
     IntegrationTypes,
-    ChannelTypes,
     OptionTypes,
     Permissions,
     SlashCommand
@@ -33,80 +34,21 @@ export const ConfigCmd: SlashCommand = {
         options: [
             {
                 type: OptionTypes.SUB_COMMAND,
-                name: "logs",
-                description: "Set the logs channel for the server (Owner only)",
+                name: "set",
+                description: "Set an option for the server (Admin only)",
                 options: [
                     {
-                        type: OptionTypes.CHANNEL,
-                        name: "channel",
-                        description: "The channel to send logs to",
-                        channel_types: [ChannelTypes.GUILD_TEXT],
-                        required: false
-                    }
-                ]
-            },
-            {
-                type: OptionTypes.SUB_COMMAND,
-                name: "pending",
-                description: "Set the pending channel for the server (Owner only)",
-                options: [
+                        type: OptionTypes.STRING,
+                        name: "option",
+                        description: "The Option to set",
+                        autocomplete: true,
+                        required: true
+                    },
                     {
-                        type: OptionTypes.CHANNEL,
-                        name: "channel",
-                        description: "The channel to send join request in",
-                        channel_types: [ChannelTypes.GUILD_TEXT],
-                        required: false
-                    }
-                ]
-            },
-            {
-                type: OptionTypes.SUB_COMMAND,
-                name: "verification_ping",
-                description: "The role to ping when a user joins the server (Owner only)",
-                options: [
-                    {
-                        type: OptionTypes.ROLE,
-                        name: "role",
-                        description: "The role to ping on new users",
-                        required: false
-                    }
-                ]
-            },
-            {
-                type: OptionTypes.SUB_COMMAND,
-                name: "guest",
-                description: "Set the guest role for the server (Owner only)",
-                options: [
-                    {
-                        type: OptionTypes.ROLE,
-                        name: "role",
-                        description: "The role to assign to guests",
-                        required: false
-                    }
-                ]
-            },
-            {
-                type: OptionTypes.SUB_COMMAND,
-                name: "member",
-                description: "Set the member role for the server (Owner only)",
-                options: [
-                    {
-                        type: OptionTypes.ROLE,
-                        name: "role",
-                        description: "The role to assign to members",
-                        required: false
-                    }
-                ]
-            },
-            {
-                type: OptionTypes.SUB_COMMAND,
-                name: "admin",
-                description: "Set the admin role for the server (Owner only)",
-                options: [
-                    {
-                        type: OptionTypes.ROLE,
-                        name: "role",
-                        description: "The role to assign to admins",
+                        type: OptionTypes.STRING,
+                        name: "value",
+                        description: "The Value to set option to",
+                        autocomplete: true,
                         required: false
                     }
                 ]
@@ -114,11 +56,99 @@ export const ConfigCmd: SlashCommand = {
             {
                 type: OptionTypes.SUB_COMMAND,
                 name: "view",
-                description: "View the server configuration (Owner only)"
+                description: "View the server configuration (Admin only)"
             }
         ]
     },
 
+    /**
+     * @param {AutocompleteInteraction} interaction
+     * @param {KiwiClient} client
+     */
+    async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
+        const focused = interaction.options.getFocused(true);
+
+        switch (focused.name) {
+            case "option": {
+                const options = [
+                    { name: "Logs Channel", value: "logs_channel" },
+                    { name: "Pending Channel", value: "pending_channel" },
+                    { name: "Verification Ping", value: "verification_ping" },
+                    { name: "Guest Role", value: "guest_role" },
+                    { name: "Member Role", value: "member_role" },
+                    { name: "Admin Role", value: "admin_role" },
+                    { name: "CustomVoice Category", value: "customvoice_category" },
+                    { name: "CustomVoice Channel", value: "customvoice_channel" }
+                ];
+
+                await interaction.respond(
+                    options.filter(option => option.name.toLowerCase().startsWith(focused.value.toLowerCase())),
+                );
+                break;
+            }
+
+            case "value": {
+                const valueTypes = [
+                    { name: "logs_channel", types: ["text_channel"] },
+                    { name: "pending_channel", types: ["text_channel"] },
+                    { name: "verification_ping", types: ["role"] },
+                    { name: "guest_role", types: ["role"] },
+                    { name: "member_role", types: ["role"] },
+                    { name: "admin_role", types: ["role"] },
+                    { name: "customvoice_category", types: ["category"] },
+                    { name: "customvoice_channel", types: ["voice_channel", "stage_channel"] }
+                ];
+
+                var optionTypes = valueTypes.find(type => type.name === interaction.options.get("option").value).types;
+                var choices = new Array();
+
+               
+                if (optionTypes.includes("text_channel")) {
+                    var channels = (await interaction.guild.channels.fetch())
+                        .filter(channel => channel.type === ChannelType.GuildText)
+                        .filter(channel => channel.name.toLowerCase().startsWith(focused.value.toLowerCase().replace("#", "")));
+                    choices.push(channels.map(channel => ({ name: "#"+channel.name, value: channel.id })));
+                }
+
+                if (optionTypes.includes("voice_channel")) {
+                    var channels = (await interaction.guild.channels.fetch())
+                        .filter(channel => channel.type === ChannelType.GuildVoice)
+                        .filter(channel => channel.name.toLowerCase().startsWith(focused.value.toLowerCase().replace("#", "")));
+                    choices.push(channels.map(channel => ({ name: "🔊 "+channel.name, value: channel.id })));
+                }
+
+                if (optionTypes.includes("stage_channel")) {
+                    var channels = (await interaction.guild.channels.fetch())
+                        .filter(channel => channel.type === ChannelType.GuildStageVoice)
+                        .filter(channel => channel.name.toLowerCase().startsWith(focused.value.toLowerCase().replace("#", "")));
+                    choices.push(channels.map(channel => ({ name: "🎧 "+channel.name, value: channel.id })));
+                }
+
+                if (optionTypes.includes("role")) {
+                    var roles = (await interaction.guild.roles.fetch()).filter(role => role.name !== "@everyone")
+                        .filter(role => role.name.toLowerCase().startsWith(focused.value.toLowerCase().replace("@", "")));
+                    choices.push(roles.map(role => ({ name: "@"+role.name, value: role.id })))
+                }
+
+                if (optionTypes.includes("category")) {
+                    var categories = (await interaction.guild.channels.fetch())
+                        .filter(channel => channel.type === ChannelType.GuildCategory)
+                        .filter(category => category.name.toLowerCase().startsWith(focused.value.toLowerCase()));
+                    choices.push(categories.map(category => ({ name: category.name, value: category.id })));
+                }
+
+                if (optionTypes.includes("member")) {
+                    var members = (await interaction.guild.members.fetch())
+                        .filter(member => member.user.username.toLowerCase().startsWith(focused.value.toLowerCase().replace("@", "")));
+                    choices.push(members.map(member => ({ name: "@"+member.user.username, value: member.user.id })));
+                }
+
+                await interaction.respond(choices.flat());
+            }
+        }
+
+    },
+    
     /**
      * @param {ChatInputCommandInteraction} interaction
      * @param {KiwiClient} client
@@ -135,138 +165,89 @@ export const ConfigCmd: SlashCommand = {
         const GuildRepository = await dataSource.getRepository(GuildConfig);
 
         switch (interaction.options.getSubcommand()) {
-            case "logs":
-                var channel = interaction.options.getChannel("channel");
-                var value = channel ? channel.id : null;
-
-                await GuildRepository.upsert(
-                    { guildId: interaction.guildId, logsChannel: value },
-                    ["guildId"]
-                )
-                
-                if (value) {
-                    await interaction.reply({
-                        content: `Logs channel has been set to <#${value}>!`,
-                        ephemeral: true
-                    });
-                } else {
-                    await interaction.reply({
-                        content: `Logs channel has been unset!`,
-                        ephemeral: true
-                    });
+            case "set":
+                var guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
+                if (!guild) {
+                    guild = new GuildConfig();
+                    guild.guildId = interaction.guildId;
                 }
+
+                var option = interaction.options.get("option");
+                var value = interaction.options.getString("value");
+
+                switch (option.value) {
+                    case "logs_channel":
+                        if (value) {
+                            guild.logsChannel = value;
+                        } else {
+                            guild.logsChannel = null;
+                        }
+                        break;
+
+                    case "pending_channel":
+                        if (value) {
+                            guild.pendingChannel = value;
+                        } else {
+                            guild.pendingChannel = null;
+                        }
+                        break;
+
+                    case "verification_ping":
+                        if (value) {
+                            guild.verificationPing = value;
+                        } else {
+                            guild.verificationPing = null;
+                        }
+                        break;
+
+                    case "guest_role":
+                        if (value) {
+                            guild.guestRole = value;
+                        } else {
+                            guild.guestRole = null;
+                        }
+                        break;
+
+                    case "member_role":
+                        if (value) {
+                            guild.memberRole = value;
+                        } else {
+                            guild.memberRole = null;
+                        }
+                        break;
+
+                    case "admin_role":
+                        if (value) {
+                            guild.adminRole = value;
+                        } else {
+                            guild.adminRole = null;
+                        }
+                        break;
+
+                    case "customvoice_category":
+                        if (value) {
+                            guild.voiceCategory = value;
+                        } else {
+                            guild.voiceCategory = null;
+                        }
+                        break;
+
+                    case "customvoice_channel":
+                        if (value) {
+                            guild.voiceChannel = value;
+                        } else {
+                            guild.voiceChannel = null;
+                        }
+                        break;
+                }
+
+                await GuildRepository.save(guild);
+                await interaction.reply({
+                    content: `Updated **${option.value}** successfully!`,
+                    ephemeral: true
+                });
                 break;
 
-            case "pending":
-                var channel = interaction.options.getChannel("channel");
-                var value = channel ? channel.id : null;
-
-                await GuildRepository.upsert(
-                    { guildId: interaction.guildId, pendingChannel: value },
-                    ["guildId"]
-                )
-               
-                if (value) {
-                    await interaction.reply({
-                        content: `Pending channel has been set to <#${value}>!`,
-                        ephemeral: true
-                    });
-                } else {
-                    await interaction.reply({
-                        content: `Pending channel has been unset!`,
-                        ephemeral: true
-                    });
-                }
-                break;
-                
-            case "verification_ping":
-                var role = interaction.options.getRole("role");
-                var value = role ? role.id : null;
-
-                await GuildRepository.upsert(
-                    { guildId: interaction.guildId, verificationPing: value },
-                    ["guildId"]
-                )
-
-                if (value) {
-                    await interaction.reply({
-                        content: `Verification Ping has been set to <@&${value}>!`,
-                        ephemeral: true
-                    });
-                } else {
-                    await interaction.reply({
-                        content: `Verification Ping has been unset!`,
-                        ephemeral: true
-                    });
-                }
-                break;
-
-            case "guest":
-                var role = interaction.options.getRole("role");
-                var value = role ? role.id : null;
-
-                await GuildRepository.upsert(
-                    { guildId: interaction.guildId, guestRole: value },
-                    ["guildId"]
-                )
-
-                if (value) {
-                    await interaction.reply({
-                        content: `Guest role has been set to <@&${value}>!`,
-                        ephemeral: true
-                    });
-                } else {
-                    await interaction.reply({
-                        content: `Guest role has been unset!`,
-                        ephemeral: true
-                    });
-                }
-                break;
-
-            case "member":
-                var role = interaction.options.getRole("role");
-                var value = role ? role.id : null;
-
-                await GuildRepository.upsert(
-                    { guildId: interaction.guildId, memberRole: value },
-                    ["guildId"]
-                )
-                
-                if (value) {
-                    await interaction.reply({
-                        content: `Member role has been set to <@&${value}>!`,
-                        ephemeral: true
-                    });
-                } else {
-                    await interaction.reply({
-                        content: `Member role has been unset!`,
-                        ephemeral: true
-                    });
-                }
-                break;
-
-            case "admin":
-                var role = interaction.options.getRole("role");
-                var value = role ? role.id : null;
-
-                await GuildRepository.upsert(
-                    { guildId: interaction.guildId, adminRole: value },
-                    ["guildId"]
-                );
-
-                if (value) {
-                    await interaction.reply({
-                        content: `Admin role has been set to <@&${value}>!`,
-                        ephemeral: true
-                    });
-                } else {
-                    await interaction.reply({
-                        content: `Admin role has been unset!`,
-                        ephemeral: true
-                    });
-                }
-                break;
-            
             case "view":
                 var guild = await GuildRepository.findOne({ where: { guildId: interaction.guildId } });
                 if (!guild) {
@@ -279,41 +260,28 @@ export const ConfigCmd: SlashCommand = {
 
                 var rows = new Array();
 
-                if (guild.logsChannel) {
-                    rows.push(`**Logs Channel**\n<#${guild.logsChannel}>`);
-                } else {
-                    rows.push(`**Logs Channel**\nNot Set`);
-                }
+                for (let [key, value] of Object.entries(guild)) {
+                    if (key === "guildId") continue;
 
-                if (guild.pendingChannel) {
-                    rows.push(`**Pending Channel**\n<#${guild.pendingChannel}>`);
-                } else {
-                    rows.push(`**Pending Channel**\nNot Set`);
-                }
+                    if (value) {
+                        await interaction.guild.channels.fetch(value)
+                            .then(channel => {
+                                value = `<#${channel.id}>`;
+                            })
+                            .catch(() => {});
 
-                if (guild.verificationPing) {
-                    rows.push(`**Verification Ping**\n<@&${guild.verificationPing}>`);
-                } else {
-                    rows.push(`**Verification Ping**\nNot Set`);
-                }
+                        await interaction.guild.roles.fetch(value)
+                            .then(role => {
+                                value = `<@&${role.id}>`;
+                            })
+                            .catch(() => {});
 
-                if (guild.guestRole) {
-                    rows.push(`**Guest Role**\n<@&${guild.guestRole}>`);
-                } else {
-                    rows.push(`**Guest Role**\nNot Set`);
-                }
-
-                if (guild.memberRole) {
-                    rows.push(`**Member Role**\n<@&${guild.memberRole}>`);
-                } else {
-                    rows.push(`**Member Role**\nNot Set`);
-                }
-
-                if (guild.adminRole) {
-                    rows.push(`**Admin Role**\n<@&${guild.adminRole}>`);
-                } else {
-                    rows.push(`**Admin Role**\nNot Set`);
-                }
+                        rows.push(`**${key.charAt(0).toUpperCase() + key.slice(1)}**\n${value}`);
+    
+                    } else {
+                        rows.push(`**${key.charAt(0).toUpperCase() + key.slice(1)}**\nNone`);
+                    }
+                };
 
                 await interaction.reply({
                     content: rows.join("\n\n"),
