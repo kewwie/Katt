@@ -1,5 +1,6 @@
 import { Plugin } from "../../types/plugin";
 
+import { ChannelUpdate } from "./events/channelUpdate";
 import { GuildReady } from "./events/guildReady";
 import { VoiceStateUpdate } from "./events/voiceStateUpdate";
 
@@ -14,6 +15,7 @@ export const CustomVoicePlugin: Plugin = {
         disableable: true
     },
     events: [
+        ChannelUpdate,
         GuildReady,
         VoiceStateUpdate
     ],
