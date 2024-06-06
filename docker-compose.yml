@@ -8,8 +8,8 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:?}
-      MYSQL_DATABASE: kewiapp
-      MYSQL_USER: kewiapp
+      MYSQL_DATABASE: iwek
+      MYSQL_USER: iwek
       MYSQL_PASSWORD: ${DATABASE_PASSWORD:?}
     ports:
       - "${DATABASE_PORT:?}:${DATABASE_PORT:?}"
