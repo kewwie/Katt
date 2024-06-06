@@ -12,7 +12,7 @@ import { VoiceActivity } from "../../../entities/VoiceActivity";
 /**
  * @type {Event}
  */
-export const voiceStateUpdate: Event = {
+export const VoiceStateUpdate: Event = {
     name: Events.VoiceStateUpdate,
 
     /**
