@@ -15,8 +15,8 @@ Custom Discord application designed for stuff I need.
 Steps to install your project locally:
 
 ```bash
-git clone https://github.com/kewwie/kewiapp.git
-cd kewiapp
+git clone https://github.com/kewwie/iwek.git
+cd iwek
 ```
 
 
