@@ -225,17 +225,17 @@ export const ConfigCmd: SlashCommand = {
 
                     case "customvoice_category":
                         if (value) {
-                            guild.voiceCategory = value;
+                            guild.customCategory = value;
                         } else {
-                            guild.voiceCategory = null;
+                            guild.customCategory = null;
                         }
                         break;
 
                     case "customvoice_channel":
                         if (value) {
-                            guild.voiceChannel = value;
+                            guild.customChannel = value;
                         } else {
-                            guild.voiceChannel = null;
+                            guild.customChannel = null;
                         }
                         break;
                 }

@@ -32,9 +32,9 @@ export class GuildConfigEntity {
     @Column({ name: "welcome_message", type: "text" })
     welcomeMessage: string;
 
-    @Column({ name: "voice_category", type: "bigint" })
-    voiceCategory: string;
+    @Column({ name: "custom_category", type: "bigint" })
+    customCategory: string;
 
-    @Column({ name: "voice_channel", type: "bigint" })
-    voiceChannel: string;
+    @Column({ name: "custom_channel", type: "bigint" })
+    customChannel: string;
 }
