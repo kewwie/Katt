@@ -47,6 +47,14 @@ export const GuildReady: Event = {
 
             var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: guild.id } });
             var roles = vs.member.roles.cache.map(role => role.id);
+
+            if (customChannel && customChannel.channelId) {
+                var channel = await vs.guild.channels.fetch(customChannel.channelId).catch(() => {});
+                if (!channel) {
+                    customChannel.channelId = null;
+                    await CustomChannelsRepository.save(customChannel);
+                }
+            }
             
             if (
                 guildConfig &&
@@ -60,7 +68,10 @@ export const GuildReady: Event = {
                     customChannel.channelId &&
                     vs.channelId === guildConfig.voiceChannel
                 ) {
-                    vs.setChannel(customChannel.channelId, "Moved to their own channel");
+                    var channel = await guild.channels.fetch(customChannel.channelId).catch(() => {});
+                    if (channel) {
+                        vs.setChannel(customChannel.channelId, "Moved to their own channel");
+                    }
                 }
 
                 else if (customChannel && !customChannel.channelId && vs.channelId) {

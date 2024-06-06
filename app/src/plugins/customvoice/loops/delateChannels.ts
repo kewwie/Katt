@@ -23,6 +23,8 @@ export const DeleteChannels: Loop = {
                     CustomChannelsRepository.update({ channelId: channel.id }, { channelId: null });
                     await channel.delete("No members in channel").catch(() => {});
                 }
+            } else {
+                CustomChannelsRepository.update({ _id: customChannel._id }, { channelId: null });
             }
         }
     }

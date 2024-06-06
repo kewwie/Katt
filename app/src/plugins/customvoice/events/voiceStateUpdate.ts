@@ -42,6 +42,14 @@ export const VoiceStateUpdate: Event = {
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: newVoiceState.guild.id } });
         var roles = newVoiceState.member.roles.cache.map(role => role.id);
 
+        if (customChannel && customChannel.channelId) {
+            var channel = await newVoiceState.guild.channels.fetch(customChannel.channelId).catch(() => {});
+            if (!channel) {
+                customChannel.channelId = null;
+                await CustomChannelsRepository.save(customChannel);
+            }
+        }
+
         if (
             guildConfig &&
             (roles.includes(guildConfig.adminRole) ||
@@ -53,7 +61,10 @@ export const VoiceStateUpdate: Event = {
                 customChannel.channelId &&
                 newVoiceState.channelId === guildConfig.voiceChannel
             ) {
-                newVoiceState.setChannel(customChannel.channelId, "Moved to their own channel");
+                var channel = await newVoiceState.guild.channels.fetch(customChannel.channelId).catch(() => {});
+                if (channel) {
+                    newVoiceState.setChannel(customChannel.channelId, "Moved to their own channel");
+                }
             }
 
             if (customChannel && !customChannel.channelId && newVoiceState.channelId) {
