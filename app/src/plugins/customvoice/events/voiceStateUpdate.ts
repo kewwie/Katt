@@ -54,12 +54,12 @@ export const VoiceStateUpdate: Event = {
             guildConfig &&
             (roles.includes(guildConfig.adminRole) ||
             roles.includes(guildConfig.memberRole)) ||
-            newVoiceState.channelId === guildConfig.voiceChannel
+            newVoiceState.channelId === guildConfig.customChannel
         ) {
             if (
                 customChannel &&
                 customChannel.channelId &&
-                newVoiceState.channelId === guildConfig.voiceChannel
+                newVoiceState.channelId === guildConfig.customChannel
             ) {
                 var channel = await newVoiceState.guild.channels.fetch(customChannel.channelId).catch(() => {});
                 if (channel) {
@@ -71,7 +71,7 @@ export const VoiceStateUpdate: Event = {
                 var newChannel = await newVoiceState.guild.channels.create({
                     name: !customChannel.channelName ? `${newVoiceState.member.displayName}'s Channel` : customChannel.channelName,
                     type: ChannelType.GuildVoice,
-                    parent: await newVoiceState.guild.channels.fetch(guildConfig.voiceCategory) as CategoryChannelResolvable,
+                    parent: await newVoiceState.guild.channels.fetch(guildConfig.customCategory) as CategoryChannelResolvable,
                     permissionOverwrites: [
                         {
                             id: newVoiceState.member.id,
@@ -83,7 +83,7 @@ export const VoiceStateUpdate: Event = {
                 customChannel.channelId = newChannel.id;
                 await CustomChannelRepository.save(customChannel);
 
-                if (newVoiceState.channelId === guildConfig.voiceChannel) {
+                if (newVoiceState.channelId === guildConfig.customChannel) {
                     newVoiceState.setChannel(newChannel, "Moved to their own channel");
                 }
             }
@@ -92,7 +92,7 @@ export const VoiceStateUpdate: Event = {
                 var newChannel = await newVoiceState.guild.channels.create({
                     name: `${newVoiceState.member.displayName}'s Channel`,
                     type: ChannelType.GuildVoice,
-                    parent: await newVoiceState.guild.channels.fetch(guildConfig.voiceCategory) as CategoryChannelResolvable,
+                    parent: await newVoiceState.guild.channels.fetch(guildConfig.customCategory) as CategoryChannelResolvable,
                     permissionOverwrites: [
                         {
                             id: newVoiceState.member.id,
@@ -108,7 +108,7 @@ export const VoiceStateUpdate: Event = {
                     channelName: `${newVoiceState.member.displayName}'s Channel`
                 });
 
-                if (newVoiceState.channelId === guildConfig.voiceChannel) {
+                if (newVoiceState.channelId === guildConfig.customChannel) {
                     newVoiceState.setChannel(newChannel, "Moved to their own channel");
                 }
             }

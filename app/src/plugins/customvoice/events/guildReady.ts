@@ -60,13 +60,13 @@ export const GuildReady: Event = {
                 guildConfig &&
                 (roles.includes(guildConfig.adminRole) ||
                 roles.includes(guildConfig.memberRole)) ||
-                vs.channelId === guildConfig.voiceChannel
+                vs.channelId === guildConfig.customChannel
             ) {
                 var customChannel = await CustomChannelRepository.findOne({ where: { guildId: guild.id, userId: vs.member.id } });
                 if (
                     customChannel &&
                     customChannel.channelId &&
-                    vs.channelId === guildConfig.voiceChannel
+                    vs.channelId === guildConfig.customChannel
                 ) {
                     var channel = await guild.channels.fetch(customChannel.channelId).catch(() => {});
                     if (channel) {
@@ -78,7 +78,7 @@ export const GuildReady: Event = {
                     var newChannel = await vs.guild.channels.create({
                         name: !customChannel.channelName ? `${vs.member.displayName}'s Channel` : customChannel.channelName,
                         type: ChannelType.GuildVoice,
-                        parent: await vs.guild.channels.fetch(guildConfig.voiceCategory) as CategoryChannelResolvable,
+                        parent: await vs.guild.channels.fetch(guildConfig.customCategory) as CategoryChannelResolvable,
                         permissionOverwrites: [
                             {
                                 id: vs.member.id,
@@ -90,7 +90,7 @@ export const GuildReady: Event = {
                     customChannel.channelId = newChannel.id;
                     await CustomChannelRepository.save(customChannel);
 
-                    if (vs.channelId === guildConfig.voiceChannel) {
+                    if (vs.channelId === guildConfig.customChannel) {
                         vs.setChannel(newChannel, "Moved to their own channel");
                     }
                 }
@@ -99,7 +99,7 @@ export const GuildReady: Event = {
                     var newChannel = await vs.guild.channels.create({
                         name: `${vs.member.displayName}'s Channel`,
                         type: ChannelType.GuildVoice,
-                        parent: await vs.guild.channels.fetch(guildConfig.voiceCategory) as CategoryChannelResolvable,
+                        parent: await vs.guild.channels.fetch(guildConfig.customCategory) as CategoryChannelResolvable,
                         permissionOverwrites: [
                             {
                                 id: vs.member.id,
@@ -115,7 +115,7 @@ export const GuildReady: Event = {
                         channelName: `${vs.member.displayName}'s Channel`
                     });
 
-                    if (vs.channelId === guildConfig.voiceChannel) {
+                    if (vs.channelId === guildConfig.customChannel) {
                         vs.setChannel(newChannel, "Moved to their own channel");
                     }
                 }
