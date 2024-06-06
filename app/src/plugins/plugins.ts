@@ -4,7 +4,6 @@ import { AdminPlugin } from "./admin"
 import { AntiBanPlugin } from "./antiban"
 import { CustomVoicePlugin } from "./customvoice";
 import { GroupsPlugin } from "./groups"
-import { LevelsPlugin } from "./levels";
 import { ListPlugin } from "./list"
 import { MessagePlugin } from "./message"
 import { NicknamesPlugin } from "./nicknames"
@@ -19,7 +18,6 @@ export const Plugins: Array<Plugin> = [
     AntiBanPlugin,
     CustomVoicePlugin,
     GroupsPlugin,
-    LevelsPlugin,
     ListPlugin,
     MessagePlugin,
     NicknamesPlugin,
