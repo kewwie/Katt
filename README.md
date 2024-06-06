@@ -28,7 +28,7 @@ cd kewiapp
 - Lists for custom names
 - Nickname Saver
 - Server Groups
-- Leveling System
+- Custom Voice Channels
 
 ## Contributing
 
