@@ -1,4 +1,4 @@
-# Kewi App
+# Iwew
 
 Custom Discord application designed for stuff I need.
 
