@@ -1,5 +1,5 @@
 {
-  "name": "kewi-migrate",
+  "name": "iwek-migrate",
   "version": "3.0.0",
   "scripts": {
     "build": "tsc",

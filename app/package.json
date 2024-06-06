@@ -1,5 +1,5 @@
 {
-  "name": "kewi-app",
+  "name": "iwek-app",
   "version": "3.0.0",
   "scripts": {
     "dev": "nodemon src/index.ts",

@@ -4,8 +4,8 @@ import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { CustomChannel } from "../../../entities/CustomChannel";
-import { GuildConfig } from "../../../entities/GuildConfig";
+import { CustomChannelEntity } from "../../../entities/CustomChannel";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
 
 /**
  * @type {Event}
@@ -25,10 +25,10 @@ export const GuildReady: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, guild: Guild) {
-        const CustomChannelsRepository = await dataSource.getRepository(CustomChannel);
-        const GuildConfigRepository = await dataSource.getRepository(GuildConfig);
+        const CustomChannelRepository = await dataSource.getRepository(CustomChannelEntity);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
 
-        var customChannels = await CustomChannelsRepository.find({ where: { guildId: guild.id } });
+        var customChannels = await CustomChannelRepository.find({ where: { guildId: guild.id } });
         for (let customChannel of customChannels) {
             var channel = await guild.channels.fetch(customChannel.channelId).catch(() => {});
             if (channel && channel.type === ChannelType.GuildVoice) {
@@ -37,7 +37,7 @@ export const GuildReady: Event = {
 
                 if (members.length === 0 && !ownerChannel) {
                     await channel.delete("No members in channel").catch(() => {});
-                    CustomChannelsRepository.update({ channelId: channel.id }, { channelId: null });
+                    CustomChannelRepository.update({ channelId: channel.id }, { channelId: null });
                 }
             }
         }
@@ -52,7 +52,7 @@ export const GuildReady: Event = {
                 var channel = await vs.guild.channels.fetch(customChannel.channelId).catch(() => {});
                 if (!channel) {
                     customChannel.channelId = null;
-                    await CustomChannelsRepository.save(customChannel);
+                    await CustomChannelRepository.save(customChannel);
                 }
             }
             
@@ -62,7 +62,7 @@ export const GuildReady: Event = {
                 roles.includes(guildConfig.memberRole)) ||
                 vs.channelId === guildConfig.voiceChannel
             ) {
-                var customChannel = await CustomChannelsRepository.findOne({ where: { guildId: guild.id, userId: vs.member.id } });
+                var customChannel = await CustomChannelRepository.findOne({ where: { guildId: guild.id, userId: vs.member.id } });
                 if (
                     customChannel &&
                     customChannel.channelId &&
@@ -88,7 +88,7 @@ export const GuildReady: Event = {
                     });
                     
                     customChannel.channelId = newChannel.id;
-                    await CustomChannelsRepository.save(customChannel);
+                    await CustomChannelRepository.save(customChannel);
 
                     if (vs.channelId === guildConfig.voiceChannel) {
                         vs.setChannel(newChannel, "Moved to their own channel");
@@ -108,7 +108,7 @@ export const GuildReady: Event = {
                         ]
                     });
 
-                    CustomChannelsRepository.insert({
+                    CustomChannelRepository.insert({
                         guildId: vs.guild.id,
                         userId: vs.member.id,
                         channelId: newChannel.id,

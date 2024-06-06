@@ -30,10 +30,10 @@ export const VoiceStateUpdate: Event = {
     * @param {VoiceState} newVoiceState
     */
     async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
-        const CustomChannelsRepository = await dataSource.getRepository(CustomChannelEntity);
+        const CustomChannelRepository = await dataSource.getRepository(CustomChannelEntity);
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
 
-        var customChannel = await CustomChannelsRepository.findOne({
+        var customChannel = await CustomChannelRepository.findOne({
             where: {
                 guildId: newVoiceState.guild.id,
                 userId: newVoiceState.member.id
@@ -46,7 +46,7 @@ export const VoiceStateUpdate: Event = {
             var channel = await newVoiceState.guild.channels.fetch(customChannel.channelId).catch(() => {});
             if (!channel) {
                 customChannel.channelId = null;
-                await CustomChannelsRepository.save(customChannel);
+                await CustomChannelRepository.save(customChannel);
             }
         }
 
@@ -81,7 +81,7 @@ export const VoiceStateUpdate: Event = {
                 });
                 
                 customChannel.channelId = newChannel.id;
-                await CustomChannelsRepository.save(customChannel);
+                await CustomChannelRepository.save(customChannel);
 
                 if (newVoiceState.channelId === guildConfig.voiceChannel) {
                     newVoiceState.setChannel(newChannel, "Moved to their own channel");
@@ -101,7 +101,7 @@ export const VoiceStateUpdate: Event = {
                     ]
                 });
 
-                CustomChannelsRepository.insert({
+                CustomChannelRepository.insert({
                     guildId: newVoiceState.guild.id,
                     userId: newVoiceState.member.id,
                     channelId: newChannel.id,
