@@ -1,4 +1,4 @@
-import { CategoryChannelResolvable, ChannelType, Guild } from "discord.js";
+import { CategoryChannel, ChannelType, Guild } from "discord.js";
 
 import { KiwiClient } from "../../../client";
 import { Event, Events } from "../../../types/event";
@@ -75,11 +75,17 @@ export const GuildReady: Event = {
                 }
 
                 else if (customChannel && !customChannel.channelId && vs.channelId) {
+                    var category = await vs.guild.channels.fetch(guildConfig.customCategory) as CategoryChannel;
                     var newChannel = await vs.guild.channels.create({
                         name: !customChannel.channelName ? `${vs.member.displayName}'s Channel` : customChannel.channelName,
                         type: ChannelType.GuildVoice,
-                        parent: await vs.guild.channels.fetch(guildConfig.customCategory) as CategoryChannelResolvable,
+                        parent: category,
                         permissionOverwrites: [
+                            ...category.permissionOverwrites.cache.map(overwrite => ({
+                                id: overwrite.id,
+                                allow: overwrite.allow.toArray(),
+                                deny: overwrite.deny.toArray()
+                            })),
                             {
                                 id: vs.member.id,
                                 allow: ['ViewChannel', 'Connect', 'Speak', 'ManageChannels']
@@ -96,11 +102,17 @@ export const GuildReady: Event = {
                 }
 
                 else if (!customChannel && vs.channelId) {
+                    var category = await vs.guild.channels.fetch(guildConfig.customCategory) as CategoryChannel;
                     var newChannel = await vs.guild.channels.create({
                         name: `${vs.member.displayName}'s Channel`,
                         type: ChannelType.GuildVoice,
-                        parent: await vs.guild.channels.fetch(guildConfig.customCategory) as CategoryChannelResolvable,
+                        parent: category,
                         permissionOverwrites: [
+                            ...category.permissionOverwrites.cache.map(overwrite => ({
+                                id: overwrite.id,
+                                allow: overwrite.allow.toArray(),
+                                deny: overwrite.deny.toArray()
+                            })),
                             {
                                 id: vs.member.id,
                                 allow: ['ViewChannel', 'Connect', 'Speak', 'ManageChannels']

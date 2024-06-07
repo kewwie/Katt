@@ -2,7 +2,7 @@ import { KiwiClient } from "../../../client";
 import { Events, Event } from "../../../types/event";
 
 import {
-    CategoryChannelResolvable,
+    CategoryChannel,
     ChannelType,
     VoiceState
 } from "discord.js";
@@ -68,11 +68,17 @@ export const VoiceStateUpdate: Event = {
             }
 
             if (customChannel && !customChannel.channelId && newVoiceState.channelId) {
+                var category = await newVoiceState.guild.channels.fetch(guildConfig.customCategory) as CategoryChannel;
                 var newChannel = await newVoiceState.guild.channels.create({
                     name: !customChannel.channelName ? `${newVoiceState.member.displayName}'s Channel` : customChannel.channelName,
                     type: ChannelType.GuildVoice,
-                    parent: await newVoiceState.guild.channels.fetch(guildConfig.customCategory) as CategoryChannelResolvable,
+                    parent: category,
                     permissionOverwrites: [
+                        ...category.permissionOverwrites.cache.map(overwrite => ({
+                            id: overwrite.id,
+                            allow: overwrite.allow.toArray(),
+                            deny: overwrite.deny.toArray()
+                        })),
                         {
                             id: newVoiceState.member.id,
                             allow: ['ViewChannel', 'Connect', 'Speak', 'ManageChannels']
@@ -89,11 +95,17 @@ export const VoiceStateUpdate: Event = {
             }
 
             else if (!customChannel && newVoiceState.channelId) {
+                var category = await newVoiceState.guild.channels.fetch(guildConfig.customCategory) as CategoryChannel;
                 var newChannel = await newVoiceState.guild.channels.create({
                     name: `${newVoiceState.member.displayName}'s Channel`,
                     type: ChannelType.GuildVoice,
-                    parent: await newVoiceState.guild.channels.fetch(guildConfig.customCategory) as CategoryChannelResolvable,
+                    parent: category,
                     permissionOverwrites: [
+                        ...category.permissionOverwrites.cache.map(overwrite => ({
+                            id: overwrite.id,
+                            allow: overwrite.allow.toArray(),
+                            deny: overwrite.deny.toArray()
+                        })),
                         {
                             id: newVoiceState.member.id,
                             allow: ['ViewChannel', 'Connect', 'Speak', 'ManageChannels']
