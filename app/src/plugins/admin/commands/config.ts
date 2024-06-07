@@ -143,7 +143,7 @@ export const ConfigCmd: SlashCommand = {
                     choices.push(members.map(member => ({ name: "@"+member.user.username, value: member.user.id })));
                 }
 
-                await interaction.respond(choices.flat());
+                await interaction.respond(choices.flat().slice(0, 25));
             }
         }
     },
