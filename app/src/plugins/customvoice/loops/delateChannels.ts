@@ -7,8 +7,12 @@ import { CustomChannelEntity } from "../../../entities/CustomChannel";
 
 export const DeleteChannels: Loop = {
     name: "DeleteChannels",
-    seconds: 30,
+    seconds: 60 * 5,
 
+    /**
+     * @param {KiwiClient} client
+     * @param {Guild} guild
+     */
     async execute(client: KiwiClient, guild: Guild) {
         const CustomChannelsRepository = await dataSource.getRepository(CustomChannelEntity);
 
