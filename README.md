@@ -48,7 +48,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Kewi - [@k3wwie](https://twitter.com/k3wwie)
 
-Project Link: [https://github.com/kewwie/kewiapp](https://github.com/kewwie/kewiapp)
+Project Link: [https://github.com/kewwie/iwek](https://github.com/kewwie/iwek)
 
 ## Acknowledgments
 
