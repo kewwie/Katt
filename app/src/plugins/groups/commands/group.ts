@@ -376,7 +376,8 @@ export const GroupCommand: SlashCommand =  {
                         groupId: existingGroup.groupId,
                         userId: user.id,
                         inviterId: interaction.user.id,
-                        messageId: message.id
+                        messageId: message.id,
+                        createdAt: new Date()
                     });
                     await interaction.reply(`**${user.username}** has been invited to group **${name}**`);
         
