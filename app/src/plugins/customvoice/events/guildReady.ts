@@ -70,7 +70,7 @@ export const GuildReady: Event = {
                 ) {
                     var channel = await guild.channels.fetch(customChannel.channelId).catch(() => {});
                     if (channel) {
-                        vs.setChannel(customChannel.channelId, "Moved to their own channel");
+                        vs.setChannel(customChannel.channelId, "Moved to their own channel").catch(() => {});
                     }
                 }
 
@@ -97,7 +97,7 @@ export const GuildReady: Event = {
                     await CustomChannelRepository.save(customChannel);
 
                     if (vs.channelId === guildConfig.customChannel) {
-                        vs.setChannel(newChannel, "Moved to their own channel");
+                        vs.setChannel(newChannel, "Moved to their own channel").catch(() => {});
                     }
                 }
 
@@ -128,7 +128,7 @@ export const GuildReady: Event = {
                     });
 
                     if (vs.channelId === guildConfig.customChannel) {
-                        vs.setChannel(newChannel, "Moved to their own channel");
+                        vs.setChannel(newChannel, "Moved to their own channel").catch(() => {});
                     }
                 }
             }

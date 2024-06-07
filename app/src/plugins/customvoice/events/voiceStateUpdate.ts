@@ -63,7 +63,7 @@ export const VoiceStateUpdate: Event = {
             ) {
                 var channel = await newVoiceState.guild.channels.fetch(customChannel.channelId).catch(() => {});
                 if (channel) {
-                    newVoiceState.setChannel(customChannel.channelId, "Moved to their own channel");
+                    newVoiceState.setChannel(customChannel.channelId, "Moved to their own channel").catch(() => {});
                 }
             }
 
@@ -90,7 +90,7 @@ export const VoiceStateUpdate: Event = {
                 await CustomChannelRepository.save(customChannel);
 
                 if (newVoiceState.channelId === guildConfig.customChannel) {
-                    newVoiceState.setChannel(newChannel, "Moved to their own channel");
+                    newVoiceState.setChannel(newChannel, "Moved to their own channel").catch(() => {});
                 }
             }
 
@@ -121,7 +121,7 @@ export const VoiceStateUpdate: Event = {
                 });
 
                 if (newVoiceState.channelId === guildConfig.customChannel) {
-                    newVoiceState.setChannel(newChannel, "Moved to their own channel");
+                    newVoiceState.setChannel(newChannel, "Moved to their own channel").catch(() => {});
                 }
             }
         }
