@@ -22,6 +22,7 @@ import { dataSource } from "../../../datasource";
 import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
 import { GroupInviteEntity } from "../../../entities/GroupInvite";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
 
 import { AcceptInvite } from "../buttons/accept-invite";
 import { DenyInvite } from "../buttons/deny-invite";
@@ -201,10 +202,16 @@ export const GroupCommand: SlashCommand =  {
         const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
         const GroupInviteRepository = await dataSource.getRepository(GroupInviteEntity);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         
         switch (interaction.options.getSubcommand()) {
             case "create": {
                 var name = interaction.options.getString('name');
+
+                var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
+                var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
+
+                if (!roles.includes(guildConfig.adminRole) || !roles.includes(guildConfig.memberRole)) return;
 
                 const existingGroup = await GuildGroupRepository.findOne(
                     {
