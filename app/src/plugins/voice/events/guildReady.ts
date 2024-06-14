@@ -34,6 +34,8 @@ export const GuildReady: Event = {
 
         for (var voiceState of guild.voiceStates.cache.values()) {
 
+            if (voiceState.member.user.bot) continue;
+
             var vs = await VoiceStateRepository.findOne(
                 { where: { userId: voiceState.id, guildId: voiceState.guild.id }}
             );

@@ -45,6 +45,8 @@ export const GuildReady: Event = {
         for (let voiceState of guild.voiceStates.cache) {
             var vs = voiceState[1];
 
+            if (vs.member.user.bot) continue;
+
             var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: guild.id } });
             var roles = vs.member.roles.cache.map(role => role.id);
 

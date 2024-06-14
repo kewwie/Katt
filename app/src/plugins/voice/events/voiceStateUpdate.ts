@@ -31,6 +31,8 @@ export const VoiceStateUpdate: Event = {
         const VoiceStateRepository = await dataSource.getRepository(VoiceStateEntity)
         const VoiceActivityRepository = await dataSource.getRepository(VoiceActivityEntity)
 
+        if (newVoiceState.member.user.bot) return;
+
         var pvs = await VoiceStateRepository.findOne(
             { where: { userId: oldVoiceState.id, guildId: oldVoiceState.guild.id }}
         );

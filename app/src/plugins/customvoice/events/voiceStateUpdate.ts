@@ -33,6 +33,8 @@ export const VoiceStateUpdate: Event = {
         const CustomChannelRepository = await dataSource.getRepository(CustomChannelEntity);
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
 
+        if (newVoiceState.member.user.bot) return;
+
         var customChannel = await CustomChannelRepository.findOne({
             where: {
                 guildId: newVoiceState.guild.id,
