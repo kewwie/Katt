@@ -186,9 +186,9 @@ export const GroupCommand: SlashCommand =  {
      */
     async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
         const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
-        const focusedValue = interaction.options.getFocused();
+        const focusedValue = interaction.options.getFocused().toLowerCase();
         const choices = await GuildGroupRepository.find({ where: { guildId: interaction.guild.id } });
-		const filtered = choices.filter(choice => choice.groupName.startsWith(focusedValue));
+		const filtered = choices.filter(choice => choice.groupName.toLowerCase().startsWith(focusedValue));
 		await interaction.respond(
 			filtered.map(choice => ({ name: choice.groupName, value: choice.groupName })),
 		);

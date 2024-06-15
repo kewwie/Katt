@@ -96,8 +96,8 @@ export const PluginsCmd: SlashCommand = {
             }
         }
 
-        const focusedValue = interaction.options.getFocused();
-        const filtered = choices.filter(choice => choice.startsWith(focusedValue));
+        const focusedValue = interaction.options.getFocused().toLowerCase();
+        const filtered = choices.filter(choice => choice.toLowerCase().startsWith(focusedValue));
         await interaction.respond(
             filtered.map(choice => ({ name: choice, value: choice })),
         );

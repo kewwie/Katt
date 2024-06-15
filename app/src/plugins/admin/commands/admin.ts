@@ -100,8 +100,8 @@ export const AdminCmd: SlashCommand = {
             };
         }
 
-        const focusedValue = interaction.options.getFocused();
-        const filtered = choices.filter(choice => choice.name.startsWith(focusedValue));
+        const focusedValue = interaction.options.getFocused().toLowerCase();
+        const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedValue));
         await interaction.respond(
             filtered.map(choice => ({ name: choice.name, value: choice.value })),
         );
