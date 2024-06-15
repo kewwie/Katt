@@ -210,8 +210,12 @@ export const GroupCommand: SlashCommand =  {
 
                 var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
                 var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
+                var adminRole = guildConfig.adminRole || null;
+                var memberRole = guildConfig.memberRole || null;
 
-                if ((guildConfig?.adminRole && !roles.includes(guildConfig.adminRole)) || (guildConfig?.memberRole && !roles.includes(guildConfig?.memberRole))) {
+                console.log(roles.includes(adminRole))
+
+                if (!roles.includes(adminRole) && !roles.includes(memberRole)) {
                     interaction.reply("You do not have permission to create a group");
                     return; 
                 }
@@ -269,7 +273,11 @@ export const GroupCommand: SlashCommand =  {
                 });
 
                 if (existingGroup) {
-                    if (existingGroup.private) {
+                    var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
+                    var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
+                    var adminRole = guildConfig.adminRole || null;
+
+                    if (existingGroup.private && !roles.includes(guildConfig.adminRole)) {
                         await interaction.reply("This group is private.");
                         return;
                     }
