@@ -122,6 +122,26 @@ export const GroupCommand: SlashCommand =  {
             },
             {
                 type: OptionTypes.SUB_COMMAND,
+                name: "add",
+                description: "Add a user to a group",
+                options: [
+                    {
+                        type: OptionTypes.STRING,
+                        name: "name",
+                        description: "Name of the group",
+                        autocomplete: true,
+                        required: true
+                    },
+                    {
+                        type: OptionTypes.USER,
+                        name: "user",
+                        description: "The user to add to the group",
+                        required: true
+                    }
+                ]
+            },
+            {
+                type: OptionTypes.SUB_COMMAND,
                 name: "private",
                 description: "Change the privacy of the group",
                 options: [
@@ -441,6 +461,50 @@ export const GroupCommand: SlashCommand =  {
                     await interaction.reply(`Group **${name}** does not exist`);
                 }
                 break;
+            }
+
+            case "add": {
+                var name = interaction.options.getString('name');
+                var user = interaction.options.getUser('user');
+
+                const existingGroup = await GuildGroupRepository.findOne({
+                    where: {
+                        guildId: interaction.guild.id,
+                        groupName: name
+                    }
+                });
+
+                if (existingGroup) {
+                    var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
+                    var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
+                    var adminRole = guildConfig.adminRole || null;
+
+                    if (!roles.includes(guildConfig.adminRole)) {
+                        interaction.reply("You do not have permission to add members to a group");
+                        return;
+                    }
+
+                    if (user.bot) {
+                        interaction.reply("Bots cannot be added to groups");
+                        return;
+                    }
+
+                    var groupMember = await GroupMemberRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
+                    if (groupMember) {
+                        interaction.reply(`**${user.username}** is already a member of group **${name}**`);
+                        return;
+                    }
+
+                    await (await interaction.guild.members.fetch(user.id)).roles.add(existingGroup.roleId).catch(() => {});
+
+                    await GroupMemberRepository.insert({
+                        groupId: existingGroup.groupId,
+                        userId: user.id,
+                        userName: user.username
+                    });
+
+                    interaction.reply(`**${user.username}** has been added to group **${name}**`);
+                }
             }
 
             case "private": {
