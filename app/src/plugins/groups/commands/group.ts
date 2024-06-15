@@ -495,7 +495,7 @@ export const GroupCommand: SlashCommand =  {
                         return;
                     }
 
-                    await (await interaction.guild.members.fetch(user.id)).roles.add(existingGroup.roleId).catch(() => {});
+                    await interaction.guild.members.cache.get(user.id).roles.add(existingGroup.roleId).catch(() => {});
 
                     await GroupMemberRepository.insert({
                         groupId: existingGroup.groupId,
