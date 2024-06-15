@@ -56,10 +56,9 @@ export const VoiceStateUpdate: Event = {
                 await VoiceActivityRepository.update(
                     { 
                         guildId: oldVoiceState.guild.id,
-                        userId: oldVoiceState.id,
-                        userName: oldVoiceState.member.user.username
+                        userId: oldVoiceState.id
                     },
-                    { seconds: newSeconds }
+                    { seconds: newSeconds, userName: oldVoiceState.member.user.username }
                 );
             } else {
                 await VoiceActivityRepository.insert({ 
