@@ -16,6 +16,7 @@ export enum Events {
     MessageCreate = "messageCreate",
     GuildCreate = "guildCreate",
     ChannelUpdate = "channelUpdate",
+    GuildUpdate = "guildUpdate",
 }
 
 export interface Event {

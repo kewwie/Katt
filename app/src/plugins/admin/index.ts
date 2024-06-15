@@ -8,8 +8,9 @@ import { GuildAdminAdd } from "./events/guildAdminAdd";
 import { GuildAdminRemove } from "./events/guildAdminRemove";
 import { GuildCreate } from "./events/guildCreate";
 import { GuildMemberUpdate } from "./events/guildMemberUpdate";
-import { GuildVerifiedAdd } from "./events/guildVerifiedAdd";
 import { GuildReady } from "./events/guildReady";
+import { GuildVerifiedAdd } from "./events/guildVerifiedAdd";
+import { GuildUpdate } from "./events/guildUpdate";
 
 /**
  * @type {Plugin}
@@ -28,8 +29,9 @@ export const AdminPlugin: Plugin = {
         GuildAdminRemove,
         GuildCreate,
         GuildMemberUpdate,
+        GuildReady,
         GuildVerifiedAdd,
-        GuildReady
+        GuildUpdate
     ],
     afterLoad: () => {
         console.log(`Loaded Admin Plugin`)
