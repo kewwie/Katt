@@ -261,6 +261,7 @@ export const ConfigCmd: SlashCommand = {
 
                 for (let [key, value] of Object.entries(guild)) {
                     if (key === "guildId") continue;
+                    if (key === "_id") continue;
 
                     if (value) {
                         await interaction.guild.channels.fetch(value)
