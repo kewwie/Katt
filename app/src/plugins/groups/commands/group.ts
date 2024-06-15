@@ -211,9 +211,12 @@ export const GroupCommand: SlashCommand =  {
                 var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
                 var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
 
-                if (!roles.includes(guildConfig.adminRole) || !roles.includes(guildConfig.memberRole)) return;
+                if ((guildConfig?.adminRole && !roles.includes(guildConfig.adminRole)) || (guildConfig?.memberRole && !roles.includes(guildConfig?.memberRole))) {
+                    interaction.reply("You do not have permission to create a group");
+                    return; 
+                }
 
-                const existingGroup = await GuildGroupRepository.findOne(
+                var existingGroup = await GuildGroupRepository.findOne(
                     {
                         where: {
                             guildId: interaction.guild.id,
@@ -226,7 +229,7 @@ export const GroupCommand: SlashCommand =  {
                     await interaction.reply("Group already exists.");
                     return;
                 }
-                const role = await interaction.guild.roles.create({
+                var role = await interaction.guild.roles.create({
                     name: `Group ${name}`,
                     color: "Random",
                     mentionable: true
@@ -234,8 +237,10 @@ export const GroupCommand: SlashCommand =  {
 
                 await interaction.guild.members.cache.get(interaction.member.user.id).roles.add(role).catch(() => {});
 
-                var ResGroup = await GuildGroupRepository.insert({
-                    groupId: String(Date.now() - 1000),
+                var groupId = String(Date.now() - 1000);
+
+                await GuildGroupRepository.insert({
+                    groupId,
                     groupName: name,
                     guildId: interaction.guild.id,
                     roleId: role.id,
@@ -244,7 +249,7 @@ export const GroupCommand: SlashCommand =  {
                 });
 
                 await GroupMemberRepository.insert({
-                    groupId: ResGroup.identifiers[0].groupId,
+                    groupId,
                     userId: interaction.user.id,
                     userName: interaction.user.username
                 });
