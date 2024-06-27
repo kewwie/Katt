@@ -1,6 +1,6 @@
 # Terms of Service
 
-**Effective Date:** June 28, 2024
+**Last Updated and Effective:** June 27, 2024
 
 Welcome to Iwek! These Terms of Service ("Terms") govern your use of the Iwek application ("Iwek", "we", "our", or "us"), a Discord bot designed for user verification, voice tracking, and message tracking. By using Iwek, you agree to comply with and be bound by these Terms. If you do not agree with these Terms, please do not use Iwek.
 
