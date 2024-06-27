@@ -42,7 +42,6 @@ export class KiwiClient extends Client {
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMembers,
                 GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.MessageContent,
                 GatewayIntentBits.GuildModeration,
                 GatewayIntentBits.GuildVoiceStates,
                 GatewayIntentBits.AutoModerationExecution,
