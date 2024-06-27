@@ -40,7 +40,7 @@ export class KiwiClient extends Client {
         super({
             intents: [
                 GatewayIntentBits.Guilds,
-                GatewayIntentBits.GuildMembers,
+                //GatewayIntentBits.GuildMembers,
                 GatewayIntentBits.GuildMessages,
                 GatewayIntentBits.GuildModeration,
                 GatewayIntentBits.GuildVoiceStates,
