@@ -20,11 +20,11 @@ We respect your privacy and are committed to protecting your personal informatio
 
 You agree not to engage in any of the following prohibited activities:
 
-Violating any applicable laws or regulations.
-Impersonating another person or entity, or falsely stating or otherwise misrepresenting your affiliation with a person or entity.
-Using Iwek for any unlawful or unauthorized purpose.
-Interfering with or disrupting the integrity or performance of Iwek or the data contained therein.
-Attempting to gain unauthorized access to Iwek or its related systems or networks.
+- Violating any applicable laws or regulations.
+- Impersonating another person or entity, or falsely stating or otherwise misrepresenting your affiliation with a person or entity.
+- Using Iwek for any unlawful or unauthorized purpose.
+- Interfering with or disrupting the integrity or performance of Iwek or the data contained therein.
+- Attempting to gain unauthorized access to Iwek or its related systems or networks.
 
 ## 5. Termination, Modification, and Suspension of Service
 
@@ -32,7 +32,7 @@ We reserve the right to suspend, terminate, modify, or discontinue Iwek or any p
 
 ## 6. Data Deletion
 
-We reserve the right to delete any data from our database at any time, for any reason, without notice. This includes data from users or communities on Discord.
+While we strive to maintain the integrity of our database, we reserve the right to delete any data from our database at any time, for any reason, without notice. This includes data from users or communities on Discord.
 
 ## 7. Disclaimer of Warranties
 
@@ -40,7 +40,11 @@ Iwek is provided on an "as is" and "as available" basis. We make no warranties, 
 
 ## 8. Limitation of Liability
 
-To the fullest extent permitted by applicable law, we shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses, resulting from (i) your use or inability to use Iwek; (ii) any unauthorized access to or use of our servers and/or any personal information stored therein; or (iii) any interruption or cessation of transmission to or from Iwek.
+To the fullest extent permitted by applicable law, we shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses, resulting from:
+
+- Your use or inability to use Iwek.
+- Any unauthorized access to or use of our servers and/or any personal information stored therein.
+- Any interruption or cessation of transmission to or from Iwek.
 
 ## 9. Governing Law
 
