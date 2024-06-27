@@ -47,10 +47,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 
 Kewi - [@k3wwie](https://twitter.com/k3wwie)
+Support - [Discord](https://discord.gg/JKbtSTCmbz)
 
-Project Link: [https://github.com/kewwie/iwek](https://github.com/kewwie/iwek)
-
-## Acknowledgments
-
-- [Denbeigh2000](https://github.com/denbeigh2000) - Verification System Idea
-
+Project Link: [github.com/kewwie/iwek](https://github.com/kewwie/iwek)
