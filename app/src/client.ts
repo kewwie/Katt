@@ -3,7 +3,8 @@ import {
     GatewayIntentBits,
     Partials,
     Collection,
-    ColorResolvable
+    ColorResolvable,
+    ClientPresenceStatus
 } from "discord.js";
 
 import { PluginManager } from "./managers/plugin";
@@ -54,7 +55,7 @@ export class KiwiClient extends Client {
                 Partials.User,
             ],
             presence: {
-                status: "idle"
+                status: "dnd" as ClientPresenceStatus,
             }
         });
 
