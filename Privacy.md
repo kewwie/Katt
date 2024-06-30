@@ -13,7 +13,7 @@ We may collect and store certain information about you when you use our Discord 
 - The number of messages you have sent in communities using our service
 - The amount of time you have spent in voice channels in communities using our service
 - Your profile nickname in communities using our service
-- Any other information you provide when using our service
+- Any information in your community/guild excluding message content
 
 ## Use of Information
 
