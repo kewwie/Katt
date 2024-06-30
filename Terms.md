@@ -48,7 +48,7 @@ To the fullest extent permitted by applicable law, we shall not be liable for an
 
 ## 9. Governing Law
 
-These Terms shall be governed by and construed in accordance with the laws of [Your Country/State], without regard to its conflict of law principles.
+These Terms shall be governed by and construed in accordance with the laws of Sweden, without regard to its conflict of law principles.
 
 ## 10. Agreement to Terms
 
