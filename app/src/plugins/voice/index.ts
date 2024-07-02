@@ -2,6 +2,8 @@ import { Plugin } from "../../types/plugin";
 
 import { VoiceSlash } from "./commands/voice";
 
+import { VoiceActivityUser } from "./commands/voice-activity";
+
 import { GuildReady } from "./events/guildReady";
 import { VoiceStateUpdate } from "./events/voiceStateUpdate";
 
@@ -13,8 +15,11 @@ export const VoicePlugin: Plugin = {
         name: "Voice",
         disableable: true
     },
-    ApplicationCommands: [
+    SlashCommands: [
         VoiceSlash
+    ],
+    UserCommands: [
+        VoiceActivityUser
     ],
     events: [
         GuildReady,

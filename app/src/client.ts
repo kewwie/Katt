@@ -16,7 +16,7 @@ import { EventManager } from "./managers/event";
 import { LoopManager } from "./managers/loop";
 
 import { Button } from "./types/component";
-import { SlashCommand } from "./types/command";
+import { SlashCommand, UserCommand } from "./types/command";
 import { Event, Events } from "./types/event";
 import { Loop } from "./types/loop";
 
@@ -27,8 +27,9 @@ export class KiwiClient extends Client {
 
     public buttons: Collection<string, Button>;
     public SlashCommands: Collection<string, SlashCommand>;
+    public UserCommands: Collection<string, UserCommand>;
     public PrefixCommands: Collection<string, SlashCommand>;
-    public events: Collection<string, Event>;
+    public events: Collection<string, Event>
     public loops: Collection<string, Loop>;
 
     public PluginManager: PluginManager;
@@ -55,7 +56,7 @@ export class KiwiClient extends Client {
                 Partials.User,
             ],
             presence: {
-                status: "dnd" as ClientPresenceStatus,
+                status: "online" as ClientPresenceStatus,
             }
         });
 
@@ -66,6 +67,7 @@ export class KiwiClient extends Client {
         }
 
         this.SlashCommands = new Collection();
+        this.UserCommands = new Collection();
         this.PrefixCommands = new Collection();
         this.events = new Collection();
         this.buttons = new Collection();
@@ -92,14 +94,20 @@ export class KiwiClient extends Client {
         this.on(Events.Ready, async () => {
             console.log(`${this.user?.username} is Online`);
             for (let guild of await this.guilds.fetch()) {
-                this.CommandManager.register([...this.SlashCommands.values()], guild[0]);
+                this.CommandManager.register([
+                    ...this.SlashCommands.values(),
+                    ...this.UserCommands.values()
+                ], guild[0]);
                 this.emit(Events.GuildReady, await guild[1].fetch());
             }
         });
 
         this.on(Events.GuildCreate, async (guild) => {
             console.log(`Joined ${guild.name}`);
-            this.CommandManager.register([...this.SlashCommands.values()], guild.id);
+            this.CommandManager.register([
+                ...this.SlashCommands.values(),
+                ...this.UserCommands.values()
+            ], guild.id);
         });
     }
 };

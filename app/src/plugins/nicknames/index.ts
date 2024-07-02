@@ -13,7 +13,7 @@ export const NicknamesPlugin: Plugin = {
         name: "Nickname",
         disableable: true
     },
-    ApplicationCommands: [
+    SlashCommands: [
         NicknameSlash
     ],
     events: [

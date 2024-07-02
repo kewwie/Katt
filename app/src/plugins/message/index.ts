@@ -12,7 +12,7 @@ export const MessagePlugin: Plugin = {
         name: "Message",
         disableable: true
     },
-    ApplicationCommands: [
+    SlashCommands: [
         MessageSlash
     ],
     events: [

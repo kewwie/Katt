@@ -14,7 +14,7 @@ export const ListPlugin: Plugin = {
     buttons: [
         UpdateList
     ],
-    ApplicationCommands: [
+    SlashCommands: [
         ListSlash
     ],
     afterLoad: async () => {

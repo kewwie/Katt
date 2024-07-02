@@ -5,13 +5,13 @@ import { Plugin } from "../types/plugin";
 export class PluginManager {
     public client: KiwiClient
     public plugins: Plugin[];
-    public SlashEventSet: boolean;
+    public AppCommandEventSet: boolean;
     public ButtonEventSet: boolean;
 
     constructor(client: KiwiClient) {
         this.client = client;
         this.plugins = [];
-        this.SlashEventSet = false;
+        this.AppCommandEventSet = false;
         this.ButtonEventSet = false;
     }
 
@@ -25,12 +25,16 @@ export class PluginManager {
                 command.plugin = plugin.config.name;
                 SlashCommands.push(command);
             }
-            this.client.CommandManager.load(SlashCommands);
+            this.client.CommandManager.loadSlash(SlashCommands);
+        }
 
-            if (!this.SlashEventSet) {
-                this.client.on(Events.InteractionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
-                this.SlashEventSet = true;
+        if (plugin.UserCommands) {
+            var UserCommands = new Array();
+            for (let command of plugin.UserCommands) {
+                command.plugin = plugin.config.name;
+                UserCommands.push(command);
             }
+            this.client.CommandManager.loadUser(UserCommands);
         }
 
         if (plugin.buttons) {
@@ -40,11 +44,6 @@ export class PluginManager {
                 buttons.push(button);
             }
             this.client.ComponentManager.loadButtons(buttons);
-
-            if (!this.ButtonEventSet) {
-                this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));
-                this.ButtonEventSet = true;
-            }
         }
 
         if (plugin.events) {
@@ -63,6 +62,16 @@ export class PluginManager {
                 loops.push(loop);
             }
             this.client.LoopManager.load(loops);
+        }
+
+        if (!this.AppCommandEventSet && (plugin.SlashCommands || plugin.buttons)) {
+            this.client.on(Events.InteractionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
+            this.AppCommandEventSet = true;
+        }
+
+        if (!this.ButtonEventSet && plugin.buttons) {
+            this.client.on(Events.InteractionCreate, (interaction: any) => this.client.ComponentManager.onInteraction(interaction));
+            this.ButtonEventSet = true;
         }
 
         plugin.afterLoad?.(this.client);

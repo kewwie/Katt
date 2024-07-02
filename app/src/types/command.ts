@@ -1,6 +1,48 @@
 import { ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
 import { KiwiClient } from "../client";
 
+export type ApplicationCommand = SlashCommand | UserCommand;
+
+export interface UserCommand {
+    plugin?: string;
+    config: {
+        type: CommandTypes.USER;
+        name: string;
+    };
+    execute: (interaction, client: KiwiClient) => Promise<void>;
+}
+
+export interface SlashCommand {
+    plugin?: string;
+    config: {
+        type: CommandTypes.CHAT_INPUT;
+        name: string;
+        description: string;
+        default_member_permissions?: Permissions | null;
+        contexts: SlashCommandContexts[];
+        integration_types: IntegrationTypes[];
+        options?: CommandOption[];
+    };
+    autocomplete?: (interaction: AutocompleteInteraction, client: KiwiClient) => Promise<void>;
+    execute: (interaction: ChatInputCommandInteraction, client: KiwiClient) => Promise<void>;
+}
+
+export interface CommandOption {
+    type: OptionTypes;
+    name: string;
+    description: string;
+    required?: boolean;
+    options?: CommandOption[];
+    choices?: Choice[];
+    autocomplete?: boolean;
+    channel_types?: ChannelTypes[];
+}
+
+export interface Choice {
+    name: string;
+    value: string | number;
+}
+
 export enum CommandTypes {
     CHAT_INPUT = 1,
     USER = 2,
@@ -96,44 +138,4 @@ export enum Permissions {
     CreateEvents = 0x0000100000000000,
     UseExternalSounds = 0x0000200000000000,
     SendVoiceMessages = 0x0000400000000000
-}
-
-export interface UserCommand {
-    plugin?: string;
-    config: {
-        type: CommandTypes.USER;
-        name: string;
-    };
-    execute: (interaction, client: KiwiClient) => Promise<void>;
-}
-
-export interface SlashCommand {
-    plugin?: string;
-    config: {
-        type: CommandTypes.CHAT_INPUT;
-        name: string;
-        description: string;
-        default_member_permissions?: Permissions | null;
-        contexts: SlashCommandContexts[];
-        integration_types: IntegrationTypes[];
-        options?: CommandOption[];
-    };
-    autocomplete?: (interaction: AutocompleteInteraction, client: KiwiClient) => Promise<void>;
-    execute: (interaction: ChatInputCommandInteraction, client: KiwiClient) => Promise<void>;
-}
-
-export interface CommandOption {
-    type: OptionTypes;
-    name: string;
-    description: string;
-    required?: boolean;
-    options?: CommandOption[];
-    choices?: Choice[];
-    autocomplete?: boolean;
-    channel_types?: ChannelTypes[];
-}
-
-export interface Choice {
-    name: string;
-    value: string | number;
 }
