@@ -6,6 +6,7 @@ import { SlashCommand, UserCommand } from "../types/command";
 
 import { dataSource } from "../datasource";
 import { GuildPluginEntity } from "../entities/GuildPlugin";
+import { AutocompleteInteraction, Interaction, InteractionResponse } from "discord.js";
 
 export class CommandManager {
     public client: KiwiClient;
@@ -52,7 +53,8 @@ export class CommandManager {
         console.log(`Successfully removed all (/) commands in ${guildId}`);
     }
 
-    async onInteraction(interaction: any) {
+    async onInteraction(interaction: Interaction) {
+        console.log(interaction);
         const GuildPluginsRepository = await dataSource.getRepository(GuildPluginEntity);
 
         if (interaction.isChatInputCommand()) {
@@ -93,9 +95,19 @@ export class CommandManager {
                 await command.autocomplete(interaction, this.client);
             } catch (error) {
                 console.error(error);
+                interaction.respond([{ name: 'There was an error while executing this command!', value: "ERROR" }]);
+            }
+        } else if (interaction.isUserContextMenuCommand()) {
+            const command = this.client.UserCommands.get(interaction.commandName);
+
+            if (!command) return;
+
+            try {
+                await command.execute(interaction, this.client);
+            } catch (error) {
+                console.error(error);
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
-            
         }
     }
 }
