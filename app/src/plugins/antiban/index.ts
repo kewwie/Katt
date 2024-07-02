@@ -14,7 +14,7 @@ export const AntiBanPlugin: Plugin = {
         GuildBanAdd,
         GuildReady
     ],
-    afterLoad: () => {
+    afterLoad: async () => {
         console.log("Loaded AntiBan Plugin");
     }
 }

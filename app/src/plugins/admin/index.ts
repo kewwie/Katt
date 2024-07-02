@@ -19,7 +19,7 @@ export const AdminPlugin: Plugin = {
     config: {
         name: "Admin"
     },
-    SlashCommands: [
+    ApplicationCommands: [
         AdminCmd,
         ConfigCmd,
         PluginsCmd
@@ -33,7 +33,7 @@ export const AdminPlugin: Plugin = {
         GuildVerifiedAdd,
         GuildUpdate
     ],
-    afterLoad: () => {
+    afterLoad: async () => {
         console.log(`Loaded Admin Plugin`)
     }
 }

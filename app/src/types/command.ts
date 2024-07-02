@@ -98,10 +98,19 @@ export enum Permissions {
     SendVoiceMessages = 0x0000400000000000
 }
 
+export interface UserCommand {
+    plugin?: string;
+    config: {
+        type: CommandTypes.USER;
+        name: string;
+    };
+    execute: (interaction, client: KiwiClient) => Promise<void>;
+}
+
 export interface SlashCommand {
     plugin?: string;
     config: {
-        type: CommandTypes;
+        type: CommandTypes.CHAT_INPUT;
         name: string;
         description: string;
         default_member_permissions?: Permissions | null;

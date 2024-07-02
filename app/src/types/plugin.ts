@@ -1,5 +1,5 @@
 import { KiwiClient } from "../client";
-import { SlashCommand } from "./command";
+import { SlashCommand, UserCommand } from "./command";
 import { Button } from "./component";
 import { Event } from "./event";
 import { Loop } from "./loop";
@@ -12,12 +12,12 @@ export interface Plugin {
         disableable?: boolean,
     },
     buttons?: Button[],
-    SlashCommands?: SlashCommand[],
+    ApplicationCommands?: SlashCommand[] | UserCommand[],
     PrefixCommands?: [],
     events?: Event[],
     loops?: Loop[],
-    beforeLoad?: (client: KiwiClient) => void,
-    afterLoad?: (client: KiwiClient) => void,
-    beforeUnload?: (client: KiwiClient) => void,
-    afterUnload?: (client: KiwiClient) => void,
+    beforeLoad?: (client: KiwiClient) => Promise<void>,
+    afterLoad?: (client: KiwiClient) => Promise<void>,
+    beforeUnload?: (client: KiwiClient) => Promise<void>,
+    afterUnload?: (client: KiwiClient) => Promise<void>,
 }

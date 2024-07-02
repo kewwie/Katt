@@ -12,13 +12,13 @@ export const MessagePlugin: Plugin = {
         name: "Message",
         disableable: true
     },
-    SlashCommands: [
+    ApplicationCommands: [
         MessageSlash
     ],
     events: [
         MessageCreate
     ],
-    afterLoad: () => {
+    afterLoad: async () => {
         console.log(`Loaded Message Plugin`)
     }
 }

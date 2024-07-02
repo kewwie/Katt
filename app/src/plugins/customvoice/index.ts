@@ -22,7 +22,7 @@ export const CustomVoicePlugin: Plugin = {
     loops: [
         DeleteChannels
     ],
-    afterLoad: () => {
+    afterLoad: async () => {
         console.log(`Loaded Custom Voice Plugin`)
     }
 }

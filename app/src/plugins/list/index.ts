@@ -14,10 +14,10 @@ export const ListPlugin: Plugin = {
     buttons: [
         UpdateList
     ],
-    SlashCommands: [
+    ApplicationCommands: [
         ListSlash
     ],
-    afterLoad: () => {
+    afterLoad: async () => {
         console.log("Loaded List Plugin")
     }
 }

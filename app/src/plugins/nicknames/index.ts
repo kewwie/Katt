@@ -13,14 +13,14 @@ export const NicknamesPlugin: Plugin = {
         name: "Nickname",
         disableable: true
     },
-    SlashCommands: [
+    ApplicationCommands: [
         NicknameSlash
     ],
     events: [
         GuildMemberAdd,
         GuildMemberUpdate
     ],
-    afterLoad: () => {
+    afterLoad: async () => {
         console.log("Loaded Nicknames Plugin")
     }
 }

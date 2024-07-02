@@ -19,7 +19,7 @@ export const GroupsPlugin: Plugin = {
         AcceptInvite,
         DenyInvite
     ],
-    SlashCommands: [
+    ApplicationCommands: [
         GroupCommand
     ],
     events: [
@@ -27,7 +27,7 @@ export const GroupsPlugin: Plugin = {
         GuildVerifiedAdd,
         GuildReady
     ],
-    afterLoad: () => {
+    afterLoad: async () => {
         console.log("Loaded Groups Plugin")
     }
 }

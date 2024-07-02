@@ -19,7 +19,7 @@ export const VerificationPlugin: Plugin = {
     events: [
         GuildMemberAdd
     ],
-    afterLoad: () => {
+    afterLoad: async () => {
         console.log("Loaded Verification Plugin")
     }
 }

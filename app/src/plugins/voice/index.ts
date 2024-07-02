@@ -13,14 +13,14 @@ export const VoicePlugin: Plugin = {
         name: "Voice",
         disableable: true
     },
-    SlashCommands: [
+    ApplicationCommands: [
         VoiceSlash
     ],
     events: [
         GuildReady,
         VoiceStateUpdate
     ],
-    afterLoad: () => {
+    afterLoad: async () => {
         console.log(`Loaded Voice Plugin`)
     }
 }
