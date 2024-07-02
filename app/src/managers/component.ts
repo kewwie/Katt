@@ -3,6 +3,7 @@ import { Button } from "../types/component";
 
 import { dataSource } from "../datasource";
 import { GuildPluginEntity } from "../entities/GuildPlugin";
+import { MessageComponentInteraction } from "discord.js";
 
 export class ComponentManager {
     public client: KiwiClient;
@@ -17,7 +18,7 @@ export class ComponentManager {
         }
     }
 
-    async onInteraction(interaction: any) {
+    async onInteraction(interaction: MessageComponentInteraction) {
         const GuildPluginsRepository = await dataSource.getRepository(GuildPluginEntity);
 
         if (interaction.isButton()) {
