@@ -2,7 +2,7 @@ import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
 import { env } from "../env";
 import { KiwiClient } from "../client";
-import { CommandTypes, SlashCommand, UserCommand } from "../types/command";
+import { SlashCommand, UserCommand } from "../types/command";
 
 import { dataSource } from "../datasource";
 import { GuildPluginEntity } from "../entities/GuildPlugin";
@@ -28,14 +28,13 @@ export class CommandManager {
 
     async register(commands, guildId: string) {
         var cmds = new Array();
-
         for (let command of commands) {
             cmds.push(command.config);
         }
 
         const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
 
-        var data: any = await rest.post(
+        var data: any = await rest.put(
             Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
             { body: cmds }
         )
