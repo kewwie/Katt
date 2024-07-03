@@ -15,6 +15,7 @@ import { dataSource } from "../../../datasource";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
 import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
+import { UserVerifiedEntity } from "../../../entities/UserVerified";
 import { PendingMessageEntity } from "../../../entities/PendingMessage";
 
 /**
@@ -39,6 +40,7 @@ export const ApproveUser: Button = {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
+        const UserVerifiedRepository = await dataSource.getRepository(UserVerifiedEntity);
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
         
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
@@ -59,6 +61,14 @@ export const ApproveUser: Button = {
             }
         }
 
+        UserVerifiedRepository.insert({
+            guildId: interaction.guild.id,
+            userId: userId,
+            userName: interaction.user.username,
+            modId: interaction.user.id,
+            modName: interaction.user.username
+        });
+
         var message = await interaction.channel.messages.fetch(interaction.message.id);
         if (message) {
             await message.delete();
@@ -72,8 +82,6 @@ export const ApproveUser: Button = {
             interaction.followUp({ content: "Cant find the user in the server", ephemeral: true });
             return;
         }
-
-        client.emit(Events.GuildVerifiedAdd, interaction.guild, member, "guest");
 
         var ApprovedEmbed = new EmbedBuilder()
             .setTitle("You've Been Approved")
