@@ -23,8 +23,8 @@ import {
  */
 export const PluginSlash: SlashCommand = {
     config: {
-        name: "plugins",
-        description: "Plugins Commands",
+        name: "plugin",
+        description: "Plugin Commands",
         type: CommandTypes.CHAT_INPUT,
         default_member_permissions: Permissions.ManageGuild,
         contexts: [SlashCommandContexts.GUILD],

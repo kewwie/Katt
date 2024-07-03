@@ -25,6 +25,7 @@ export const GuildReady: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, guild: Guild) {
+        console.log("GuildReady")
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: guild.id } });
