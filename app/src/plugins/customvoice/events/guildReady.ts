@@ -50,8 +50,7 @@ export const GuildReady: Event = {
             if (vs.member.user.bot) continue;
 
             var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: guild.id } });
-            var roles = vs.member.roles.cache.map(role => role.id);
-            var guildUser = await GuildUserRepository.findOne({ where: { guildId: guild.id, userId: vs.member.id } });
+            var isStaff = (await GuildUserRepository.findOne({ where: { guildId: guild.id, userId: vs.member.id  } })).level <= 3;
 
             if (customChannel && customChannel.channelId) {
                 var channel = await vs.guild.channels.fetch(customChannel.channelId).catch(() => {});
@@ -63,8 +62,7 @@ export const GuildReady: Event = {
             
             if (
                 guildConfig &&
-                (roles.includes(guildConfig.adminRole) ||
-                roles.includes(guildConfig.memberRole)) ||
+                isStaff ||
                 vs.channelId === guildConfig.customChannel
             ) {
                 var customChannel = await CustomChannelRepository.findOne({ where: { guildId: guild.id, userId: vs.member.id } });

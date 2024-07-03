@@ -7,7 +7,8 @@ import { KiwiClient } from "../../../client";
 import { Events, Event } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { GuildAdminEntity } from "../../../entities/GuildUser";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 
 /**
  * @type {Event}
@@ -21,10 +22,19 @@ export const GuildUpdate: Event = {
     * @param {Guild} newGuild
     */
     async execute(client: KiwiClient, oldGuild: Guild, newGuild: Guild) {
-        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
+        var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: newGuild.id } });
+        let roles = [
+            guildConfig.levelFive,
+            guildConfig.levelFour,
+            guildConfig.levelThree,
+            guildConfig.levelTwo,
+            guildConfig.levelOne
+        ]
 
         if (oldGuild.ownerId !== newGuild.ownerId) {
-            var admin = await GuildAdminRepository.findOne({
+            var isUser = await GuildUserRepository.findOne({
                 where: {
                     guildId: newGuild.id,
                     userId: newGuild.ownerId
@@ -32,26 +42,34 @@ export const GuildUpdate: Event = {
             });
             var member = await newGuild.members.fetch(newGuild.ownerId);
 
-            if (admin) {
-                GuildAdminRepository.update({
+            if (isUser) {
+                GuildUserRepository.update({
                     guildId: newGuild.id,
                     userId: newGuild.ownerId
-                }, { level: 4, userName: member.user.username});
+                }, { level: 5, userName: member.user.username});
             } else {
-                GuildAdminRepository.insert({
+                GuildUserRepository.insert({
                     guildId: newGuild.id,
                     userId: newGuild.ownerId,
                     userName: member.user.username,
-                    level: 4
+                    level: 5
                 });
             }
-            client.emit(Events.GuildAdminAdd, newGuild, member);
-
-            var oldOwner = await GuildAdminRepository.findOne({ where: { guildId: oldGuild.id, userId: oldGuild.ownerId } });
-            if (oldOwner) {
-                GuildAdminRepository.delete({ guildId: oldGuild.id, userId: oldGuild.ownerId });
+            
+            let highestRole = roles.find(role => role !== null);
+            if (highestRole) {
+                await member.roles.add(highestRole);
             }
-            client.emit(Events.GuildAdminRemove, newGuild, await newGuild.members.fetch(oldGuild.ownerId));
+
+            var oldOwner = await GuildUserRepository.findOne({ where: { guildId: oldGuild.id, userId: oldGuild.ownerId } });
+            if (oldOwner) {
+                GuildUserRepository.delete({ guildId: oldGuild.id, userId: oldGuild.ownerId });
+            }
+
+            var oldOwnerMember = await oldGuild.members.fetch(oldGuild.ownerId);
+            if (oldOwnerMember) {
+                oldOwnerMember.roles.remove(roles).catch(() => {});
+            }
         }
     }
 }

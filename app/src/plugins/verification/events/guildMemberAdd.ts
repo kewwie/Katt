@@ -47,10 +47,10 @@ export const GuildMemberAdd: Event = {
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
 
         var g = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
-        var isAdmin = (await GuildUserRepository.findOne({ where: { guildId: member.guild.id, userId: member.id  } })).level <= 3;
+        var isStaff = (await GuildUserRepository.findOne({ where: { guildId: member.guild.id, userId: member.id  } })).level <= 3;
         var isBlacklisted = await BlacklistRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
 
-        if (isAdmin && g) {
+        if (isStaff && g) {
             var adminRole = null//await member.guild.roles.fetch(g.adminRole);
             if (adminRole) {
                 member.roles.add(adminRole.id).catch(() => {});
