@@ -26,7 +26,7 @@ export const GuildMemberRemove: Event = {
     */
     async execute(client: KiwiClient, member: GuildMember) {
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
-        var isAdmin = (await GuildUserRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } })).level >= 3;
+        var isAdmin = (await GuildUserRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } }))?.level >= 3;
 
         if (!isAdmin) {
             GuildUserRepository.delete({ guildId: member.guild.id, userId: member.id });
