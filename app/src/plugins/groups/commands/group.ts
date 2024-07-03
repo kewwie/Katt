@@ -22,6 +22,7 @@ import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
 import { GroupInviteEntity } from "../../../entities/GroupInvite";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 
 import { AcceptInvite } from "../buttons/accept-invite";
 import { DenyInvite } from "../buttons/deny-invite";
@@ -221,20 +222,15 @@ export const GroupCommand: SlashCommand =  {
         const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
         const GroupInviteRepository = await dataSource.getRepository(GroupInviteEntity);
-        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         
         switch (interaction.options.getSubcommand()) {
             case "create": {
                 var name = interaction.options.getString('name');
 
-                var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
-                var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
-                var adminRole = null; //guildConfig.adminRole
-                var memberRole = null; //guildConfig.memberRole
+                var isStaff = (await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } })).level >= 2;
 
-                console.log(roles.includes(adminRole))
-
-                if (!roles.includes(adminRole) && !roles.includes(memberRole)) {
+                if (!isStaff) {
                     interaction.reply("You do not have permission to create a group");
                     return; 
                 }
@@ -249,7 +245,7 @@ export const GroupCommand: SlashCommand =  {
                 )
 
                 if (existingGroup) {
-                    await interaction.reply("Group already exists.");
+                    interaction.reply("Group already exists");
                     return;
                 }
                 var role = await interaction.guild.roles.create({
@@ -277,7 +273,7 @@ export const GroupCommand: SlashCommand =  {
                     userName: interaction.user.username
                 });
 
-                await interaction.reply(`Group **${name}** has been created.`);
+                interaction.reply(`Group **${name}** has been created`);
                 break;
             }
     
@@ -292,12 +288,10 @@ export const GroupCommand: SlashCommand =  {
                 });
 
                 if (existingGroup) {
-                    var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
-                    var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
-                    var adminRole = null; // guildConfig.adminRole ||
+                    var isAdmin = (await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } })).level >= 3;
 
-                    if (existingGroup.private && !roles.includes(adminRole)) {
-                        await interaction.reply("This group is private.");
+                    if (existingGroup.private && !isAdmin) {
+                        interaction.reply("This group is private");
                         return;
                     }
 
@@ -306,7 +300,7 @@ export const GroupCommand: SlashCommand =  {
                     });
 
                     if (groupMember) {
-                        await interaction.reply("You are already a member of this group.");
+                        interaction.reply("You are already a member of this group");
                         return;
                     }
                     await interaction.guild.members.cache.get(interaction.user.id).roles.add(existingGroup.roleId).catch(() => {});
@@ -316,9 +310,9 @@ export const GroupCommand: SlashCommand =  {
                         userId: interaction.user.id,
                         userName: interaction.user.username
                     });
-                    await interaction.reply(`You have joined the group **${name}**.`);
+                    interaction.reply(`You have joined the group **${name}**`);
                 } else {
-                    await interaction.reply("Group does not exist.");
+                    interaction.reply("Group does not exist");
                 }
                 break;
             }
@@ -335,7 +329,7 @@ export const GroupCommand: SlashCommand =  {
 
                 if (existingGroup) {
                     if (existingGroup.ownerId === interaction.user.id) {
-                        await interaction.reply("You cannot leave a group you own.");
+                        interaction.reply("You cannot leave a group you own");
                         return;
                     }
 
@@ -347,12 +341,12 @@ export const GroupCommand: SlashCommand =  {
                         await interaction.guild.members.cache.get(interaction.user.id).roles.remove(existingGroup.roleId).catch(() => {});
                         
                         await GroupMemberRepository.delete({ groupId: existingGroup.groupId, userId: interaction.user.id })
-                        await interaction.reply(`You have left the group **${name}**`);
+                        interaction.reply(`You have left the group **${name}**`);
                     } else {
-                        await interaction.reply(`You are not a member of the group **${name}**`);
+                        interaction.reply(`You are not a member of the group **${name}**`);
                     }
                 } else {
-                    await interaction.reply(`The group **${name}** does not exist`);
+                    interaction.reply(`The group **${name}** does not exist`);
                 }
                 break;
             }
@@ -369,7 +363,7 @@ export const GroupCommand: SlashCommand =  {
                 });
 
                 if (user.bot) {
-                    await interaction.reply("Bots cannot be added to groups");
+                    interaction.reply("Bots cannot be added to groups");
                     return;
                 }
 
@@ -378,17 +372,17 @@ export const GroupCommand: SlashCommand =  {
                     var groupMembers = await GroupMemberRepository.find({ where: { groupId: existingGroup.groupId }});
                     
                     if (!groupMembers.find(member => member.userId === interaction.user.id)) {
-                        await interaction.reply(`You do not have permission to invite members to group **${name}**`);
+                        interaction.reply(`You do not have permission to invite members to group **${name}**`);
                         return;
                     }
                 
                     if (groupMembers.find(member => member.userId === user.id)) {
-                        await interaction.reply(`**${user.username}** is already a member of group **${name}**`);
+                        interaction.reply(`**${user.username}** is already a member of group **${name}**`);
                         return;
                     }
 
                     if (await GroupInviteRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }})) {
-                        await interaction.reply(`**${user.username}** has already been invited to group **${name}**`);
+                        interaction.reply(`**${user.username}** has already been invited to group **${name}**`);
                         return;
                     }
 
@@ -418,10 +412,10 @@ export const GroupCommand: SlashCommand =  {
                         messageId: message.id,
                         createdAt: new Date()
                     });
-                    await interaction.reply(`**${user.username}** has been invited to group **${name}**`);
+                    interaction.reply(`**${user.username}** has been invited to group **${name}**`);
         
                 } else {
-                    await interaction.reply(`Group **${name}** does not exist`);
+                    interaction.reply(`Group **${name}** does not exist`);
                 }
                 break;
             }
@@ -439,25 +433,25 @@ export const GroupCommand: SlashCommand =  {
 
                 if (existingGroup) {
                     if (existingGroup.ownerId === user.id) {
-                        await interaction.reply("You cannot remove the owner of the group");
+                        interaction.reply("You cannot remove the owner of the group");
                         return;
                     }
 
                     if (existingGroup.ownerId !== interaction.user.id) {
-                        await interaction.reply(`You do not have permission to remove members from group **${name}**`);
+                        interaction.reply(`You do not have permission to remove members from group **${name}**`);
                         return;
                     }
 
                     const groupMember = await GroupMemberRepository.findOne({ where: { groupId: existingGroup.groupId, userId: user.id }});
                     if (groupMember) {
-                        await interaction.guild.members.cache.get(user.id).roles.remove(existingGroup.roleId).catch(() => {});
-                        await GroupMemberRepository.delete({ groupId: existingGroup.groupId, userId: user.id })
-                        await interaction.reply(`**${user.username}** has been removed from group **${name}**`);
+                        interaction.guild.members.cache.get(user.id).roles.remove(existingGroup.roleId).catch(() => {});
+                        GroupMemberRepository.delete({ groupId: existingGroup.groupId, userId: user.id })
+                        interaction.reply(`**${user.username}** has been removed from group **${name}**`);
                     } else {
-                        await interaction.reply(`**${user.username}** is not a member of group **${name}**`);
+                        interaction.reply(`**${user.username}** is not a member of group **${name}**`);
                     }
                 } else {
-                    await interaction.reply(`Group **${name}** does not exist`);
+                    interaction.reply(`Group **${name}** does not exist`);
                 }
                 break;
             }
@@ -474,11 +468,9 @@ export const GroupCommand: SlashCommand =  {
                 });
 
                 if (existingGroup) {
-                    var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
-                    var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
-                    var adminRole = null; // guildConfig.adminRole ||
+                    var isAdmin = (await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } })).level >= 3;
 
-                    if (!roles.includes(adminRole)) {
+                    if (!isAdmin) {
                         interaction.reply("You do not have permission to add members to a group");
                         return;
                     }
@@ -494,9 +486,8 @@ export const GroupCommand: SlashCommand =  {
                         return;
                     }
 
-                    await interaction.guild.members.cache.get(user.id).roles.add(existingGroup.roleId).catch(() => {});
-
-                    await GroupMemberRepository.insert({
+                    interaction.guild.members.cache.get(user.id).roles.add(existingGroup.roleId).catch(() => {});
+                    GroupMemberRepository.insert({
                         groupId: existingGroup.groupId,
                         userId: user.id,
                         userName: user.username
@@ -520,12 +511,12 @@ export const GroupCommand: SlashCommand =  {
                 if (existingGroup) {
                     var group = await GuildGroupRepository.findOne({ where: { groupId: existingGroup.groupId }});
                     if (group.ownerId !== interaction.user.id) {
-                        await interaction.reply(`You do not have permission to change the privacy of the group **${name}**`);
+                        interaction.reply(`You do not have permission to change the privacy of the group **${name}**`);
                         return;
                     }
 
-                    await GuildGroupRepository.update({ groupId: existingGroup.groupId }, { private: (isPrivate === "true") });
-                    await interaction.reply(`Group **${name}** privacy has been updated`);
+                    GuildGroupRepository.update({ groupId: existingGroup.groupId }, { private: (isPrivate === "true") });
+                    interaction.reply(`Group **${name}** privacy has been updated`);
                 } else {
                     await interaction.reply("This group doesnt exist");
                 }
@@ -544,21 +535,20 @@ export const GroupCommand: SlashCommand =  {
 
                 if (existingGroup) {
                     if (existingGroup.ownerId !== interaction.user.id) {
-                        await interaction.reply("You are not the owner of this group");
+                        interaction.reply("You are not the owner of this group");
                         return;
                     }
 
                     const role = interaction.guild.roles.cache.get(existingGroup.roleId);
                     if (role) {
-                        await role.delete();
+                        role.delete();
                     }
 
-                    await GuildGroupRepository.delete({ guildId: interaction.guild.id, groupId: existingGroup.groupId });
-                    await GroupMemberRepository.delete({ groupId: existingGroup.groupId });
-
-                    await interaction.reply(`Group **${name}** has been deleted`);
+                    GuildGroupRepository.delete({ guildId: interaction.guild.id, groupId: existingGroup.groupId });
+                    GroupMemberRepository.delete({ groupId: existingGroup.groupId });
+                    interaction.reply(`Group **${name}** has been deleted`);
                 } else {
-                    await interaction.reply("This group doesnt exist");
+                    interaction.reply("This group doesnt exist");
                 }
                 break;
             }
@@ -566,9 +556,9 @@ export const GroupCommand: SlashCommand =  {
             case "list": {
                 const groups = await GuildGroupRepository.find({ where: { guildId: interaction.guild.id } });
                 if (groups.length > 0) {
-                    await interaction.reply(`# Groups \n**${groups.map(group => group.groupName).join("\n")}**`);
+                    interaction.reply(`# Groups \n**${groups.map(group => group.groupName).join("\n")}**`);
                 } else {
-                    await interaction.reply("There are no groups in this guild");
+                    interaction.reply("There are no groups in this guild");
                 }
                 break;
             }
@@ -596,9 +586,9 @@ export const GroupCommand: SlashCommand =  {
                         .setColor(client.embed.color)
                         .setTimestamp();
 
-                    await interaction.reply({ embeds: [em] });
+                    interaction.reply({ embeds: [em] });
                 } else {
-                    await interaction.reply("Group does not exist");
+                    interaction.reply("Group does not exist");
                 }
                 break;
             }
