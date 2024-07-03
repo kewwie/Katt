@@ -41,16 +41,16 @@ export const ApproveGuest: Button = {
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
         
-        var guild = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
+        var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
 
         var roles = new Array();
 
-        if (!guild.guestRole) {
-            interaction.followUp({ content: "Guest role is not set in the dashboard", ephemeral: true })
+        if (!guildConfig.levelOne) {
+            interaction.followUp({ content: "Level One role is not set in config", ephemeral: true })
             return;
         }
             
-        roles.push(guild.guestRole);
+        roles.push(guildConfig.levelOne);
 
         for (const g of await GroupMemberRepository.find({ where: { userId } })) {
             const group = await GuildGroupRepository.findOne({ where: { groupId: g.groupId } });
@@ -90,8 +90,8 @@ export const ApproveGuest: Button = {
 
         interaction.followUp({ content: `**${member.user.username}** has been approved as a guest`, ephemeral: true});
 
-        if (guild.logChannel) {
-            var log = await interaction.guild.channels.fetch(guild.logChannel) as TextChannel;
+        if (guildConfig.logChannel) {
+            var log = await interaction.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
             if (!log) return;
 
             var em = new EmbedBuilder()
