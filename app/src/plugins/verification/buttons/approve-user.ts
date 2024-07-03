@@ -73,7 +73,6 @@ export const ApproveUser: Button = {
             interaction.followUp({ content: "Cant find the user in the server", ephemeral: true });
             return;
         }
-        console.log(member, 1011);
 
         GuildUserRepository.insert({
             guildId: interaction.guild.id,
