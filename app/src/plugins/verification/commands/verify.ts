@@ -132,7 +132,8 @@ export const VerifySlash: SlashCommand = {
             .setThumbnail(interaction.guild.iconURL())
             .addFields(
                 { name: "Server ID", value: interaction.guild.id },
-                { name: "Server Name", value: interaction.guild.name }
+                { name: "Server Name", value: interaction.guild.name },
+                { name: "Can't find it", value: `[Click Here](https://discord.com/channels/${interaction.guild.id})` }
             )
             .setFooter({ text: "Enjoy your stay!" })
             .setColor(0x90EE90);
