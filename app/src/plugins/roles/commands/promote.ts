@@ -65,6 +65,11 @@ export const PromoteSlash: SlashCommand = {
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         var userId = interaction.options.getString("user");
 
+        if (userId === interaction.user.id) {
+            interaction.reply("You cannot promote yourself");
+            return;
+        }
+
         var self = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
         var user = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: userId } });
 
@@ -84,11 +89,11 @@ export const PromoteSlash: SlashCommand = {
         }
 
         if (user.level >= 4) {
-            interaction.reply("User is already at the highest level");
+            interaction.reply(`**${client.capitalize(user.userName)}** is already at the highest level`);
             return;
         }
 
         GuildUserRepository.update({ guildId: interaction.guild.id, userId: userId }, { level: user.level + 1 });
-        interaction.reply(`**${user.userName}** promoted to level **${user.level + 1}**`);
+        interaction.reply(`**${client.capitalize(user.userName)}** promoted to level **${user.level + 1}**`);
     }
 }
