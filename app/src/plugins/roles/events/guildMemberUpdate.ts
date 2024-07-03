@@ -29,11 +29,11 @@ export const GuildMemberUpdate: Event = {
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: newMember.guild.id } });
         let roles = {
-            level5: guildConfig.levelFive,
-            level4: guildConfig.levelFour,
-            level3: guildConfig.levelThree,
-            level2: guildConfig.levelTwo,
-            level1: guildConfig.levelOne
+            level5: guildConfig?.levelFive,
+            level4: guildConfig?.levelFour,
+            level3: guildConfig?.levelThree,
+            level2: guildConfig?.levelTwo,
+            level1: guildConfig?.levelOne
         }
 
         var user = await GuildUserRepository.findOne({ where: { guildId: newMember.guild.id, userId: newMember.id } });
