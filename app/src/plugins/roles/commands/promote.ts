@@ -16,7 +16,6 @@ import {
 
 import { dataSource } from "../../../datasource";
 import { GuildUserEntity } from "../../../entities/GuildUser";
-import { Events } from "../../../types/event";
 
 /**
  * @type {SlashCommand}
