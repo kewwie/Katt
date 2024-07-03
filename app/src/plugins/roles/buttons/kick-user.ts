@@ -32,7 +32,6 @@ export const KickUser: Button = {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         let guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
         
-        await interaction.deferReply({ ephemeral: true });
         var userId = interaction.customId.split("_")[1];
         var modId = interaction.customId.split("_")[2];
 
@@ -54,7 +53,7 @@ export const KickUser: Button = {
             var LogEmbed = new EmbedBuilder()
                 .setTitle("Demoted & Kicked User")
                 .setThumbnail(u.avatarURL())
-                .setColor(0x90EE90)
+                .setColor(0xFF474D)
                 .addFields(
                     { name: "User", value: `<@${u.id}>\n${u.username}` },
                     { name: "By", value: `<@${interaction.user.id}>\n${interaction.user.username}` }

@@ -24,7 +24,6 @@ export const CancelKick: Button = {
     * @param {Client} client
     */
     async execute(interaction: ButtonInteraction, client: KiwiClient) {
-        //interaction.deferUpdate();
         var modId = interaction.customId.split("_")[2];
 
         if (interaction.user.id !== modId) {

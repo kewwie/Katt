@@ -130,7 +130,7 @@ export const DemoteSlash: SlashCommand = {
                 var LogEmbed = new EmbedBuilder()
                     .setTitle("Demoted User")
                     .setThumbnail(u.avatarURL())
-                    .setColor(0x90EE90)
+                    .setColor(0xFF474D)
                     .addFields(
                         { name: "User", value: `<@${u.id}>\n${u.username}` },
                         { name: "By", value: `<@${interaction.user.id}>\n${interaction.user.username}` },
