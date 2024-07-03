@@ -62,6 +62,33 @@ export const PromoteSlash: SlashCommand = {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        console.log(interaction.options.getString("user"));
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
+        var userId = interaction.options.getString("user");
+
+        var self = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
+        var user = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: userId } });
+
+        if (!self) {
+            interaction.reply("You are not in the database");
+            return;
+        }
+
+        if (!user) {
+            interaction.reply("User not found");
+            return;
+        }
+
+        if (self.level <= user.level) {
+            interaction.reply("You cannot promote someone to a higher level than yourself");
+            return;
+        }
+
+        if (user.level >= 4) {
+            interaction.reply("User is already at the highest level");
+            return;
+        }
+
+        GuildUserRepository.update({ guildId: interaction.guild.id, userId: userId }, { level: user.level + 1 });
+        interaction.reply(`**${user.userName}** promoted to level **${user.level + 1}**`);
     }
 }
