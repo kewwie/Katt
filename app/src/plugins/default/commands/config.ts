@@ -2,7 +2,6 @@ import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../datasource";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
-import { GuildAdminEntity } from "../../../entities/GuildAdmin";
 
 import {
     AutocompleteInteraction,
@@ -23,7 +22,7 @@ import {
 /**
  * @type {SlashCommand}
  */
-export const ConfigCmd: SlashCommand = {
+export const ConfigSlash: SlashCommand = {
     config: {
         name: "config",
         description: "Config Commands",
@@ -74,9 +73,11 @@ export const ConfigCmd: SlashCommand = {
                     { name: "Log Channel", value: "log_channel" },
                     { name: "Pending Channel", value: "pending_channel" },
                     { name: "Verification Ping", value: "verification_ping" },
-                    { name: "Guest Role", value: "guest_role" },
-                    { name: "Member Role", value: "member_role" },
-                    { name: "Admin Role", value: "admin_role" },
+                    { name: "Level One", value: "level_one" },
+                    { name: "Level Two", value: "level_two" },
+                    { name: "Level Three", value: "level_three" },
+                    { name: "Level Four", value: "level_four" },
+                    { name: "Level Five", value: "level_five" },
                     { name: "CustomVoice Category", value: "customvoice_category" },
                     { name: "CustomVoice Channel", value: "customvoice_channel" }
                 ];
@@ -92,9 +93,11 @@ export const ConfigCmd: SlashCommand = {
                     { name: "log_channel", types: ["text_channel"] },
                     { name: "pending_channel", types: ["text_channel"] },
                     { name: "verification_ping", types: ["role"] },
-                    { name: "guest_role", types: ["role"] },
-                    { name: "member_role", types: ["role"] },
-                    { name: "admin_role", types: ["role"] },
+                    { name: "level_one", types: ["role"] },
+                    { name: "level_two", types: ["role"] },
+                    { name: "level_three", types: ["role"] },
+                    { name: "level_four", types: ["role"] },
+                    { name: "level_five", types: ["role"] },
                     { name: "customvoice_category", types: ["category"] },
                     { name: "customvoice_channel", types: ["voice_channel", "stage_channel"] }
                 ];
@@ -153,11 +156,11 @@ export const ConfigCmd: SlashCommand = {
      * @param {KiwiClient} client
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
-        var guildAdmin = await GuildAdminRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
-
-        if (!guildAdmin || guildAdmin.level < 3) {
-            interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
+        if (interaction.user.id !== interaction.guild.ownerId) {
+            interaction.reply({
+                content: "You must be the server owner to use this command",
+                ephemeral: true
+            });
             return;
         }
 
@@ -199,27 +202,43 @@ export const ConfigCmd: SlashCommand = {
                         }
                         break;
 
-                    case "guest_role":
+                    case "level_one":
                         if (value) {
-                            guild.guestRole = value;
+                            guild.levelOne = value;
                         } else {
-                            guild.guestRole = null;
+                            guild.levelOne = null;
                         }
                         break;
 
-                    case "member_role":
+                    case "level_two":
                         if (value) {
-                            guild.memberRole = value;
+                            guild.levelTwo = value;
                         } else {
-                            guild.memberRole = null;
+                            guild.levelTwo = null;
                         }
                         break;
 
-                    case "admin_role":
+                    case "level_three":
                         if (value) {
-                            guild.adminRole = value;
+                            guild.levelThree = value;
                         } else {
-                            guild.adminRole = null;
+                            guild.levelThree = null;
+                        }
+                        break;
+
+                    case "level_four":
+                        if (value) {
+                            guild.levelFour = value;
+                        } else {
+                            guild.levelFour = null;
+                        }
+                        break;
+
+                    case "level_five":
+                        if (value) {
+                            guild.levelFive = value;
+                        } else {
+                            guild.levelFive = null;
                         }
                         break;
 

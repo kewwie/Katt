@@ -6,6 +6,7 @@ import { Event, Events } from "../../../types/event";
 import { dataSource } from "../../../datasource";
 import { CustomChannelEntity } from "../../../entities/CustomChannel";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 
 /**
  * @type {Event}
@@ -27,6 +28,7 @@ export const GuildReady: Event = {
     async execute(client: KiwiClient, guild: Guild) {
         const CustomChannelRepository = await dataSource.getRepository(CustomChannelEntity);
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
 
         var customChannels = await CustomChannelRepository.find({ where: { guildId: guild.id } });
         for (let customChannel of customChannels) {
@@ -49,6 +51,7 @@ export const GuildReady: Event = {
 
             var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: guild.id } });
             var roles = vs.member.roles.cache.map(role => role.id);
+            var guildUser = await GuildUserRepository.findOne({ where: { guildId: guild.id, userId: vs.member.id } });
 
             if (customChannel && customChannel.channelId) {
                 var channel = await vs.guild.channels.fetch(customChannel.channelId).catch(() => {});

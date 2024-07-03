@@ -24,7 +24,7 @@ export const GuildAdminRemove: Event = {
     async execute(client: KiwiClient, guild: Guild, user: User) {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
 
-        var g = await GuildConfigRepository.findOne({ where: { guildId: guild.id}});
+        var g = null//await GuildConfigRepository.findOne({ where: { guildId: guild.id}});
         var guildMember = await guild.members.fetch(user.id);
 
         if (g && guildMember) {

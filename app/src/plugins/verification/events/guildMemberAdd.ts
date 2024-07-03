@@ -12,7 +12,7 @@ import { Events, Event } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
-import { GuildAdminEntity } from "../../../entities/GuildAdmin";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 import { GuildBlacklistEntity } from "../../../entities/GuildBlacklist";
 import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
@@ -40,18 +40,18 @@ export const GuildMemberAdd: Event = {
     */
     async execute(client: KiwiClient, member: GuildMember) {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
-        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         const BlacklistRepository = await dataSource.getRepository(GuildBlacklistEntity);
         const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
 
         var g = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
-        var isAdmin = await GuildAdminRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
+        var isAdmin = (await GuildUserRepository.findOne({ where: { guildId: member.guild.id, userId: member.id  } })).level <= 3;
         var isBlacklisted = await BlacklistRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
 
-        if (isAdmin && g && g.adminRole) {
-            var adminRole = await member.guild.roles.fetch(g.adminRole);
+        if (isAdmin && g) {
+            var adminRole = null//await member.guild.roles.fetch(g.adminRole);
             if (adminRole) {
                 member.roles.add(adminRole.id).catch(() => {});
 

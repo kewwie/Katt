@@ -13,7 +13,6 @@ import {
     SlashCommandContexts,
     IntegrationTypes,
     OptionTypes,
-    Permissions,
     SlashCommand
 } from "../../../types/command";
 import { KiwiClient } from "../../../client";
@@ -230,8 +229,8 @@ export const GroupCommand: SlashCommand =  {
 
                 var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
                 var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
-                var adminRole = guildConfig.adminRole || null;
-                var memberRole = guildConfig.memberRole || null;
+                var adminRole = null; //guildConfig.adminRole
+                var memberRole = null; //guildConfig.memberRole
 
                 console.log(roles.includes(adminRole))
 
@@ -295,9 +294,9 @@ export const GroupCommand: SlashCommand =  {
                 if (existingGroup) {
                     var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
                     var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
-                    var adminRole = guildConfig.adminRole || null;
+                    var adminRole = null; // guildConfig.adminRole ||
 
-                    if (existingGroup.private && !roles.includes(guildConfig.adminRole)) {
+                    if (existingGroup.private && !roles.includes(adminRole)) {
                         await interaction.reply("This group is private.");
                         return;
                     }
@@ -477,9 +476,9 @@ export const GroupCommand: SlashCommand =  {
                 if (existingGroup) {
                     var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
                     var roles = (await interaction.guild.members.fetch(interaction.user.id)).roles.cache.map(role => role.id);
-                    var adminRole = guildConfig.adminRole || null;
+                    var adminRole = null; // guildConfig.adminRole ||
 
-                    if (!roles.includes(guildConfig.adminRole)) {
+                    if (!roles.includes(adminRole)) {
                         interaction.reply("You do not have permission to add members to a group");
                         return;
                     }

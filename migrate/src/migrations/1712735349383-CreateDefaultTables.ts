@@ -21,19 +21,31 @@ export class CreateDefaultTables1712735349383 implements MigrationInterface {
                         isNullable: false
                     },
                     {
-                        name: "guest_role",
+                        name: "level_one",
                         type: "bigint",
                         unsigned: true,
                         isNullable: true
                     },
                     {
-                        name: "member_role",
+                        name: "level_two",
                         type: "bigint",
                         unsigned: true,
                         isNullable: true
                     },
                     {
-                        name: "admin_role",
+                        name: "level_three",
+                        type: "bigint",
+                        unsigned: true,
+                        isNullable: true
+                    },
+                    {
+                        name: "level_four",
+                        type: "bigint",
+                        unsigned: true,
+                        isNullable: true
+                    },
+                    {
+                        name: "level_five",
                         type: "bigint",
                         unsigned: true,
                         isNullable: true
@@ -85,7 +97,7 @@ export class CreateDefaultTables1712735349383 implements MigrationInterface {
 
         await queryRunner.createTable(
             new Table({
-                name: "guild_admins",
+                name: "guild_users",
                 columns: [
                     {
                         name: "_id",

@@ -7,7 +7,7 @@ import { KiwiClient } from "../../../client";
 import { Events, Event } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
-import { GuildAdminEntity } from "../../../entities/GuildAdmin";
+import { GuildAdminEntity } from "../../../entities/GuildUser";
 
 /**
  * @type {Event}
