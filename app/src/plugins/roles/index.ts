@@ -1,5 +1,9 @@
 import { Plugin } from "../../types/plugin";
 
+import { CancelKick } from "./buttons/cancel-kick";
+import { KickUser } from "./buttons/kick-user";
+
+import { DemoteSlash } from "./commands/demote";
 import { PromoteSlash } from "./commands/promote";
 
 import { GuildCreate } from "./events/guildCreate";
@@ -16,7 +20,12 @@ export const RolesPlugin: Plugin = {
         name: "Roles",
         disableable: true
     },
+    buttons: [
+        CancelKick,
+        KickUser
+    ],
     SlashCommands: [
+        DemoteSlash,
         PromoteSlash
     ],
     events: [

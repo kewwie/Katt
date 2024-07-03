@@ -25,7 +25,7 @@ import { CancelKick } from "../buttons/cancel-kick";
 /**
  * @type {SlashCommand}
  */
-export const PromoteSlash: SlashCommand = {
+export const DemoteSlash: SlashCommand = {
 	config: {
         name: "demote",
         description: "Demote a user to a lower level",
