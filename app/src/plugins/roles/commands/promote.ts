@@ -23,8 +23,8 @@ import { Events } from "../../../types/event";
  */
 export const PromoteSlash: SlashCommand = {
 	config: {
-        name: "admin",
-        description: "Admin Commands",
+        name: "promote",
+        description: "Promote a user to a higher level",
         type: CommandTypes.CHAT_INPUT,
         default_member_permissions: Permissions.ManageGuild,
         contexts: [SlashCommandContexts.GUILD],
