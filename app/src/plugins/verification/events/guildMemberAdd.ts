@@ -131,11 +131,16 @@ export const GuildMemberAdd: Event = {
     
         } else {
             if (g && g.pendingChannel) {
-                var existingMessage = await PendingMessageRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
-                if (existingMessage) return;
+                var pendingChannel = await member.guild.channels.fetch(g.pendingChannel) as TextChannel;
+                if (!pendingChannel) return;
 
-                var pending = await member.guild.channels.fetch(g.pendingChannel) as TextChannel;
-                if (!pending) return;
+                let pendingMessage = await PendingMessageRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
+                if (pendingMessage) {
+                    let existingMessage = await pendingChannel.messages.fetch(pendingMessage.messageId).catch(() => {});
+                    if (pendingMessage && !existingMessage) {
+                        await PendingMessageRepository.delete({ _id: pendingMessage._id });
+                    }
+                }
     
                 var em = new EmbedBuilder()
                     .setTitle("Pending Verification")
@@ -158,7 +163,7 @@ export const GuildMemberAdd: Event = {
                     ])
                 );
                 
-                var msg = await pending.send({
+                var msg = await pendingChannel.send({
                     content: g.verificationPing ? `<@&${g.verificationPing}>` : "@everyone",
                     embeds: [em],
                     components: rows
