@@ -4,6 +4,7 @@ import { ApproveUser } from "./buttons/approve-user";
 import { DenyUser } from "./buttons/deny-user";
 
 import { BlacklistSlash } from "./commands/blacklist";
+import { VerifySlash } from "./commands/verify";
 
 import { GuildMemberAdd } from "./events/guildMemberAdd";
 
@@ -20,7 +21,8 @@ export const VerificationPlugin: Plugin = {
         DenyUser
     ],
     SlashCommands: [
-        BlacklistSlash
+        BlacklistSlash,
+        VerifySlash
     ],
     events: [
         GuildMemberAdd

@@ -80,8 +80,7 @@ export const ApproveUser: Button = {
             .setThumbnail(interaction.guild.iconURL())
             .addFields(
                 { name: "Server ID", value: interaction.guild.id },
-                { name: "Server Name", value: interaction.guild.name },
-                { name: "Type", value: "Guest" }
+                { name: "Server Name", value: interaction.guild.name }
             )
             .setFooter({ text: "Enjoy your stay!" })
             .setColor(0x90EE90);
@@ -94,18 +93,17 @@ export const ApproveUser: Button = {
             var log = await interaction.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
             if (!log) return;
 
-            var em = new EmbedBuilder()
-                .setTitle("Approved Guest")
+            var LogEmbed = new EmbedBuilder()
+                .setTitle("Approved User")
                 .setThumbnail(member.user.avatarURL())
                 .setColor(0x90EE90)
                 .addFields(
                     { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
-                    { name: "Approved By", value: `<@${interaction.member.user.id}>\n${interaction.member.user.username}` },
-                    { name: "Type", value: "Guest" },
+                    { name: "Approved By", value: `<@${interaction.member.user.id}>\n${interaction.member.user.username}` }
                 )
 
             await log.send({
-                embeds: [em]
+                embeds: [LogEmbed]
             });
         }
     }
