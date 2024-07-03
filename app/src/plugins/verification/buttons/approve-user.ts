@@ -17,6 +17,7 @@ import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
 import { UserVerifiedEntity } from "../../../entities/UserVerified";
 import { PendingMessageEntity } from "../../../entities/PendingMessage";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 
 /**
  * @type {Button}
@@ -42,6 +43,7 @@ export const ApproveUser: Button = {
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
         const UserVerifiedRepository = await dataSource.getRepository(UserVerifiedEntity);
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
 
@@ -60,14 +62,6 @@ export const ApproveUser: Button = {
             if (groupData) roles.push(groupData.roleId);
         }
 
-        UserVerifiedRepository.insert({
-            guildId: interaction.guild.id,
-            userId: userId,
-            userName: interaction.user.username,
-            modId: interaction.user.id,
-            modName: interaction.user.username
-        });
-
         var message = await interaction.channel.messages.fetch(interaction.message.id);
         if (message) {
             await message.delete();
@@ -75,12 +69,28 @@ export const ApproveUser: Button = {
         PendingMessageRepository.delete({ guildId: interaction.guild.id, userId: userId });
 
         var member = await interaction.guild.members.fetch(userId).catch(() => {});
-        if (member) {
-            await member.roles.add(roles).catch(() => {});
-        } else {
+        if (!member) {
             interaction.followUp({ content: "Cant find the user in the server", ephemeral: true });
             return;
         }
+        console.log(member, 1011);
+
+        GuildUserRepository.insert({
+            guildId: interaction.guild.id,
+            userId: userId,
+            userName: member.user.username,
+            level: 1
+        });
+
+        UserVerifiedRepository.insert({
+            guildId: interaction.guild.id,
+            userId: userId,
+            userName: member.user.username,
+            modId: interaction.user.id,
+            modName: interaction.user.username
+        });
+
+        await member.roles.add(roles).catch(() => {});
 
         var ApprovedEmbed = new EmbedBuilder()
             .setTitle("You've Been Approved")
@@ -95,7 +105,7 @@ export const ApproveUser: Button = {
         
         await member.send({ embeds: [ApprovedEmbed] }).catch(() => {});
 
-        interaction.followUp({ content: `**${member.user.username}** has been approved as a guest`, ephemeral: true});
+        interaction.followUp({ content: `**${member.user.username}** has been approved!`, ephemeral: true});
 
         if (guildConfig.logChannel) {
             var log = await interaction.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
@@ -106,8 +116,8 @@ export const ApproveUser: Button = {
                 .setThumbnail(member.user.avatarURL())
                 .setColor(0x90EE90)
                 .addFields(
-                    { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
-                    { name: "Approved By", value: `<@${interaction.member.user.id}>\n${interaction.member.user.username}` }
+                    { name: "User", value: `<@${member.user.id}>\n${client.capitalize(member.user.username)}` },
+                    { name: "Approved By", value: `<@${interaction.user.id}>\n${client.capitalize(interaction.user.username)}` }
                 )
 
             await log.send({

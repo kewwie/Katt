@@ -149,7 +149,7 @@ export const GuildMemberAdd: Event = {
                     .addFields(
                         { name: "ID", value: `${member.user.id}` },
                         { name: "User", value: `<@${member.user.id}>` },
-                        { name: "Username", value: `${member.user.username}` }
+                        { name: "Username", value: `${client.capitalize(member.user.username)}` }
                     )
                 
                 var rows = new Array();
