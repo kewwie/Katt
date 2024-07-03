@@ -109,5 +109,73 @@ export const GuildReady: Event = {
                 }
             }
         }
+
+        for (var user of await GuildUserRepository.find({ where: { guildId: guild.id } })) {
+            let member = await guild.members.fetch(user.userId);
+            if (!member) continue;
+
+            switch (user.level) {
+                case 5: {
+                    let availableRoles = [
+                        roles.level5,
+                        roles.level4,
+                        roles.level3,
+                        roles.level2,
+                        roles.level1
+                    ]
+                    let highestRole = Object.values(availableRoles).find(role => role !== null);
+                    if (!highestRole) continue;
+                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole);
+                    break;
+                }
+                
+                case 4: {
+                    let availableRoles = [
+                        roles.level4,
+                        roles.level3,
+                        roles.level2,
+                        roles.level1
+                    ]
+                    let highestRole = Object.values(availableRoles).find(role => role !== null);
+                    if (!highestRole) continue;
+                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole);
+                    break;
+                }
+
+                case 3: {
+                    let availableRoles = [
+                        roles.level3,
+                        roles.level2,
+                        roles.level1
+                    ]
+                    let highestRole = Object.values(availableRoles).find(role => role !== null);
+                    if (!highestRole) continue;
+                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole);
+                    break;
+                }
+
+                case 2: {
+                    let availableRoles = [
+                        roles.level2,
+                        roles.level1
+                    ]
+                    let highestRole = Object.values(availableRoles).find(role => role !== null);
+                    if (!highestRole) continue;
+                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole);
+                    break;
+                }
+
+                case 1: {
+                    let availableRoles = [
+                        roles.level1
+                    ]
+                    let highestRole = Object.values(availableRoles).find(role => role !== null);
+                    if (!highestRole) continue;
+                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole);
+                    break;
+                }
+            }
+
+        }
     }
 }
