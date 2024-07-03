@@ -143,6 +143,9 @@ export const VerifySlash: SlashCommand = {
             modName: interaction.user.username
         });
 
+        let pendingMessage = await PendingMessageRepository.findOne({ where: { guildId: interaction.guild.id, userId: userId } });
+        let pendingChannel = await interaction.guild.channels.fetch(guildConfig.pendingChannel) as TextChannel;
+        pendingChannel.messages.fetch(pendingMessage.messageId).then(message => { message.delete() }).catch(() => {});
         PendingMessageRepository.delete({ guildId: interaction.guild.id, userId: userId });
 
         var ApprovedEmbed = new EmbedBuilder()
