@@ -115,7 +115,6 @@ export const BlacklistSlash: SlashCommand = {
                     return;
                 }
 
-
                 var isBlacklisted = await BlacklistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
                 );
