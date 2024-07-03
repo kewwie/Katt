@@ -20,7 +20,7 @@ import { PendingMessageEntity } from "../../../entities/PendingMessage";
 /**
  * @type {Button}
  */
-export const ApproveGuest: Button = {
+export const ApproveUser: Button = {
     config: {
         type: ComponentType.Button,
         custom_id: "approve-guest",

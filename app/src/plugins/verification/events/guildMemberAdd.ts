@@ -18,7 +18,7 @@ import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
 import { PendingMessageEntity } from "../../../entities/PendingMessage";
 
-import { ApproveGuest } from "../buttons/approve-guest";
+import { ApproveUser } from "../buttons/approve-user";
 import { DenyUser } from "../buttons/deny-user";
 
 /**
@@ -151,7 +151,7 @@ export const GuildMemberAdd: Event = {
 
                 rows.push(new ActionRowBuilder()
                     .addComponents([
-                        new ButtonBuilder(ApproveGuest.config)
+                        new ButtonBuilder(ApproveUser.config)
                             .setCustomId("approve-guest_" + member.id),
                         new ButtonBuilder(DenyUser.config)
                             .setCustomId("deny-user_" + member.id)

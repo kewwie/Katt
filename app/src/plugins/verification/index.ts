@@ -1,6 +1,6 @@
 import { Plugin } from "../../types/plugin";
 
-import { ApproveGuest } from "./buttons/approve-guest";
+import { ApproveUser } from "./buttons/approve-user";
 import { DenyUser } from "./buttons/deny-user";
 
 import { BlacklistSlash } from "./commands/blacklist";
@@ -16,7 +16,7 @@ export const VerificationPlugin: Plugin = {
         disableable: true
     },
     buttons: [
-        ApproveGuest,
+        ApproveUser,
         DenyUser
     ],
     SlashCommands: [
