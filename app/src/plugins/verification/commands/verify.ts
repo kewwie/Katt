@@ -42,6 +42,12 @@ export const VerifySlash: SlashCommand = {
                 description: "The user to verify",
                 autocomplete: true,
                 required: true
+            },
+            {
+                type: OptionTypes.BOOLEAN,
+                name: "silent",
+                description: "Silently verify the user",
+                required: false
             }
         ]
     },
@@ -65,7 +71,7 @@ export const VerifySlash: SlashCommand = {
         let choices = (await interaction.guild.members.fetch())
             .filter(
                 member => !member.user.bot && 
-                member.roles.cache.some(role => !Object.values(roles).includes(role.id))
+                !member.roles.cache.some(role => Object.values(roles).includes(role.id))
             )
 
         let filtered = choices
@@ -101,6 +107,7 @@ export const VerifySlash: SlashCommand = {
 
         let userId = interaction.options.getString("user");
         let member = await interaction.guild.members.fetch(userId);
+        let silent = interaction.options.getBoolean("silent");
 
         let self = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
         if (self?.level < 2) {
@@ -144,9 +151,11 @@ export const VerifySlash: SlashCommand = {
         });
 
         let pendingMessage = await PendingMessageRepository.findOne({ where: { guildId: interaction.guild.id, userId: userId } });
+        PendingMessageRepository.delete({ _id: pendingMessage?._id });
         let pendingChannel = await interaction.guild.channels.fetch(guildConfig.pendingChannel) as TextChannel;
-        pendingChannel.messages.fetch(pendingMessage.messageId).then(message => { message.delete() }).catch(() => {});
-        PendingMessageRepository.delete({ guildId: interaction.guild.id, userId: userId });
+        if (pendingChannel && pendingMessage?.messageId) {
+            pendingChannel.messages.fetch(pendingMessage.messageId).then(message => { message.delete() }).catch(() => {});
+        }
 
         var ApprovedEmbed = new EmbedBuilder()
             .setTitle("You've Been Approved")
@@ -159,7 +168,7 @@ export const VerifySlash: SlashCommand = {
             .setFooter({ text: "Enjoy your stay!" })
             .setColor(0x90EE90);
 
-        member.send({ embeds: [ApprovedEmbed] }).catch(() => {});
+        if (!silent) member.send({ embeds: [ApprovedEmbed] }).catch(() => {});
         member.roles.add(roles).catch(() => {});
         interaction.reply(`**${client.capitalize(member.user.username)}** has been verified`)
 
