@@ -41,27 +41,27 @@ export const GuildMemberUpdate: Event = {
         for (var role of newMember.roles.cache.values()) {
             switch (role.id) {
                 case roles.level5: {
-                    if (user?.level < 5) newMember.roles.remove(roles.level5);
+                    if (!user?.level || user?.level < 5) newMember.roles.remove(roles.level5);
                     break;
                 }
 
                 case roles.level4: {
-                    if (user?.level < 4) newMember.roles.remove(roles.level4);
+                    if (!user?.level || user?.level < 4) newMember.roles.remove(roles.level4);
                     break;
                 }
 
                 case roles.level3: {
-                    if (user?.level < 3) newMember.roles.remove(roles.level3);
+                    if (!user?.level || user?.level < 3) newMember.roles.remove(roles.level3);
                     break;
                 }
 
                 case roles.level2: {
-                    if (user?.level < 2) newMember.roles.remove(roles.level2);
+                    if (!user?.level || user?.level < 2) newMember.roles.remove(roles.level2);
                     break;
                 }
 
                 case roles.level1: {
-                    if (user?.level < 1) newMember.roles.remove(roles.level1);
+                    if (!user?.level || user?.level < 1) newMember.roles.remove(roles.level1);
                     break;
                 }
             }
