@@ -16,6 +16,7 @@ import {
 
 import { dataSource } from "../../../datasource";
 import { GuildBlacklistEntity } from "../../../entities/GuildBlacklist";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 
 /**
  * @type {SlashCommand}
@@ -94,6 +95,7 @@ export const BlacklistSlash: SlashCommand = {
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
         const BlacklistRepository = await dataSource.getRepository(GuildBlacklistEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
 
         switch (interaction.options.getSubcommand()) {
             case "add": {
@@ -104,6 +106,14 @@ export const BlacklistSlash: SlashCommand = {
                     interaction.reply("User not found");
                     return;
                 }
+
+                var self = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
+                var u = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: user.id } });
+                if (self?.level <= u?.level) {
+                    interaction.reply("You cannot blacklist someone of a higher level than yourself");
+                    return;
+                }
+
 
                 var isBlacklisted = await BlacklistRepository.findOne(
                     { where: { guildId: interaction.guild.id, userId: user.id } }
