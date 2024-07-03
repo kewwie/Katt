@@ -82,16 +82,16 @@ export const NicknameSlash: SlashCommand = {
                 var user = interaction.options.getUser("user");
                 var member = interaction.guild.members.cache.get(user.id);
 
-                if (!member.nickname) {
-                    interaction.reply("User does not have a nickname");
+                if (member && !member.nickname) {
+                    interaction.reply("Member does not have a nickname");
                     return;
                 }
-
+        
                 await NicknameRepository.upsert(
-                    { userId: user.id, guildId: interaction.guildId, name: member.nickname },
+                    { userId: member.id, guildId: interaction.guildId, name: member.nickname },
                     ["userId", "guildId"]
                 );
-                interaction.reply(`Saved **${user.username}**'s nickname`);
+                interaction.reply(`Saved **${member.user.username}**'s nickname as **${member.nickname}**`);
                 break;
             }
             case "save-all": {
