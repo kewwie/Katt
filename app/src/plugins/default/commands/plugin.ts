@@ -130,7 +130,7 @@ export const PluginSlash: SlashCommand = {
                 var existingPlugin = await GuildPluginRepository.findOne({ where: { guildId: interaction.guildId, pluginName: pluginName }});
 
                 if (existingPlugin) {
-                    interaction.reply(`The plugin **${pluginName}** is already active`);
+                    interaction.reply({ content: `The plugin **${pluginName}** is already enabled`, ephemeral: true });
                     return;
                 }
 
@@ -153,7 +153,7 @@ export const PluginSlash: SlashCommand = {
                 var existingPlugin = await GuildPluginRepository.findOne({ where: { guildId: interaction.guildId, pluginName: pluginName }});
 
                 if (!existingPlugin) {
-                    interaction.reply(`The plugin **${pluginName}** is not enabled`);
+                    interaction.reply({ content: `The plugin **${pluginName}** is already disabled`, ephemeral: true });
                     return;
                 }
 
