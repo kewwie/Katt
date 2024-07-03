@@ -25,7 +25,6 @@ export const GuildReady: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, guild: Guild) {
-        console.log("GuildReady")
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: guild.id } });
@@ -83,27 +82,27 @@ export const GuildReady: Event = {
                 if (member.roles.cache.has(role)) {
                     switch (role) {
                         case roles.level5: {
-                            if (user.level >= 5) member.roles.remove(roles.level5);
+                            if (user?.level >= 5) member.roles.remove(roles.level5);
                             break;
                         }
 
                         case roles.level4: {
-                            if (user.level >= 4) member.roles.remove(roles.level4);
+                            if (user?.level >= 4) member.roles.remove(roles.level4);
                             break;
                         }
 
                         case roles.level3: {
-                            if (user.level >= 3) member.roles.remove(roles.level3);
+                            if (user?.level >= 3) member.roles.remove(roles.level3);
                             break;
                         }
 
                         case roles.level2: {
-                            if (user.level >= 2) member.roles.remove(roles.level2);
+                            if (user?.level >= 2) member.roles.remove(roles.level2);
                             break;
                         }
 
                         case roles.level1: {
-                            if (user.level >= 1) member.roles.remove(roles.level1);
+                            if (user?.level >= 1) member.roles.remove(roles.level1);
                             break;
                         }
                     }
