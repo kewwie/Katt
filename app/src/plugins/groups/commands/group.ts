@@ -21,7 +21,6 @@ import { dataSource } from "../../../datasource";
 import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
 import { GroupInviteEntity } from "../../../entities/GroupInvite";
-import { GuildConfigEntity } from "../../../entities/GuildConfig";
 import { GuildUserEntity } from "../../../entities/GuildUser";
 
 import { AcceptInvite } from "../buttons/accept-invite";
@@ -142,7 +141,7 @@ export const GroupCommand: SlashCommand =  {
             },
             {
                 type: OptionTypes.SUB_COMMAND,
-                name: "private",
+                name: "privacy",
                 description: "Change the privacy of the group",
                 options: [
                     {
@@ -495,9 +494,10 @@ export const GroupCommand: SlashCommand =  {
 
                     interaction.reply(`**${user.username}** has been added to group **${name}**`);
                 }
+                break;
             }
 
-            case "private": {
+            case "privacy": {
                 var name = interaction.options.getString('name');
                 var isPrivate = interaction.options.getString('private');
 
