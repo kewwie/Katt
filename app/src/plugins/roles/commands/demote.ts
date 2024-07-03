@@ -109,7 +109,7 @@ export const DemoteSlash: SlashCommand = {
                         .setCustomId("cancel-kick_" + user.userId + "_" + interaction.user.id),
                 ])
             );
-            interaction.reply({ content: `**${client.capitalize(user.userName)}** do you want to kick this user?`, components: rows });
+            interaction.reply({ content: `Are you sure you want to demote **${client.capitalize(user.userName)}** and kick them?`, components: rows });
         } else {
             GuildUserRepository.update({ guildId: interaction.guild.id, userId: userId }, { level: user.level - 1 });
             interaction.reply(`**${client.capitalize(user.userName)}** demoted to level **${user.level - 1}**`);

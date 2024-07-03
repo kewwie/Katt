@@ -3,20 +3,10 @@ import { KiwiClient } from "../../../client";
 import { 
     ButtonStyle,
     ComponentType,
-    ButtonInteraction,
-    EmbedBuilder,
-    TextChannel
+    ButtonInteraction
 } from "discord.js";
 
 import { Button } from "../../../types/component";
-import { Events } from "../../../types/event";
-
-import { dataSource } from "../../../datasource";
-import { GuildConfigEntity } from "../../../entities/GuildConfig";
-import { GuildGroupEntity } from "../../../entities/GuildGroup";
-import { GroupMemberEntity } from "../../../entities/GroupMember";
-import { UserVerifiedEntity } from "../../../entities/UserVerified";
-import { PendingMessageEntity } from "../../../entities/PendingMessage";
 
 /**
  * @type {Button}
@@ -44,6 +34,6 @@ export const KickUser: Button = {
         }
 
         await interaction.guild.members.kick(userId, "User was kicked by a moderator").catch(() => {});
-        interaction.message.edit("User has been kicked!");
+        interaction.message.edit({ content: "User was kicked!", components: [] });
     }
 }
