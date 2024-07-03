@@ -29,8 +29,7 @@ export const MessageActivityUser: UserCommand = {
         const MessageActivityRepository = await dataSource.getRepository(MessageActivityEntity);
 
         const formatter = new Intl.NumberFormat("en-US", {
-            minimumFractionDigits: 1,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 0
         });
 
         var messageActivity = await MessageActivityRepository.findOne(
