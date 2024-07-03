@@ -161,6 +161,7 @@ export const VerifySlash: SlashCommand = {
 
         member.send({ embeds: [ApprovedEmbed] }).catch(() => {});
         member.roles.add(roles).catch(() => {});
+        interaction.reply(`**${client.capitalize(member.user.username)}** has been verified`)
 
         if (guildConfig.logChannel) {
             var log = await interaction.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
