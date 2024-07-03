@@ -13,9 +13,11 @@ import { Events, Event } from "../../../types/event";
 import { dataSource } from "../../../datasource";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
 import { GuildAdminEntity } from "../../../entities/GuildAdmin";
+import { GuildBlacklistEntity } from "../../../entities/GuildBlacklist";
 import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
 import { PendingMessageEntity } from "../../../entities/PendingMessage";
+
 import { ApproveGuest } from "../buttons/approve-guest";
 import { DenyUser } from "../buttons/deny-user";
 
@@ -39,12 +41,14 @@ export const GuildMemberAdd: Event = {
     async execute(client: KiwiClient, member: GuildMember) {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
+        const BlacklistRepository = await dataSource.getRepository(GuildBlacklistEntity);
         const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
 
         var g = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
         var isAdmin = await GuildAdminRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
+        var isBlacklisted = await BlacklistRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
 
         if (isAdmin && g && g.adminRole) {
             var adminRole = await member.guild.roles.fetch(g.adminRole);
@@ -90,6 +94,41 @@ export const GuildMemberAdd: Event = {
                     });
                 }
             }
+        } else if (isBlacklisted) {
+            var BlacklistedEmbed = new EmbedBuilder()
+                .setTitle("You are Blacklisted")
+                .setThumbnail(member.guild.iconURL())
+                .addFields(
+                    { name: "Server ID", value: member.guild.id },
+                    { name: "Server Name", value: member.guild.name }
+                )
+                .setFooter({ text: "Stop being so bad!" })
+                .setColor(0xFF474D);
+
+            await member.send({ embeds: [BlacklistedEmbed] }).catch(() => {});
+
+            member.kick("Blacklisted").catch(() => {});
+
+            if (g && g.logChannel) {
+                var log = await member.guild.channels.fetch(g.logChannel) as TextChannel;
+                if (!log) return;
+    
+                var em = new EmbedBuilder()
+                    .setTitle("Blacklisted User Joined")
+                    .setThumbnail(member.user.avatarURL())
+                    .setColor(0xFF474D)
+                    .addFields(
+                        { name: "ID", value: `${member.user.id}` },
+                        { name: "User", value: `<@${member.user.id}>` },
+                        { name: "Username", value: `${member.user.username}` },
+                        { name: "By", value: `<@${isBlacklisted.modId}>\n${isBlacklisted.modName}` }
+                    )
+    
+                await log.send({
+                    embeds: [em]
+                }).catch(() => {});
+            }
+    
         } else {
             if (g && g.pendingChannel) {
                 var existingMessage = await PendingMessageRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
