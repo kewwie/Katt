@@ -1,5 +1,5 @@
 import {
-	ChatInputCommandInteraction
+	UserContextMenuCommandInteraction
 } from "discord.js";
 
 import { KiwiClient } from "../../../client";
@@ -22,10 +22,10 @@ export const VoiceActivityUser: UserCommand = {
     },
 
 	/**
-    * @param {ChatInputCommandInteraction} interaction
+    * @param {UserContextMenuCommandInteraction} interaction
     * @param {KiwiClient} client
     */
-	async execute(interaction, client: KiwiClient): Promise<void> {
+	async execute(interaction: UserContextMenuCommandInteraction, client: KiwiClient): Promise<void> {
         const VoiceActivityRepository = await dataSource.getRepository(VoiceActivityEntity);
 
         const formatter = new Intl.NumberFormat("en-US", {
@@ -33,14 +33,8 @@ export const VoiceActivityUser: UserCommand = {
             maximumFractionDigits: 2
         });
 
-        var user = interaction.options.getUser("user") || interaction.user;
-        if (!user) {
-            interaction.reply("User not found");
-            return;
-        } 
-
         var voiceActivity = await VoiceActivityRepository.findOne(
-            { where: { userId: user.id, guildId: interaction.guild.id } }
+            { where: { userId: interaction.targetId, guildId: interaction.guild.id } }
         );
 
         if (!voiceActivity || voiceActivity.seconds < 0) {

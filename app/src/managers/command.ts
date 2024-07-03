@@ -54,7 +54,6 @@ export class CommandManager {
     }
 
     async onInteraction(interaction: Interaction) {
-        console.log(interaction);
         const GuildPluginsRepository = await dataSource.getRepository(GuildPluginEntity);
 
         if (interaction.isChatInputCommand()) {
@@ -64,19 +63,23 @@ export class CommandManager {
             if (!command) return;
 
             try {
-                if (command.plugin) {
-                    var plugin = this.client.PluginManager.plugins.find(plugin => plugin.config.name === command.plugin);
-                    if (!plugin.config.disableable) {
+                if (!command.plugin) {
+                    await command.execute(interaction, this.client);
+                    return;
+                }
+
+                var plugin = this.client.PluginManager.plugins.find(plugin => plugin.config.name === command.plugin);
+                if (!plugin.config.disableable) {
+                    await command.execute(interaction, this.client);
+                    return;
+                }
+
+                if (interaction.guild) {
+                    var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: command.plugin } });
+                    if (isEnabled) {
                         await command.execute(interaction, this.client);
                     } else {
-                        if (interaction.guild) {
-                            const status = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: command.plugin } });
-                            if (status) {
-                                await command.execute(interaction, this.client);
-                            } else {
-                                await interaction.reply({ content: 'This plugin is disabled!', ephemeral: true });
-                            }
-                        }
+                        await interaction.reply({ content: 'This plugin is disabled!', ephemeral: true });
                     }
                 }
                
@@ -97,13 +100,34 @@ export class CommandManager {
                 console.error(error);
                 interaction.respond([{ name: 'There was an error while executing this command!', value: "ERROR" }]);
             }
+
         } else if (interaction.isUserContextMenuCommand()) {
+
             const command = this.client.UserCommands.get(interaction.commandName);
 
             if (!command) return;
 
             try {
-                await command.execute(interaction, this.client);
+                if (!command.plugin) {
+                    await command.execute(interaction, this.client);
+                    return;
+                }
+
+                var plugin = this.client.PluginManager.plugins.find(plugin => plugin.config.name === command.plugin);
+                if (!plugin.config.disableable) {
+                    await command.execute(interaction, this.client);
+                    return;
+                }
+
+                if (interaction.guild) {
+                    var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: command.plugin } });
+                    if (isEnabled) {
+                        await command.execute(interaction, this.client);
+                    } else {
+                        await interaction.reply({ content: 'This plugin is disabled!', ephemeral: true });
+                    }
+                }
+        
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
