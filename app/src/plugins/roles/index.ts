@@ -3,6 +3,7 @@ import { Plugin } from "../../types/plugin";
 import { PromoteSlash } from "./commands/promote";
 
 import { GuildCreate } from "./events/guildCreate";
+import { GuildMemberRemove } from "./events/guildMemberRemove";
 import { GuildMemberUpdate } from "./events/guildMemberUpdate";
 import { GuildReady } from "./events/guildReady";
 import { GuildUpdate } from "./events/guildUpdate";
@@ -20,6 +21,7 @@ export const RolesPlugin: Plugin = {
     ],
     events: [
         GuildCreate,
+        GuildMemberRemove,
         GuildMemberUpdate,
         GuildReady,
         GuildUpdate
