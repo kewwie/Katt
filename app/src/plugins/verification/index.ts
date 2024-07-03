@@ -2,6 +2,9 @@ import { Plugin } from "../../types/plugin";
 
 import { ApproveGuest } from "./buttons/approve-guest";
 import { DenyUser } from "./buttons/deny-user";
+
+import { BlacklistSlash } from "./commands/blacklist";
+
 import { GuildMemberAdd } from "./events/guildMemberAdd";
 
 /**
@@ -15,6 +18,9 @@ export const VerificationPlugin: Plugin = {
     buttons: [
         ApproveGuest,
         DenyUser
+    ],
+    SlashCommands: [
+        BlacklistSlash
     ],
     events: [
         GuildMemberAdd
