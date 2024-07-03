@@ -21,6 +21,8 @@ import { GuildConfigEntity } from "../../../entities/GuildConfig";
 import { GuildUserEntity } from "../../../entities/GuildUser";
 import { UserVerifiedEntity } from "../../../entities/UserVerified";
 import { PendingMessageEntity } from "../../../entities/PendingMessage";
+import { GuildGroupEntity } from "../../../entities/GuildGroup";
+import { GroupMemberEntity } from "../../../entities/GroupMember";
 
 /**
  * @type {SlashCommand}
@@ -92,6 +94,8 @@ export const VerifySlash: SlashCommand = {
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         const UserVerifiedRepository = await dataSource.getRepository(UserVerifiedEntity);
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
+        const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
+        const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
 
         let guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
 
@@ -108,6 +112,20 @@ export const VerifySlash: SlashCommand = {
         if (isUser) {
             interaction.reply("User is already verified");
             return;
+        }
+
+        if (!guildConfig.levelOne) {
+            interaction.followUp({ content: "Level One role is not set in config", ephemeral: true })
+            return;
+        }
+
+        var roles = new Array();
+        roles.push(guildConfig.levelOne);
+        
+        var groups = await GroupMemberRepository.find({ where: { userId: member.id }});
+        for (let group of groups) {
+            let groupData = await GuildGroupRepository.findOne({ where: { groupId: group.groupId }});
+            if (groupData) roles.push(groupData.roleId);
         }
 
         GuildUserRepository.insert({
@@ -139,7 +157,7 @@ export const VerifySlash: SlashCommand = {
             .setColor(0x90EE90);
 
         member.send({ embeds: [ApprovedEmbed] }).catch(() => {});
-        member.roles.add(guildConfig.levelOne).catch(() => {});
+        member.roles.add(roles).catch(() => {});
 
         if (guildConfig.logChannel) {
             var log = await interaction.guild.channels.fetch(guildConfig.logChannel) as TextChannel;

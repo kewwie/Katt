@@ -53,12 +53,11 @@ export const ApproveUser: Button = {
         }
             
         roles.push(guildConfig.levelOne);
-
-        for (const g of await GroupMemberRepository.find({ where: { userId } })) {
-            const group = await GuildGroupRepository.findOne({ where: { groupId: g.groupId } });
-            if (group) {
-                roles.push(group.roleId);
-            }
+        
+        var groups = await GroupMemberRepository.find({ where: { userId: userId }});
+        for (let group of groups) {
+            let groupData = await GuildGroupRepository.findOne({ where: { groupId: group.groupId }});
+            if (groupData) roles.push(groupData.roleId);
         }
 
         UserVerifiedRepository.insert({
