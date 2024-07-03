@@ -17,7 +17,7 @@ import { NicknameEntity } from "../../../entities/Nickname";
  */
 export const SaveNicknameUser: UserCommand = {
 	config: {
-        name: "nickname",
+        name: "Save User Nickname",
         type: CommandTypes.USER,
     },
 
