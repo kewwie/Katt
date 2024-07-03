@@ -7,6 +7,7 @@ import { GroupsPlugin } from "./groups"
 import { ListPlugin } from "./list"
 import { MessagePlugin } from "./message"
 import { NicknamesPlugin } from "./nicknames"
+import { RolesPlugin } from "./roles";
 import { VerificationPlugin } from "./verification"
 import { VoicePlugin } from "./voice"
 
@@ -21,6 +22,7 @@ export const Plugins: Array<Plugin> = [
     ListPlugin,
     MessagePlugin,
     NicknamesPlugin,
+    RolesPlugin,
     VerificationPlugin,
     VoicePlugin
 ]
