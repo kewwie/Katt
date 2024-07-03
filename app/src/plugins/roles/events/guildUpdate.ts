@@ -1,9 +1,5 @@
-import {
-    Guild
-} from "discord.js";
-
+import { Guild } from "discord.js";
 import { KiwiClient } from "../../../client";
-
 import { Events, Event } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
@@ -15,6 +11,13 @@ import { GuildUserEntity } from "../../../entities/GuildUser";
  */
 export const GuildUpdate: Event = {
     name: Events.GuildUpdate,
+
+    /**
+     * @param {Guild} guild
+     */
+    async getGuildId(guild: Guild) {
+        return guild.id;
+    },
 
     /**
     * @param {Client} client
@@ -55,20 +58,22 @@ export const GuildUpdate: Event = {
                     level: 5
                 });
             }
-            
+    
             let highestRole = roles.find(role => role !== null);
             if (highestRole) {
                 await member.roles.add(highestRole);
             }
-
-            var oldOwner = await GuildUserRepository.findOne({ where: { guildId: oldGuild.id, userId: oldGuild.ownerId } });
-            if (oldOwner) {
-                GuildUserRepository.delete({ guildId: oldGuild.id, userId: oldGuild.ownerId });
-            }
-
-            var oldOwnerMember = await oldGuild.members.fetch(oldGuild.ownerId);
-            if (oldOwnerMember) {
-                oldOwnerMember.roles.remove(roles).catch(() => {});
+    
+            var owners = await GuildUserRepository.find({ where: { guildId: newGuild.id, level: 5 } });
+            if (owners) {
+                for (let owner of owners) {
+                    if (owner.userId === newGuild.ownerId) continue;
+                    GuildUserRepository.delete({ guildId: newGuild.id, userId: owner.userId });
+                    let OwnerMember = await newGuild.members.fetch(owner.userId);
+                    if (OwnerMember) {
+                        OwnerMember.roles.remove(roles).catch(() => {});
+                    }
+                }
             }
         }
     }
