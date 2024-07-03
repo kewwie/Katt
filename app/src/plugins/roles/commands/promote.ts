@@ -1,6 +1,8 @@
 import {
     AutocompleteInteraction,
-	ChatInputCommandInteraction
+	ChatInputCommandInteraction,
+    EmbedBuilder,
+    TextChannel
 } from "discord.js";
 
 import { KiwiClient } from "../../../client";
@@ -16,6 +18,7 @@ import {
 
 import { dataSource } from "../../../datasource";
 import { GuildUserEntity } from "../../../entities/GuildUser";
+import { GuildConfigEntity } from "../../../entities/GuildConfig";
 
 /**
  * @type {SlashCommand}
@@ -62,6 +65,9 @@ export const PromoteSlash: SlashCommand = {
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
+        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        let guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
+
         var userId = interaction.options.getString("user");
 
         if (userId === interaction.user.id) {
@@ -94,5 +100,27 @@ export const PromoteSlash: SlashCommand = {
 
         GuildUserRepository.update({ guildId: interaction.guild.id, userId: userId }, { level: user.level + 1 });
         interaction.reply(`**${client.capitalize(user.userName)}** promoted to level **${user.level + 1}**`);
+
+        if (guildConfig.logChannel) {
+            var log = await interaction.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
+            if (!log) return;
+
+            let u = await interaction.client.users.fetch(userId);
+            if (!u) return;
+
+            var LogEmbed = new EmbedBuilder()
+                .setTitle("Promoted User")
+                .setThumbnail(u.avatarURL())
+                .setColor(0x90EE90)
+                .addFields(
+                    { name: "User", value: `<@${u.id}>\n${u.username}` },
+                    { name: "By", value: `<@${interaction.user.id}>\n${interaction.user.username}` },
+                    { name: "Level", value: `${user.level + 1}` }
+                )
+
+            await log.send({
+                embeds: [LogEmbed]
+            });
+        }
     }
 }
