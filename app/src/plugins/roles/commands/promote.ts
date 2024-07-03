@@ -49,7 +49,7 @@ export const PromoteSlash: SlashCommand = {
         let self = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
 
         let choices = (await GuildUserRepository.find({ where: { guildId: interaction.guild.id } }))
-            .filter(choice => choice.level <= self.level - 1);
+            .filter(choice => choice.level < 4 && choice.level <= self.level - 1);
         let focusedValue = interaction.options.getFocused().toLowerCase();
         let filtered = choices.filter(choice => choice.userName.toLowerCase().startsWith(focusedValue) || choice.userId.toLowerCase().startsWith(focusedValue));
         await interaction.respond(
