@@ -43,25 +43,27 @@ export const GuildUpdate: Event = {
                     userId: newGuild.ownerId
                 }
             });
-            var member = await newGuild.members.fetch(newGuild.ownerId);
+            var member = await newGuild.members.fetch(newGuild.ownerId).catch(() => {});
 
-            if (isUser) {
-                GuildUserRepository.update({
-                    guildId: newGuild.id,
-                    userId: newGuild.ownerId
-                }, { level: 5, userName: member.user.username});
-            } else {
-                GuildUserRepository.insert({
-                    guildId: newGuild.id,
-                    userId: newGuild.ownerId,
-                    userName: member.user.username,
-                    level: 5
-                });
-            }
-    
-            let highestRole = roles.find(role => role !== null);
-            if (highestRole) {
-                await member.roles.add(highestRole);
+            if (member) {
+                if (isUser) {
+                    GuildUserRepository.update({
+                        guildId: newGuild.id,
+                        userId: newGuild.ownerId
+                    }, { level: 5, userName: member.user.username});
+                } else {
+                    GuildUserRepository.insert({
+                        guildId: newGuild.id,
+                        userId: newGuild.ownerId,
+                        userName: member.user.username,
+                        level: 5
+                    });
+                }
+        
+                let highestRole = roles.find(role => role !== null);
+                if (highestRole) {
+                    await member.roles.add(highestRole);
+                }
             }
     
             var owners = await GuildUserRepository.find({ where: { guildId: newGuild.id, level: 5 } });
@@ -69,7 +71,7 @@ export const GuildUpdate: Event = {
                 for (let owner of owners) {
                     if (owner.userId === newGuild.ownerId) continue;
                     GuildUserRepository.delete({ guildId: newGuild.id, userId: owner.userId });
-                    let OwnerMember = await newGuild.members.fetch(owner.userId);
+                    let OwnerMember = await newGuild.members.fetch(owner.userId).catch(() => {});
                     if (OwnerMember) {
                         OwnerMember.roles.remove(roles).catch(() => {});
                     }

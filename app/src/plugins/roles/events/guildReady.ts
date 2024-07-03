@@ -42,14 +42,14 @@ export const GuildReady: Event = {
                 userId: guild.ownerId
             }
         });
-        var member = await guild.members.fetch(guild.ownerId);
+        var member = await guild.members.fetch(guild.ownerId).catch(() => {});
 
-        if (isUser) {
+        if (isUser && member) {
             GuildUserRepository.update({
                 guildId: guild.id,
                 userId: guild.ownerId
             }, { level: 5, userName: member.user.username});
-        } else {
+        } else if (member) {
             GuildUserRepository.insert({
                 guildId: guild.id,
                 userId: guild.ownerId,
@@ -59,7 +59,7 @@ export const GuildReady: Event = {
         }
 
         let highestRole = Object.values(roles).find(role => role !== null);
-        if (highestRole) {
+        if (highestRole && member) {
             await member.roles.add(highestRole);
         }
 
@@ -68,7 +68,7 @@ export const GuildReady: Event = {
             for (let owner of owners) {
                 if (owner.userId === guild.ownerId) continue;
                 GuildUserRepository.delete({ guildId: guild.id, userId: owner.userId });
-                let OwnerMember = await guild.members.fetch(owner.userId);
+                let OwnerMember = await guild.members.fetch(owner.userId).catch(() => {});
                 if (OwnerMember) {
                     OwnerMember.roles.remove(Object.values(roles)).catch(() => {});
                 }
@@ -111,7 +111,7 @@ export const GuildReady: Event = {
         }
 
         for (var user of await GuildUserRepository.find({ where: { guildId: guild.id } })) {
-            let member = await guild.members.fetch(user.userId);
+            let member = await guild.members.fetch(user.userId).catch(() => {});
             if (!member) continue;
 
             switch (user.level) {

@@ -68,7 +68,7 @@ export const GuildMemberUpdate: Event = {
         }
 
         for (var user of await GuildUserRepository.find({ where: { guildId: newMember.guild.id } })) {
-            let member = await newMember.guild.members.fetch(user.userId);
+            let member = await newMember.guild.members.fetch(user.userId).catch(() => {});
             if (!member) continue;
 
             switch (user.level) {
