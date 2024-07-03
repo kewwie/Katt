@@ -2,6 +2,8 @@ import { Plugin } from "../../types/plugin";
 
 import { MessageSlash } from "./commands/message";
 
+import { MessageActivityUser } from "./commands/message-activity";
+
 import { MessageCreate } from "./events/messageCreate";
 
 /**
@@ -14,6 +16,9 @@ export const MessagePlugin: Plugin = {
     },
     SlashCommands: [
         MessageSlash
+    ],
+    UserCommands: [
+        MessageActivityUser
     ],
     events: [
         MessageCreate
