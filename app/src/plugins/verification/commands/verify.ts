@@ -113,6 +113,7 @@ export const VerifySlash: SlashCommand = {
         GuildUserRepository.insert({
             guildId: interaction.guild.id,
             userId: userId,
+            userName: member.user.username,
             level: 1
         });
 
