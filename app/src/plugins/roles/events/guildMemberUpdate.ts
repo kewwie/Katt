@@ -5,6 +5,7 @@ import { Events, Event } from "../../../types/event";
 import { dataSource } from "../../../datasource";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
 import { GuildUserEntity } from "../../../entities/GuildUser";
+import { GetHighestRole } from "../functions/getHighestRole";
 
 /**
  * @type {Event}
@@ -28,109 +29,21 @@ export const GuildMemberUpdate: Event = {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: newMember.guild.id } });
-        let roles = {
-            level5: guildConfig?.levelFive,
-            level4: guildConfig?.levelFour,
-            level3: guildConfig?.levelThree,
-            level2: guildConfig?.levelTwo,
-            level1: guildConfig?.levelOne
-        }
-
         var user = await GuildUserRepository.findOne({ where: { guildId: newMember.guild.id, userId: newMember.id } });
 
-        for (var role of newMember.roles.cache.values()) {
-            switch (role.id) {
-                case roles.level5: {
-                    if (!user?.level || user?.level < 5) newMember.roles.remove(roles.level5).catch(() => {});
-                    break;
-                }
-
-                case roles.level4: {
-                    if (!user?.level || user?.level < 4) newMember.roles.remove(roles.level4).catch(() => {});
-                    break;
-                }
-
-                case roles.level3: {
-                    if (!user?.level || user?.level < 3) newMember.roles.remove(roles.level3).catch(() => {});
-                    break;
-                }
-
-                case roles.level2: {
-                    if (!user?.level || user?.level < 2) newMember.roles.remove(roles.level2).catch(() => {});
-                    break;
-                }
-
-                case roles.level1: {
-                    if (!user?.level || user?.level < 1) newMember.roles.remove(roles.level1).catch(() => {});
-                    break;
-                }
-            }
-        }
-
-        for (var user of await GuildUserRepository.find({ where: { guildId: newMember.guild.id } })) {
-            let member = await newMember.guild.members.fetch(user.userId).catch(() => {});
-            if (!member) continue;
-
-            switch (user.level) {
-                case 5: {
-                    let availableRoles = [
-                        roles.level5,
-                        roles.level4,
-                        roles.level3,
-                        roles.level2,
-                        roles.level1
-                    ]
-                    let highestRole = Object.values(availableRoles).find(role => role !== null);
-                    if (!highestRole) continue;
-                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole).catch(() => {});
-                    break;
-                }
-                
-                case 4: {
-                    let availableRoles = [
-                        roles.level4,
-                        roles.level3,
-                        roles.level2,
-                        roles.level1
-                    ]
-                    let highestRole = Object.values(availableRoles).find(role => role !== null);
-                    if (!highestRole) continue;
-                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole).catch(() => {});
-                    break;
-                }
-
-                case 3: {
-                    let availableRoles = [
-                        roles.level3,
-                        roles.level2,
-                        roles.level1
-                    ]
-                    let highestRole = Object.values(availableRoles).find(role => role !== null);
-                    if (!highestRole) continue;
-                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole).catch(() => {});
-                    break;
-                }
-
-                case 2: {
-                    let availableRoles = [
-                        roles.level2,
-                        roles.level1
-                    ]
-                    let highestRole = Object.values(availableRoles).find(role => role !== null);
-                    if (!highestRole) continue;
-                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole).catch(() => {});
-                    break;
-                }
-
-                case 1: {
-                    let availableRoles = [
-                        roles.level1
-                    ]
-                    let highestRole = Object.values(availableRoles).find(role => role !== null);
-                    if (!highestRole) continue;
-                    if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole).catch(() => {});
-                    break;
-                }
+        var roles = {
+            1: guildConfig.levelOne,
+            2: guildConfig.levelTwo,
+            3: guildConfig.levelThree,
+            4: guildConfig.levelFour,
+            5: guildConfig.levelFive
+        };
+        
+        var highestRole = await GetHighestRole(user.level, roles);
+        if (!newMember.roles.cache.has(highestRole)) newMember.roles.add(highestRole).catch(() => {});
+        for (let roleId of Object.values(roles)) {
+            if (roleId !== highestRole && newMember.roles.cache.has(roleId)) {
+                newMember.roles.remove(roleId).catch(() => {});
             }
         }
     }
