@@ -128,7 +128,7 @@ export const VerifySlash: SlashCommand = {
             return;
         }
 
-        if (!guildConfig && !guildConfig.levelOne) {
+        if (!guildConfig?.levelOne) {
             interaction.followUp({ content: "Level One role is not set in config", ephemeral: true })
             return;
         }
