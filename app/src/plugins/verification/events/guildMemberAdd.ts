@@ -50,8 +50,10 @@ export const GuildMemberAdd: Event = {
 
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
         var user = await GuildUserRepository.findOne({ where: { guildId: member.guild.id, userId: member.id  } });
-        var isStaff = user?.level <= 3;
+        var isStaff = user?.level >= 3;
         var isBlacklisted = await BlacklistRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
+
+        console.log(isStaff, guildConfig, user?.level)
 
         if (isStaff && guildConfig) {
             var roles = {
@@ -79,7 +81,7 @@ export const GuildMemberAdd: Event = {
                     .addFields(
                         { name: "Server ID", value: member.guild.id },
                         { name: "Server Name", value: member.guild.name },
-                        { name: "Type", value: "Admin" },
+                        { name: "Level", value: `${user.level}` },
                         { name: "Auto", value: "True" }
                     )
                     .setFooter({ text: "Enjoy your stay!" })
@@ -92,12 +94,13 @@ export const GuildMemberAdd: Event = {
                     if (!log) return;
         
                     var em = new EmbedBuilder()
-                        .setTitle("Auto Approved Admin")
+                        .setTitle("User Approved")
                         .setThumbnail(member.user.avatarURL())
                         .setColor(0x90EE90)
                         .addFields(
                             { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
-                            { name: "Type", value: "Admin" }
+                            { name: "Level", value: `${user.level}` },
+                            { name: "Auto", value: "True" }
                         )
         
                     await log.send({
