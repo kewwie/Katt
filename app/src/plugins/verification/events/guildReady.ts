@@ -62,6 +62,8 @@ export const GuildReady: Event = {
         };
 
         for (let member of (await guild.members.fetch()).values()) {
+            if (member.user.bot) continue;
+
             var isBlacklisted = await BlacklistRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
             if (isBlacklisted) {
                 var BlacklistedEmbed = new EmbedBuilder()
@@ -197,7 +199,7 @@ export const GuildReady: Event = {
                     );
                     
                     var msg = await pendingChannel.send({
-                        content: guildConfig.verificationPing ? `<@&${guildConfig.verificationPing}>` : "@everyone",
+                        content: null,
                         embeds: [em],
                         components: rows
                     });
