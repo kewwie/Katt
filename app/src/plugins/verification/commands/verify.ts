@@ -134,7 +134,7 @@ export const VerifySlash: SlashCommand = {
         }
 
         var roles = new Array();
-        roles.push(guildConfig.levelOne);
+        roles.push(guildConfig?.levelOne);
         
         var groups = await GroupMemberRepository.find({ where: { userId: member.id }});
         for (let group of groups) {
