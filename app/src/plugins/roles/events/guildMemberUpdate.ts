@@ -39,7 +39,7 @@ export const GuildMemberUpdate: Event = {
             5: guildConfig.levelFive
         };
         
-        var highestRole = await GetHighestRole(user.level, roles);
+        var highestRole = await GetHighestRole(user?.level, roles);
         if (!newMember.roles.cache.has(highestRole)) newMember.roles.add(highestRole).catch(() => {});
         for (let roleId of Object.values(roles)) {
             if (roleId !== highestRole && newMember.roles.cache.has(roleId)) {

@@ -77,9 +77,8 @@ export const GuildReady: Event = {
 
         for (let member of (await guild.members.fetch()).values()) {
             let user = await GuildUserRepository.findOne({ where: { guildId: guild.id, userId: member.id } });
-            if (!user) continue;
-            
-            var highestRole = await GetHighestRole(user.level, roles);
+
+            var highestRole = await GetHighestRole(user?.level, roles);
             if (!member.roles.cache.has(highestRole)) member.roles.add(highestRole).catch(() => {});
             for (let roleId of Object.values(roles)) {
                 if (roleId !== highestRole && member.roles.cache.has(roleId)) {
