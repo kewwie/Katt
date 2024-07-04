@@ -4,6 +4,7 @@ import {
     TextChannel,
     ActionRowBuilder,
     ButtonBuilder,
+    ButtonStyle,
 } from "discord.js";
 
 import { KiwiClient } from "../../../client";
@@ -53,8 +54,6 @@ export const GuildMemberAdd: Event = {
         var isStaff = user?.level >= 3;
         var isBlacklisted = await BlacklistRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
 
-        console.log(isStaff, guildConfig, user?.level)
-
         if (isStaff && guildConfig) {
             var roles = {
                 1: guildConfig.levelOne,
@@ -75,6 +74,15 @@ export const GuildMemberAdd: Event = {
                     }
                 }
 
+                var rows = new Array();
+                rows.push(new ActionRowBuilder()
+                    .addComponents([
+                        new ButtonBuilder()
+                            .setStyle(ButtonStyle.Link)
+                            .setLabel(member.guild.name)
+                            .setURL("https://discord.com/channels/" + member.guild.id)
+                    ]));
+
                 var AutoApprovedEmbed = new EmbedBuilder()
                     .setTitle("You've Been Approved")
                     .setThumbnail(member.guild.iconURL())
@@ -87,7 +95,7 @@ export const GuildMemberAdd: Event = {
                     .setFooter({ text: "Enjoy your stay!" })
                     .setColor(0x90EE90);
 
-                await member.send({ embeds: [AutoApprovedEmbed] }).catch(() => {});
+                await member.send({ embeds: [AutoApprovedEmbed], components: rows }).catch(() => {});
 
                 if (guildConfig.logChannel) {
                     var log = await member.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
@@ -151,8 +159,10 @@ export const GuildMemberAdd: Event = {
                 let pendingMessage = await PendingMessageRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
                 if (pendingMessage) {
                     let existingMessage = await pendingChannel.messages.fetch(pendingMessage.messageId).catch(() => {});
-                    if (pendingMessage && !existingMessage) {
+                    if (!existingMessage) {
                         await PendingMessageRepository.delete({ _id: pendingMessage._id });
+                    } else {
+                        return;
                     }
                 }
     
