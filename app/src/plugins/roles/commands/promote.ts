@@ -51,9 +51,13 @@ export const PromoteSlash: SlashCommand = {
     async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         let self = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
+        if (!self) {
+            interaction.respond([{ name: "You are not in the database", value: "ERROR" }]);
+            return;
+        };
 
         let choices = (await GuildUserRepository.find({ where: { guildId: interaction.guild.id } }))
-            .filter(choice => choice.level < 4 && choice.level <= self.level - 1);
+            .filter(choice => choice?.level < 4 && choice?.level <= self.level - 1);
         let focusedValue = interaction.options.getFocused().toLowerCase();
         let filtered = choices.filter(choice => choice.userName.toLowerCase().startsWith(focusedValue) || choice.userId.toLowerCase().startsWith(focusedValue));
         await interaction.respond(

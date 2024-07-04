@@ -114,17 +114,17 @@ export const ConfigSlash: SlashCommand = {
                 }
 
                 if (optionTypes.includes("voice_channel")) {
-                    var channels = (await interaction.guild.channels.fetch())
+                    var GuildVoices = (await interaction.guild.channels.fetch())
                         .filter(channel => channel.type === ChannelType.GuildVoice)
                         .filter(channel => channel.name.toLowerCase().startsWith(focused.value.toLowerCase().replace("#", "")));
-                    choices.push(channels.map(channel => ({ name: "🔊 "+channel.name, value: channel.id })));
+                    choices.push(GuildVoices.map(channel => ({ name: "🔊 "+channel.name, value: channel.id })));
                 }
 
                 if (optionTypes.includes("stage_channel")) {
-                    var channels = (await interaction.guild.channels.fetch())
+                    var GuildStageVoices = (await interaction.guild.channels.fetch())
                         .filter(channel => channel.type === ChannelType.GuildStageVoice)
                         .filter(channel => channel.name.toLowerCase().startsWith(focused.value.toLowerCase().replace("#", "")));
-                    choices.push(channels.map(channel => ({ name: "🎧 "+channel.name, value: channel.id })));
+                    choices.push(GuildStageVoices.map(channel => ({ name: "🎧 "+channel.name, value: channel.id })));
                 }
 
                 if (optionTypes.includes("role")) {
