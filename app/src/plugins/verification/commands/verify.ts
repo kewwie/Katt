@@ -107,6 +107,11 @@ export const VerifySlash: SlashCommand = {
 
         let userId = interaction.options.getString("user");
         let member = await interaction.guild.members.fetch(userId);
+        if (!member) {
+            interaction.reply("User not found");
+            return;
+        }
+        
         let silent = interaction.options.getBoolean("silent");
 
         let self = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
