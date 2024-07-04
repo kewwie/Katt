@@ -21,6 +21,8 @@ import { PendingMessageEntity } from "../../../entities/PendingMessage";
 import { ApproveUser } from "../buttons/approve-user";
 import { DenyUser } from "../buttons/deny-user";
 
+import { GetHighestRole } from "../../roles/functions/getHighestRole";
+
 /**
  * @type {Event}
  */
@@ -46,14 +48,23 @@ export const GuildMemberAdd: Event = {
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
 
-        var g = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
-        var isStaff = (await GuildUserRepository.findOne({ where: { guildId: member.guild.id, userId: member.id  } }))?.level <= 3;
+        var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
+        var user = await GuildUserRepository.findOne({ where: { guildId: member.guild.id, userId: member.id  } });
+        var isStaff = user?.level <= 3;
         var isBlacklisted = await BlacklistRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
 
-        if (isStaff && g) {
-            var adminRole = null//await member.guild.roles.fetch(g.adminRole);
-            if (adminRole) {
-                member.roles.add(adminRole.id).catch(() => {});
+        if (isStaff && guildConfig) {
+            var roles = {
+                1: guildConfig.levelOne,
+                2: guildConfig.levelTwo,
+                3: guildConfig.levelThree,
+                4: guildConfig.levelFour,
+                5: guildConfig.levelFive
+            };
+            
+            var roleId = await GetHighestRole(user.level, roles);
+            if (roleId) {
+                member.roles.add(roleId).catch(() => {});
 
                 for (var groupMembers of await GroupMemberRepository.find({ where: { userId: member.id } })) {
                     var group = await GuildGroupRepository.findOne({ where: { groupId: groupMembers.groupId } });
@@ -76,8 +87,8 @@ export const GuildMemberAdd: Event = {
 
                 await member.send({ embeds: [AutoApprovedEmbed] }).catch(() => {});
 
-                if (g.logChannel) {
-                    var log = await member.guild.channels.fetch(g.logChannel) as TextChannel;
+                if (guildConfig.logChannel) {
+                    var log = await member.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
                     if (!log) return;
         
                     var em = new EmbedBuilder()
@@ -109,8 +120,8 @@ export const GuildMemberAdd: Event = {
 
             member.kick("Blacklisted").catch(() => {});
 
-            if (g && g.logChannel) {
-                var log = await member.guild.channels.fetch(g.logChannel) as TextChannel;
+            if (guildConfig && guildConfig.logChannel) {
+                var log = await member.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
                 if (!log) return;
     
                 var em = new EmbedBuilder()
@@ -130,8 +141,8 @@ export const GuildMemberAdd: Event = {
             }
     
         } else {
-            if (g && g.pendingChannel) {
-                var pendingChannel = await member.guild.channels.fetch(g.pendingChannel) as TextChannel;
+            if (guildConfig && guildConfig.pendingChannel) {
+                var pendingChannel = await member.guild.channels.fetch(guildConfig.pendingChannel) as TextChannel;
                 if (!pendingChannel) return;
 
                 let pendingMessage = await PendingMessageRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
@@ -164,7 +175,7 @@ export const GuildMemberAdd: Event = {
                 );
                 
                 var msg = await pendingChannel.send({
-                    content: g.verificationPing ? `<@&${g.verificationPing}>` : "@everyone",
+                    content: guildConfig.verificationPing ? `<@&${guildConfig.verificationPing}>` : "@everyone",
                     embeds: [em],
                     components: rows
                 });
