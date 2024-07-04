@@ -32,11 +32,11 @@ export const GuildMemberUpdate: Event = {
         var user = await GuildUserRepository.findOne({ where: { guildId: newMember.guild.id, userId: newMember.id } });
 
         var roles = {
-            1: guildConfig.levelOne,
-            2: guildConfig.levelTwo,
-            3: guildConfig.levelThree,
-            4: guildConfig.levelFour,
-            5: guildConfig.levelFive
+            1: guildConfig?.levelOne,
+            2: guildConfig?.levelTwo,
+            3: guildConfig?.levelThree,
+            4: guildConfig?.levelFour,
+            5: guildConfig?.levelFive
         };
         
         var highestRole = await GetHighestRole(user?.level, roles);

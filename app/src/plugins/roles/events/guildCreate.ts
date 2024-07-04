@@ -6,6 +6,8 @@ import { dataSource } from "../../../datasource";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
 import { GuildUserEntity } from "../../../entities/GuildUser";
 
+import { GetHighestRole } from "../functions/getHighestRole";
+
 /**
  * @type {Event}
  */
@@ -27,13 +29,13 @@ export const GuildCreate: Event = {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: guild.id } });
-        let roles = [
-            guildConfig.levelFive,
-            guildConfig.levelFour,
-            guildConfig.levelThree,
-            guildConfig.levelTwo,
-            guildConfig.levelOne
-        ]
+        var roles = {
+            1: guildConfig?.levelOne,
+            2: guildConfig?.levelTwo,
+            3: guildConfig?.levelThree,
+            4: guildConfig?.levelFour,
+            5: guildConfig?.levelFive
+        };
 
         var isUser = await GuildUserRepository.findOne({
             where: {
@@ -42,24 +44,21 @@ export const GuildCreate: Event = {
             }
         });
         var member = await guild.members.fetch(guild.ownerId).catch(() => {});
-
-        if (isUser && member) {
-            GuildUserRepository.update({
-                guildId: guild.id,
-                userId: guild.ownerId
-            }, { level: 5, userName: member.user.username});
-        } else if (member) {
-            GuildUserRepository.insert({
-                guildId: guild.id,
-                userId: guild.ownerId,
-                userName: member.user.username,
-                level: 5
-            });
-        }
-
-        let highestRole = roles.find(role => role !== null);
-        if (highestRole && member) {
-            await member.roles.add(highestRole);
+        if (member) {
+            if (isUser) {
+                GuildUserRepository.update({
+                    guildId: guild.id,
+                    userId: guild.ownerId
+                }, { level: 5, userName: member.user.username});
+            } else {
+                GuildUserRepository.insert({
+                    guildId: guild.id,
+                    userId: guild.ownerId,
+                    userName: member.user.username,
+                    level: 5
+                });
+            }
+            await member.roles.add((await GetHighestRole(isUser.level, roles)));
         }
 
         var owners = await GuildUserRepository.find({ where: { guildId: guild.id, level: 5 } });
@@ -69,7 +68,7 @@ export const GuildCreate: Event = {
                 GuildUserRepository.delete({ guildId: guild.id, userId: owner.userId });
                 let OwnerMember = await guild.members.fetch(owner.userId).catch(() => {});
                 if (OwnerMember) {
-                    OwnerMember.roles.remove(roles).catch(() => {});
+                    OwnerMember.roles.remove(Object.values(roles)).catch(() => {});
                 }
             }
         }

@@ -6,6 +6,8 @@ import { dataSource } from "../../../datasource";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
 import { GuildUserEntity } from "../../../entities/GuildUser";
 
+import { GetHighestRole } from "../functions/getHighestRole";
+
 /**
  * @type {Event}
  */
@@ -28,13 +30,13 @@ export const GuildUpdate: Event = {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: newGuild.id } });
-        let roles = [
-            guildConfig.levelFive,
-            guildConfig.levelFour,
-            guildConfig.levelThree,
-            guildConfig.levelTwo,
-            guildConfig.levelOne
-        ]
+        var roles = {
+            1: guildConfig?.levelOne,
+            2: guildConfig?.levelTwo,
+            3: guildConfig?.levelThree,
+            4: guildConfig?.levelFour,
+            5: guildConfig?.levelFive
+        };
 
         if (oldGuild.ownerId !== newGuild.ownerId) {
             var isUser = await GuildUserRepository.findOne({
@@ -59,11 +61,8 @@ export const GuildUpdate: Event = {
                         level: 5
                     });
                 }
-        
-                let highestRole = roles.find(role => role !== null);
-                if (highestRole) {
-                    await member.roles.add(highestRole);
-                }
+                
+                await member.roles.add((await GetHighestRole(isUser.level, roles)));
             }
     
             var owners = await GuildUserRepository.find({ where: { guildId: newGuild.id, level: 5 } });
@@ -73,7 +72,7 @@ export const GuildUpdate: Event = {
                     GuildUserRepository.delete({ guildId: newGuild.id, userId: owner.userId });
                     let OwnerMember = await newGuild.members.fetch(owner.userId).catch(() => {});
                     if (OwnerMember) {
-                        OwnerMember.roles.remove(roles).catch(() => {});
+                        OwnerMember.roles.remove(Object.values(roles)).catch(() => {});
                     }
                 }
             }

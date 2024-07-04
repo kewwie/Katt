@@ -62,11 +62,11 @@ export const VerifySlash: SlashCommand = {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
         var roles = {
-            1: guildConfig.levelOne,
-            2: guildConfig.levelTwo,
-            3: guildConfig.levelThree,
-            4: guildConfig.levelFour,
-            5: guildConfig.levelFive
+            1: guildConfig?.levelOne,
+            2: guildConfig?.levelTwo,
+            3: guildConfig?.levelThree,
+            4: guildConfig?.levelFour,
+            5: guildConfig?.levelFive
         };
 
         let focusedValue = interaction.options.getFocused().toLowerCase();
