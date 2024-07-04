@@ -55,9 +55,13 @@ export const VoiceSlash: SlashCommand = {
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         const VoiceActivityRepository = await dataSource.getRepository(VoiceActivityEntity);
 
-        const formatter = new Intl.NumberFormat("en-US", {
+        const vl = new Intl.NumberFormat("en-US", {
             minimumFractionDigits: 1,
             maximumFractionDigits: 2
+        });
+
+        const vaf = new Intl.NumberFormat("en-US", {
+            maximumFractionDigits: 0
         });
 
         switch (interaction.options.getSubcommand()) {
@@ -76,9 +80,20 @@ export const VoiceSlash: SlashCommand = {
                     interaction.reply("No voice activity found for this user");
                     return;
                 }
-                
-                var hours = voiceActivity.seconds / (60 * 60);
-                interaction.reply(`**${voiceActivity.userName}** has been in voice chat for **${formatter.format(hours)}** hours`);
+        
+                var timeSeconds = voiceActivity.seconds;
+                var days, hours, minutes, seconds;
+        
+                days = Math.floor(timeSeconds / (24 * 60 * 60));
+                timeSeconds %= 24 * 60 * 60;
+        
+                hours = Math.floor(timeSeconds / (60 * 60));
+                timeSeconds %= 60 * 60;
+        
+                minutes = Math.floor(timeSeconds / 60);
+                seconds = timeSeconds % 60;
+        
+                interaction.reply(`**${client.capitalize(voiceActivity.userName)}** has been in voice chat for **${vaf.format(days)}** days **${vaf.format(hours)}** hours **${vaf.format(minutes)}** minutes and **${vaf.format(seconds)}** seconds.`);
                 break;
             }
             case "leaderboard": {
@@ -87,7 +102,7 @@ export const VoiceSlash: SlashCommand = {
                 );
 
                 var leaderboard = voiceActivities.map((va, i) => {
-                    return `${i + 1}. **${va.userName}** - ${formatter.format(va.seconds / (60 * 60))} hours`;
+                    return `${i + 1}. **${va.userName}** - ${vl.format(va.seconds / (60 * 60))} hours`;
                 }).join("\n");
 
                 interaction.reply(`**Voice Leaderboard**\n${leaderboard}`);
