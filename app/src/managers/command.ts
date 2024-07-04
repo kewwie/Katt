@@ -68,14 +68,13 @@ export class CommandManager {
                     return;
                 }
 
-                var plugin = this.client.PluginManager.plugins.find(plugin => plugin.config.name === command.plugin);
-                if (!plugin.config.disableable) {
+                if (!command.plugin.config.disableable) {
                     await command.execute(interaction, this.client);
                     return;
                 }
 
                 if (interaction.guild) {
-                    var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: command.plugin } });
+                    var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: command.plugin.config.name } });
                     if (isEnabled) {
                         await command.execute(interaction, this.client);
                     } else {
@@ -112,15 +111,14 @@ export class CommandManager {
                     await command.execute(interaction, this.client);
                     return;
                 }
-
-                var plugin = this.client.PluginManager.plugins.find(plugin => plugin.config.name === command.plugin);
-                if (!plugin.config.disableable) {
+                
+                if (!command.plugin.config.disableable) {
                     await command.execute(interaction, this.client);
                     return;
                 }
 
                 if (interaction.guild) {
-                    var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: command.plugin } });
+                    var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: command.plugin.config.name } });
                     if (isEnabled) {
                         await command.execute(interaction, this.client);
                     } else {

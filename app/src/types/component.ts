@@ -1,16 +1,15 @@
 import { KiwiClient } from "../client";
+import { Plugin } from "./plugin";
 
 import { APIButtonComponent, APIButtonComponentWithCustomId, ComponentType } from "discord-api-types/v10";
 
 
 export interface Button {
     config: APIButtonComponentWithCustomId;
-    plugin?: string;
+    plugin?: Plugin;
     dms?: boolean;
     execute: (interaction: any, client: KiwiClient) => void;
 }
-
-
 
 export enum ComponentTypes {
     ActionRow = 1,

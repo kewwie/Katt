@@ -22,7 +22,7 @@ export class PluginManager {
         if (plugin.SlashCommands) {
             var SlashCommands = new Array();
             for (let command of plugin.SlashCommands) {
-                command.plugin = plugin.config.name;
+                command.plugin = plugin;
                 SlashCommands.push(command);
             }
             this.client.CommandManager.loadSlash(SlashCommands);
@@ -31,7 +31,7 @@ export class PluginManager {
         if (plugin.UserCommands) {
             var UserCommands = new Array();
             for (let command of plugin.UserCommands) {
-                command.plugin = plugin.config.name;
+                command.plugin = plugin;
                 UserCommands.push(command);
             }
             this.client.CommandManager.loadUser(UserCommands);
@@ -40,7 +40,7 @@ export class PluginManager {
         if (plugin.buttons) {
             var buttons = new Array();
             for (let button of plugin.buttons) {
-                button.plugin = plugin.config.name;
+                button.plugin = plugin;
                 buttons.push(button);
             }
             this.client.ComponentManager.loadButtons(buttons);
@@ -49,7 +49,7 @@ export class PluginManager {
         if (plugin.events) {
             var events = new Array();
             for (let event of plugin.events) {
-                event.plugin = plugin.config.name;
+                event.plugin = plugin;
                 events.push(event);
             }
             this.client.EventManager.load(events);
@@ -58,7 +58,7 @@ export class PluginManager {
         if (plugin.loops) {
             var loops = new Array();
             for (let loop of plugin.loops) {
-                loop.plugin = plugin.config.name;
+                loop.plugin = plugin;
                 loops.push(loop);
             }
             this.client.LoopManager.load(loops);

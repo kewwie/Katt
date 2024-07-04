@@ -1,4 +1,5 @@
 import { KiwiClient } from "../client";
+import { Plugin } from "./plugin";
 
 export enum Events {
     GuildBanAdd = "guildBanAdd",
@@ -17,7 +18,7 @@ export enum Events {
 
 export interface Event {
     name: string;
-    plugin?: string;
+    plugin?: Plugin;
     getGuildId?: (...args: any) => Promise<string>;
     execute: (client: KiwiClient, ...args: any) => void;
 }

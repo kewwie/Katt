@@ -16,11 +16,9 @@ export class EventManager {
             this.client.events.set(event.name, event);
 
             this.client.on(event.name, async (...args: any[]) => {
-                var plugin = this.client.PluginManager.plugins.find(plugin => plugin.config.name === event.plugin);
-
-                if (plugin.config.disableable) {
+                if (event.plugin.config.disableable) {
                     const GuildPluginsRepository = await dataSource.getRepository(GuildPluginEntity);
-                    if (await GuildPluginsRepository.findOne({ where: { guildId: (await event.getGuildId(...args)), pluginName: event.plugin } })) {
+                    if (await GuildPluginsRepository.findOne({ where: { guildId: (await event.getGuildId(...args)), pluginName: event.plugin.config.name } })) {
                         event.execute(this.client, ...args);
                     }
                 } else {

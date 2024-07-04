@@ -18,14 +18,13 @@ export class LoopManager {
             this.client.loops.set(loop.name, loop);
 
             setInterval(async () => {
-                var plugin = this.client.PluginManager.plugins.find(plugin => plugin.config.name === loop.plugin);
                 for (let [_, guild] of await this.client.guilds.fetch()) {
                     var g = await guild.fetch();
 
-                    if (!plugin.config.disableable) {
+                    if (!loop.plugin.config.disableable) {
                         await loop.execute(this.client, g);
                     } else {
-                        var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: g.id, pluginName: loop.plugin } });
+                        var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: g.id, pluginName: loop.plugin.config.name } });
                         if (isEnabled) {
                             await loop.execute(this.client, g);
                         }

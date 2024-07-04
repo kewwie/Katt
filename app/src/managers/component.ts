@@ -29,11 +29,11 @@ export class ComponentManager {
 
             try {
                 if (button.plugin) {
-                    if (button.dms || !this.client.PluginManager.plugins.find(plugin => plugin.config.name === button.plugin).config.disableable) {
+                    if (button.dms || !button.plugin.config.disableable) {
                         await button.execute(interaction, this.client);
                     } else {
                         if (interaction.guild) {
-                            var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: button.plugin } });
+                            var isEnabled = await GuildPluginsRepository.findOne({ where: { guildId: interaction.guild.id, pluginName: button.plugin.config.name } });
                             if (isEnabled) {
                                 await button.execute(interaction, this.client);
                             } else {

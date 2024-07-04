@@ -1,10 +1,10 @@
-import { ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
 import { KiwiClient } from "../client";
+import { Plugin } from "./plugin";
 
-export type ApplicationCommand = SlashCommand | UserCommand;
+import { ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
 
 export interface UserCommand {
-    plugin?: string;
+    plugin?: Plugin;
     config: {
         type: CommandTypes.USER;
         name: string;
@@ -13,7 +13,7 @@ export interface UserCommand {
 }
 
 export interface SlashCommand {
-    plugin?: string;
+    plugin?: Plugin;
     config: {
         type: CommandTypes.CHAT_INPUT;
         name: string;
