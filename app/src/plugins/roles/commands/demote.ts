@@ -120,6 +120,25 @@ export const DemoteSlash: SlashCommand = {
             GuildUserRepository.update({ guildId: interaction.guild.id, userId: userId }, { level: user.level - 1 });
             interaction.reply(`**${client.capitalize(user.userName)}** demoted to level **${user.level - 1}**`);
 
+            var member = await interaction.guild.members.fetch(userId);
+            if (!member) {
+                var roles = [
+                    guildConfig.levelFive,
+                    guildConfig.levelFour,
+                    guildConfig.levelThree,
+                    guildConfig.levelTwo,
+                    guildConfig.levelOne
+                ];
+
+                var highestRole = roles.find((role, index) => index + 1 <= (user.level - 1) && role !== null);
+                member.roles.add(highestRole);
+                member.roles.cache.forEach(role => {
+                    if (role.id !== highestRole && roles.includes(role.id)) {
+                        member.roles.remove(role.id);
+                    }
+                });
+            }
+
             if (guildConfig.logChannel) {
                 var log = await interaction.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
                 if (!log) return;
