@@ -7,6 +7,7 @@ import { BlacklistSlash } from "./commands/blacklist";
 import { VerifySlash } from "./commands/verify";
 
 import { GuildMemberAdd } from "./events/guildMemberAdd";
+import { GuildReady } from "./events/guildReady";
 
 /**
  * @type {Plugin}
@@ -25,7 +26,8 @@ export const VerificationPlugin: Plugin = {
         VerifySlash
     ],
     events: [
-        GuildMemberAdd
+        GuildMemberAdd,
+        GuildReady
     ],
     afterLoad: async () => {
         console.log("Loaded Verification Plugin")
