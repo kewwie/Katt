@@ -75,7 +75,7 @@ export const PluginSlash: SlashCommand = {
 
         const choices = [];
         for (const plugin of client.PluginManager.plugins) {
-            if (plugin.config.disableable) {
+            if (plugin.config.disableable || !plugin.config.hidden || plugin.config.staffOnly) {
                 switch (interaction.options.getSubcommand()) {
                     case "enable": {
                         var pl = await GuildPluginRepository.findOne({ where: { guildId: interaction.guildId, pluginName: plugin.config.name }})
@@ -121,9 +121,15 @@ export const PluginSlash: SlashCommand = {
         switch (interaction.options.getSubcommand()) {
             case "enable":
                 var pluginName = interaction.options.getString("plugin");
+                var plugin = client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName);
 
-                if (!client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName).config.disableable) {
+                if (!plugin.config.disableable || plugin.config.hidden) {
                     interaction.reply("Invalid plugin name");
+                    return;
+                }
+
+                if (plugin.config.staffOnly) {
+                    interaction.reply("You cannot enable this plugin");
                     return;
                 }
 
@@ -144,9 +150,15 @@ export const PluginSlash: SlashCommand = {
 
             case "disable":
                 var pluginName = interaction.options.getString("plugin");
+                var plugin = client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName);
 
-                if (!client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName).config.disableable) {
+                if (!plugin.config.disableable || plugin.config.hidden) {
                     interaction.reply("Invalid plugin name");
+                    return;
+                }
+
+                if (plugin.config.staffOnly) {
+                    interaction.reply("You cannot enable this plugin");
                     return;
                 }
 
@@ -169,7 +181,7 @@ export const PluginSlash: SlashCommand = {
                 var gPlugins = await GuildPluginRepository.find({ where: { guildId: interaction.guildId } });
                 
                 var allPlugins = client.PluginManager.plugins
-                    .filter(plugin => plugin.config.disableable)
+                    .filter(plugin => plugin.config.disableable || !plugin.config.hidden || plugin.config.staffOnly)
 
                 var enabledPlugins = allPlugins
                     .filter(plugin => gPlugins.some(gp => gp.pluginName === plugin.config.name))
