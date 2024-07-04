@@ -61,8 +61,8 @@ export const PromoteSlash: SlashCommand = {
         let focusedValue = interaction.options.getFocused().toLowerCase();
         let filtered = choices.filter(choice => choice.userName.toLowerCase().startsWith(focusedValue) || choice.userId.toLowerCase().startsWith(focusedValue));
         await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.userName} (${choice.userId}) - Level ${choice.level}`, value: choice.userId })),
-		);
+            filtered.slice(0, 25).map(choice => ({ name: `${choice.userName} (${choice.userId}) - Level ${choice.level}`, value: choice.userId })),
+        );
     },
 
 	/**
