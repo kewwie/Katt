@@ -102,10 +102,10 @@ export const VoiceSlash: SlashCommand = {
                 );
 
                 var leaderboard = voiceActivities.map((va, i) => {
-                    return `${i + 1}. **${va.userName}** - ${vl.format(va.seconds / (60 * 60))} hours`;
+                    return `${i + 1}. **${client.capitalize(va.userName)}** - ${vl.format(va.seconds / (60 * 60))} hours`;
                 }).join("\n");
 
-                interaction.reply(`**Voice Leaderboard**\n${leaderboard}`);
+                interaction.reply(`## Voice Leaderboard\n${leaderboard}`);
                 break;
             }
         }
