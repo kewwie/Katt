@@ -20,6 +20,8 @@ import { dataSource } from "../../../datasource";
 import { GuildUserEntity } from "../../../entities/GuildUser";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
 
+import { GetHighestRole } from "../functions/getHighestRole";
+
 /**
  * @type {SlashCommand}
  */
@@ -102,22 +104,23 @@ export const PromoteSlash: SlashCommand = {
         interaction.reply(`**${client.capitalize(user.userName)}** promoted to level **${user.level + 1}**`);
 
         var member = await interaction.guild.members.fetch(userId);
-        if (!member) {
-            var roles = [
-                guildConfig.levelFive,
-                guildConfig.levelFour,
-                guildConfig.levelThree,
-                guildConfig.levelTwo,
-                guildConfig.levelOne
-            ];
-
-            var highestRole = roles.find((role, index) => index + 1 >= (user.level + 1) && role !== null);
-            member.roles.add(highestRole);
-            member.roles.cache.forEach(role => {
-                if (role.id !== highestRole && roles.includes(role.id)) {
-                    member.roles.remove(role.id);
+        if (member) {
+            var roles = {
+                1: guildConfig.levelOne,
+                2: guildConfig.levelTwo,
+                3: guildConfig.levelThree,
+                4: guildConfig.levelFour,
+                5: guildConfig.levelFive
+            };
+            
+            var highestRole = await GetHighestRole(user.level + 1, roles);
+            member.roles.add(highestRole).catch(() => {});
+            var memberRoles = member.roles.cache;
+            for (let roleId of Object.values(roles)) {
+                if (roleId !== highestRole && memberRoles.has(roleId)) {
+                    member.roles.remove(roleId).catch(() => {});
                 }
-            });
+            }
         }
 
         if (guildConfig.logChannel) {
