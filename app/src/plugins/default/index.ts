@@ -8,7 +8,8 @@ import { PluginSlash } from "./commands/plugin";
  */
 export const DefaultPlugin: Plugin = {
     config: {
-        name: "Default"
+        name: "Default",
+        hidden: true
     },
     SlashCommands: [
         ConfigSlash,
