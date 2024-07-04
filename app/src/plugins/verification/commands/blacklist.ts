@@ -1,6 +1,7 @@
 import {
     AutocompleteInteraction,
-	ChatInputCommandInteraction
+	ChatInputCommandInteraction,
+    EmbedBuilder
 } from "discord.js";
 
 import { KiwiClient } from "../../../client";
@@ -16,6 +17,7 @@ import {
 
 import { dataSource } from "../../../datasource";
 import { GuildBlacklistEntity } from "../../../entities/GuildBlacklist";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 
 /**
  * @type {SlashCommand}
@@ -94,6 +96,7 @@ export const BlacklistSlash: SlashCommand = {
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
         const BlacklistRepository = await dataSource.getRepository(GuildBlacklistEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
 
         switch (interaction.options.getSubcommand()) {
             case "add": {
@@ -102,6 +105,13 @@ export const BlacklistSlash: SlashCommand = {
 
                 if (!member) {
                     interaction.reply("User not found");
+                    return;
+                }
+
+                var self = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
+                var u = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: user.id } });
+                if (self?.level <= u?.level) {
+                    interaction.reply("You cannot blacklist someone of a higher level than yourself");
                     return;
                 }
 
@@ -122,6 +132,19 @@ export const BlacklistSlash: SlashCommand = {
                     modName: interaction.user.username
                 });
                 interaction.reply(`Added the user to the blacklist`);
+
+                let BlacklistedEmbed = new EmbedBuilder()
+                    .setTitle("You have been blacklisted")
+                    .setThumbnail(interaction.guild.iconURL())
+                    .addFields(
+                        { name: "Server ID", value: interaction.guild.id },
+                        { name: "Server Name", value: interaction.guild.name }
+                    )
+                    .setFooter({ text: "Sorry!" })
+                    .setColor(0xFF474D);
+
+                await member.send({ embeds: [BlacklistedEmbed] }).catch(() => {});
+                member.kick(`Blacklisted by ${interaction.user.username}`).catch(() => {});
                 break;
             }
 

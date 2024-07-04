@@ -29,8 +29,7 @@ export const VoiceActivityUser: UserCommand = {
         const VoiceActivityRepository = await dataSource.getRepository(VoiceActivityEntity);
 
         const formatter = new Intl.NumberFormat("en-US", {
-            minimumFractionDigits: 1,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 0
         });
 
         var voiceActivity = await VoiceActivityRepository.findOne(
@@ -41,8 +40,19 @@ export const VoiceActivityUser: UserCommand = {
             interaction.reply("No voice activity found for this user");
             return;
         }
-        
-        var hours = voiceActivity.seconds / (60 * 60);
-        interaction.reply(`**${voiceActivity.userName}** has been in voice chat for **${formatter.format(hours)}** hours`);
+
+        var timeSeconds = voiceActivity.seconds;
+        var days, hours, minutes, seconds;
+
+        days = Math.floor(timeSeconds / (24 * 60 * 60));
+        timeSeconds %= 24 * 60 * 60;
+
+        hours = Math.floor(timeSeconds / (60 * 60));
+        timeSeconds %= 60 * 60;
+
+        minutes = Math.floor(timeSeconds / 60);
+        seconds = timeSeconds % 60;
+
+        interaction.reply(`**${client.capitalize(voiceActivity.userName)}** has been in voice chat for **${formatter.format(days)}** days **${formatter.format(hours)}** hours **${formatter.format(minutes)}** minutes and **${formatter.format(seconds)}** seconds.`);
     }
 }

@@ -4,6 +4,7 @@ import {
     TextChannel,
     ActionRowBuilder,
     ButtonBuilder,
+    ButtonStyle,
 } from "discord.js";
 
 import { KiwiClient } from "../../../client";
@@ -12,14 +13,16 @@ import { Events, Event } from "../../../types/event";
 
 import { dataSource } from "../../../datasource";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
-import { GuildAdminEntity } from "../../../entities/GuildAdmin";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 import { GuildBlacklistEntity } from "../../../entities/GuildBlacklist";
 import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
 import { PendingMessageEntity } from "../../../entities/PendingMessage";
 
-import { ApproveGuest } from "../buttons/approve-guest";
+import { ApproveUser } from "../buttons/approve-user";
 import { DenyUser } from "../buttons/deny-user";
+
+import { GetHighestRole } from "../../roles/functions/getHighestRole";
 
 /**
  * @type {Event}
@@ -40,20 +43,29 @@ export const GuildMemberAdd: Event = {
     */
     async execute(client: KiwiClient, member: GuildMember) {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
-        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
         const BlacklistRepository = await dataSource.getRepository(GuildBlacklistEntity);
         const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
         const PendingMessageRepository = await dataSource.getRepository(PendingMessageEntity);
 
-        var g = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
-        var isAdmin = await GuildAdminRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
+        var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: member.guild.id } });
+        var user = await GuildUserRepository.findOne({ where: { guildId: member.guild.id, userId: member.id  } });
+        var isStaff = user?.level >= 3;
         var isBlacklisted = await BlacklistRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
 
-        if (isAdmin && g && g.adminRole) {
-            var adminRole = await member.guild.roles.fetch(g.adminRole);
-            if (adminRole) {
-                member.roles.add(adminRole.id).catch(() => {});
+        if (isStaff && guildConfig) {
+            var roles = {
+                1: guildConfig.levelOne,
+                2: guildConfig.levelTwo,
+                3: guildConfig.levelThree,
+                4: guildConfig.levelFour,
+                5: guildConfig.levelFive
+            };
+            
+            var roleId = await GetHighestRole(user.level, roles);
+            if (roleId) {
+                member.roles.add(roleId).catch(() => {});
 
                 for (var groupMembers of await GroupMemberRepository.find({ where: { userId: member.id } })) {
                     var group = await GuildGroupRepository.findOne({ where: { groupId: groupMembers.groupId } });
@@ -62,31 +74,41 @@ export const GuildMemberAdd: Event = {
                     }
                 }
 
+                var rows = new Array();
+                rows.push(new ActionRowBuilder()
+                    .addComponents([
+                        new ButtonBuilder()
+                            .setStyle(ButtonStyle.Link)
+                            .setLabel(member.guild.name)
+                            .setURL("https://discord.com/channels/" + member.guild.id)
+                    ]));
+
                 var AutoApprovedEmbed = new EmbedBuilder()
                     .setTitle("You've Been Approved")
                     .setThumbnail(member.guild.iconURL())
                     .addFields(
                         { name: "Server ID", value: member.guild.id },
                         { name: "Server Name", value: member.guild.name },
-                        { name: "Type", value: "Admin" },
+                        { name: "Level", value: `${user.level}` },
                         { name: "Auto", value: "True" }
                     )
                     .setFooter({ text: "Enjoy your stay!" })
                     .setColor(0x90EE90);
 
-                await member.send({ embeds: [AutoApprovedEmbed] }).catch(() => {});
+                await member.send({ embeds: [AutoApprovedEmbed], components: rows }).catch(() => {});
 
-                if (g.logChannel) {
-                    var log = await member.guild.channels.fetch(g.logChannel) as TextChannel;
+                if (guildConfig.logChannel) {
+                    var log = await member.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
                     if (!log) return;
         
                     var em = new EmbedBuilder()
-                        .setTitle("Auto Approved Admin")
+                        .setTitle("User Approved")
                         .setThumbnail(member.user.avatarURL())
                         .setColor(0x90EE90)
                         .addFields(
                             { name: "User", value: `<@${member.user.id}>\n${member.user.username}` },
-                            { name: "Type", value: "Admin" }
+                            { name: "Level", value: `${user.level}` },
+                            { name: "Auto", value: "True" }
                         )
         
                     await log.send({
@@ -109,8 +131,8 @@ export const GuildMemberAdd: Event = {
 
             member.kick("Blacklisted").catch(() => {});
 
-            if (g && g.logChannel) {
-                var log = await member.guild.channels.fetch(g.logChannel) as TextChannel;
+            if (guildConfig && guildConfig.logChannel) {
+                var log = await member.guild.channels.fetch(guildConfig.logChannel) as TextChannel;
                 if (!log) return;
     
                 var em = new EmbedBuilder()
@@ -130,12 +152,19 @@ export const GuildMemberAdd: Event = {
             }
     
         } else {
-            if (g && g.pendingChannel) {
-                var existingMessage = await PendingMessageRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
-                if (existingMessage) return;
+            if (guildConfig && guildConfig.pendingChannel) {
+                var pendingChannel = await member.guild.channels.fetch(guildConfig.pendingChannel) as TextChannel;
+                if (!pendingChannel) return;
 
-                var pending = await member.guild.channels.fetch(g.pendingChannel) as TextChannel;
-                if (!pending) return;
+                let pendingMessage = await PendingMessageRepository.findOne({ where: { guildId: member.guild.id, userId: member.id } });
+                if (pendingMessage) {
+                    let existingMessage = await pendingChannel.messages.fetch(pendingMessage.messageId).catch(() => {});
+                    if (!existingMessage) {
+                        await PendingMessageRepository.delete({ _id: pendingMessage._id });
+                    } else {
+                        return;
+                    }
+                }
     
                 var em = new EmbedBuilder()
                     .setTitle("Pending Verification")
@@ -144,22 +173,22 @@ export const GuildMemberAdd: Event = {
                     .addFields(
                         { name: "ID", value: `${member.user.id}` },
                         { name: "User", value: `<@${member.user.id}>` },
-                        { name: "Username", value: `${member.user.username}` }
+                        { name: "Username", value: `${client.capitalize(member.user.username)}` }
                     )
                 
                 var rows = new Array();
 
                 rows.push(new ActionRowBuilder()
                     .addComponents([
-                        new ButtonBuilder(ApproveGuest.config)
+                        new ButtonBuilder(ApproveUser.config)
                             .setCustomId("approve-guest_" + member.id),
                         new ButtonBuilder(DenyUser.config)
                             .setCustomId("deny-user_" + member.id)
                     ])
                 );
                 
-                var msg = await pending.send({
-                    content: g.verificationPing ? `<@&${g.verificationPing}>` : "@everyone",
+                var msg = await pendingChannel.send({
+                    content: guildConfig.verificationPing ? `<@&${guildConfig.verificationPing}>` : "@everyone",
                     embeds: [em],
                     components: rows
                 });

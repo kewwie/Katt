@@ -2,7 +2,6 @@ import { KiwiClient } from "../../../client";
 
 import { dataSource } from "../../../datasource";
 import { GuildPluginEntity } from "../../../entities/GuildPlugin";
-import { GuildAdminEntity } from "../../../entities/GuildAdmin";
 
 import {
     AutocompleteInteraction,
@@ -22,10 +21,10 @@ import {
 /**
  * @type {SlashCommand}
  */
-export const PluginsCmd: SlashCommand = {
+export const PluginSlash: SlashCommand = {
     config: {
-        name: "plugins",
-        description: "Plugins Commands",
+        name: "plugin",
+        description: "Plugin Commands",
         type: CommandTypes.CHAT_INPUT,
         default_member_permissions: Permissions.ManageGuild,
         contexts: [SlashCommandContexts.GUILD],
@@ -33,8 +32,8 @@ export const PluginsCmd: SlashCommand = {
         options: [
             {
                 type: OptionTypes.SUB_COMMAND,
-                name: "add",
-                description: "Add an plugin to the server (Owner Only)",
+                name: "enable",
+                description: "Enable an plugin to the server (Owner Only)",
                 options: [
                     {
                         type: OptionTypes.STRING,
@@ -47,8 +46,8 @@ export const PluginsCmd: SlashCommand = {
             },
             {
                 type: OptionTypes.SUB_COMMAND,
-                name: "remove",
-                description: "Remove an plugin from the server (Owner Only)",
+                name: "disable",
+                description: "Disable an plugin from the server (Owner Only)",
                 options: [
                     {
                         type: OptionTypes.STRING,
@@ -78,14 +77,14 @@ export const PluginsCmd: SlashCommand = {
         for (const plugin of client.PluginManager.plugins) {
             if (plugin.config.disableable) {
                 switch (interaction.options.getSubcommand()) {
-                    case "add": {
+                    case "enable": {
                         var pl = await GuildPluginRepository.findOne({ where: { guildId: interaction.guildId, pluginName: plugin.config.name }})
                         if (!pl) {
                             choices.push(plugin.config.name);
                         }
                         break;
                     }
-                    case "remove": {
+                    case "disable": {
                         var pl = await GuildPluginRepository.findOne({ where: { guildId: interaction.guildId, pluginName: plugin.config.name }})
                         if (pl) {
                             choices.push(plugin.config.name);
@@ -108,18 +107,19 @@ export const PluginsCmd: SlashCommand = {
      * @param {KiwiClient} client
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient) {
-        const GuildAdminRepository = await dataSource.getRepository(GuildAdminEntity);
-        var guildAdmin = await GuildAdminRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
-
-        if (!guildAdmin || guildAdmin.level < 3) {
-            interaction.reply({ content: "You must be the server owner to use this command", ephemeral: true });
+        if (interaction.user.id !== interaction.guild.ownerId) {
+            interaction.reply({
+                content: "You must be the server owner to use this command",
+                ephemeral: true
+            });
             return;
         }
+
 
         const GuildPluginRepository = await dataSource.getRepository(GuildPluginEntity);
 
         switch (interaction.options.getSubcommand()) {
-            case "add":
+            case "enable":
                 var pluginName = interaction.options.getString("plugin");
 
                 if (!client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName).config.disableable) {
@@ -130,19 +130,19 @@ export const PluginsCmd: SlashCommand = {
                 var existingPlugin = await GuildPluginRepository.findOne({ where: { guildId: interaction.guildId, pluginName: pluginName }});
 
                 if (existingPlugin) {
-                    interaction.reply(`The plugin **${pluginName}** is already active`);
+                    interaction.reply({ content: `The plugin **${pluginName}** is already enabled`, ephemeral: true });
                     return;
                 }
 
                 await GuildPluginRepository.insert({ guildId: interaction.guildId, pluginName: pluginName });
 
                 interaction.reply({
-                    content: `Added **${pluginName}** plugin to the server`,
+                    content: `Enabled **${pluginName}** plugin`,
                     ephemeral: true
                 });
                 break;
 
-            case "remove":
+            case "disable":
                 var pluginName = interaction.options.getString("plugin");
 
                 if (!client.PluginManager.plugins.find(plugin => plugin.config.name === pluginName).config.disableable) {
@@ -153,14 +153,14 @@ export const PluginsCmd: SlashCommand = {
                 var existingPlugin = await GuildPluginRepository.findOne({ where: { guildId: interaction.guildId, pluginName: pluginName }});
 
                 if (!existingPlugin) {
-                    interaction.reply(`The plugin **${pluginName}** is not active`);
+                    interaction.reply({ content: `The plugin **${pluginName}** is already disabled`, ephemeral: true });
                     return;
                 }
 
                 await GuildPluginRepository.delete({ guildId: interaction.guildId, pluginName: pluginName });
 
                 interaction.reply({
-                    content: `Removed **${pluginName}** plugin from the server`,
+                    content: `Disabled **${pluginName}** plugin`,
                     ephemeral: true
                 });
                 break;

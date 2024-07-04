@@ -1,11 +1,13 @@
 import { Plugin } from "../../types/plugin";
 
-import { ApproveGuest } from "./buttons/approve-guest";
+import { ApproveUser } from "./buttons/approve-user";
 import { DenyUser } from "./buttons/deny-user";
 
 import { BlacklistSlash } from "./commands/blacklist";
+import { VerifySlash } from "./commands/verify";
 
 import { GuildMemberAdd } from "./events/guildMemberAdd";
+import { GuildReady } from "./events/guildReady";
 
 /**
  * @type {Plugin}
@@ -16,14 +18,16 @@ export const VerificationPlugin: Plugin = {
         disableable: true
     },
     buttons: [
-        ApproveGuest,
+        ApproveUser,
         DenyUser
     ],
     SlashCommands: [
-        BlacklistSlash
+        BlacklistSlash,
+        VerifySlash
     ],
     events: [
-        GuildMemberAdd
+        GuildMemberAdd,
+        GuildReady
     ],
     afterLoad: async () => {
         console.log("Loaded Verification Plugin")

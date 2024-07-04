@@ -1,7 +1,6 @@
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
-	ButtonStyle,
 	ChatInputCommandInteraction,
 } from "discord.js";
 
@@ -16,8 +15,6 @@ import {
 } from "../../../types/command";
 
 import { UpdateList } from "../buttons/update-list";
-
-import { RowBuilder } from "../../../builders/row";
 
 /**
  * @type {SlashCommand}
@@ -75,7 +72,8 @@ export const ListSlash: SlashCommand = {
 
 				for (var i = 0; i < buttons.length; i += 3) {
 					rows.push(
-						new RowBuilder().addComponents(buttons.slice(i, (i + 3))).toJSON()
+						new ActionRowBuilder()
+                    		.addComponents(buttons.slice(i, (i + 3))).toJSON()
 					);
 				}
 

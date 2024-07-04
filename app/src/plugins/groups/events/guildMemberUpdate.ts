@@ -9,6 +9,7 @@ import { Events, Event } from "../../../types/event";
 import { dataSource } from "../../../datasource";
 import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 
 /**
  * @type {Event}
@@ -31,6 +32,10 @@ export const GuildMemberUpdate: Event = {
     async execute(client: KiwiClient, oldMember: GuildMember, newMember: GuildMember) {
         const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
+
+        var isUser = (await GuildUserRepository.findOne({ where: { guildId: newMember.guild.id, userId: newMember.id } }));
+        if (!isUser) return;
             
         newMember.roles.cache.forEach(async (role) => {
             var group = await GuildGroupRepository.findOne({ where: { roleId: role.id } });

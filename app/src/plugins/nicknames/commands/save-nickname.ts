@@ -40,6 +40,6 @@ export const SaveNicknameUser: UserCommand = {
             { userId: member.id, guildId: interaction.guildId, name: member.nickname },
             ["userId", "guildId"]
         );
-        interaction.reply(`Saved **${member.user.username}**'s nickname as **${member.nickname}**`);
+        interaction.reply(`Saved **${client.capitalize(member.user.username)}**s nickname as **${member.nickname}**`);
 	}
 }

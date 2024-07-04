@@ -6,6 +6,7 @@ import { Event, Events } from "../../../types/event";
 import { dataSource } from "../../../datasource";
 import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 
 /**
  * @type {Event}
@@ -27,6 +28,7 @@ export const GuildReady: Event = {
     async execute(client: KiwiClient, guild: Guild) {
         const GuildGroupRepository = await dataSource.getRepository(GuildGroupEntity);
         const GroupMemberRepository = await dataSource.getRepository(GroupMemberEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
 
         var groups = await GuildGroupRepository.find({ where: { guildId: guild.id }});
 
@@ -35,35 +37,34 @@ export const GuildReady: Event = {
 
             for (let member of members) {
                 var guildMember = await guild.members.fetch(member.userId).catch(() => {});
+                if (!guildMember) continue;
 
-                if (guildMember) {
-                    var role = guildMember.roles.cache.find(role => role.id === group.roleId);
-                    if (!role) {
-                        await guildMember.roles.add(group.roleId).catch(() => {});
-                    }
-                }
+                var isUser = (await GuildUserRepository.findOne({ where: { guildId: guild.id, userId: guildMember.id } }));
+                if (!isUser) continue;
+
+                var role = guildMember.roles.cache.find(role => role.id === group.roleId);
+                if (role) continue;
+                await guildMember.roles.add(group.roleId).catch(() => {});
             }
         }
 
-        for (let member of await guild.members.fetch()) {
-            member[1].roles.cache.forEach(async (role) => {
+        for (let member of (await guild.members.fetch()).values()) {
+            for (let role of member.roles.cache.values()) {
                 var group = await GuildGroupRepository.findOne({ where: { roleId: role.id } });
-                if (group) {
-                    var groupMember = await GroupMemberRepository.findOne({ where: { groupId: group.groupId, userId: member[0] } });
-                    if (!groupMember) {
-                        member[1].roles.remove(role.id, "User is not in the group");
-                    }
-                }
-            });
+                if (!group) continue;
+                
+                var groupMember = await GroupMemberRepository.findOne({ where: { groupId: group.groupId, userId: member.id } });
+                if (groupMember) continue;
+                member.roles.remove(role.id, "User is not in the group");
+            }
 
-            for (let memberGroup of await GroupMemberRepository.find({ where: { userId: member[0] } })) {
+            for (let memberGroup of await GroupMemberRepository.find({ where: { userId: member.id } })) {
                 var group = await GuildGroupRepository.findOne({ where: { guildId: guild.id, groupId: memberGroup.groupId } });
-                if (group) {
-                    var role = member[1].roles.cache.find(role => role.id === group.roleId);
-                    if (!role) {
-                        await member[1].roles.add(group.roleId).catch(() => {});
-                    }
-                }
+                if (!group) continue;
+
+                var role = member.roles.cache.find(role => role.id === group.roleId);
+                if (role) continue;
+                await member.roles.add(group.roleId).catch(() => {});
             }
         }
     }

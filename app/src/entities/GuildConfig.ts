@@ -8,14 +8,20 @@ export class GuildConfigEntity {
     @Column({ name: "guild_id", type: "bigint" })
     guildId: string;
 
-    @Column({ name: "guest_role", type: "bigint" })
-    guestRole: string;
+    @Column({ name: "level_one", type: "bigint" })
+    levelOne: string;
 
-    @Column({ name: "member_role", type: "bigint" })
-    memberRole: string;
+    @Column({ name: "level_two", type: "bigint" })
+    levelTwo: string;
 
-    @Column({ name: "admin_role", type: "bigint" })
-    adminRole: string;
+    @Column({ name: "level_three", type: "bigint" })
+    levelThree: string;
+
+    @Column({ name: "level_four", type: "bigint" })
+    levelFour: string;
+
+    @Column({ name: "level_five", type: "bigint" })
+    levelFive: string;
 
     @Column({ name: "log_channel", type: "bigint" })
     logChannel: string;

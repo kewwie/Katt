@@ -4,7 +4,6 @@ import { DenyInvite } from "./buttons/deny-invite";
 
 import { GroupCommand } from "./commands/group";
 import { GuildMemberUpdate } from "./events/guildMemberUpdate";
-import { GuildVerifiedAdd } from "./events/guildVerifiedAdd";
 import { GuildReady } from "./events/guildReady";
 
 /**
@@ -24,7 +23,6 @@ export const GroupsPlugin: Plugin = {
     ],
     events: [
         GuildMemberUpdate,
-        GuildVerifiedAdd,
         GuildReady
     ],
     afterLoad: async () => {

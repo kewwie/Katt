@@ -10,6 +10,7 @@ import {
 import { dataSource } from "../../../datasource";
 import { CustomChannelEntity } from "../../../entities/CustomChannel";
 import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { GuildUserEntity } from "../../../entities/GuildUser";
 
 /**
  * @type {Event}
@@ -32,6 +33,7 @@ export const VoiceStateUpdate: Event = {
     async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
         const CustomChannelRepository = await dataSource.getRepository(CustomChannelEntity);
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
 
         if (newVoiceState.member.user.bot) return;
 
@@ -41,8 +43,9 @@ export const VoiceStateUpdate: Event = {
                 userId: newVoiceState.member.id
             }
         });
+
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: newVoiceState.guild.id } });
-        var roles = newVoiceState.member.roles.cache.map(role => role.id);
+        var isStaff = (await GuildUserRepository.findOne({ where: { guildId: newVoiceState.guild.id, userId: newVoiceState.member.id  } })).level <= 3;
 
         if (customChannel && customChannel.channelId) {
             var channel = await newVoiceState.guild.channels.fetch(customChannel.channelId).catch(() => {});
@@ -54,8 +57,7 @@ export const VoiceStateUpdate: Event = {
 
         if (
             guildConfig &&
-            (roles.includes(guildConfig.adminRole) ||
-            roles.includes(guildConfig.memberRole)) ||
+            isStaff ||
             newVoiceState.channelId === guildConfig.customChannel
         ) {
             if (
