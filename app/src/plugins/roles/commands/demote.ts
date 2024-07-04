@@ -105,7 +105,8 @@ export const DemoteSlash: SlashCommand = {
             return;
         }
 
-        if ((user.level - 1) <= 0) {
+        var member = await interaction.guild.members.fetch(userId);
+        if ((user.level - 1) <= 0 && member) {
             var rows = new Array();
             rows.push(new ActionRowBuilder()
                 .addComponents([
@@ -122,7 +123,6 @@ export const DemoteSlash: SlashCommand = {
             GuildUserRepository.update({ guildId: interaction.guild.id, userId: userId }, { level: user.level - 1 });
             interaction.reply(`**${client.capitalize(user.userName)}** demoted to level **${user.level - 1}**`);
 
-            var member = await interaction.guild.members.fetch(userId);
             if (member) {
                 var roles = {
                     1: guildConfig.levelOne,
