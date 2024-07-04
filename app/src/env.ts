@@ -6,6 +6,9 @@ export const env = {
     CLIENT_ID: process.env.CLIENT_ID as string,
     CLIENT_TOKEN: process.env.CLIENT_TOKEN as string,
 
+    STAFF: (process.env.STAFF).split(",") as string[],
+    STAFF_SERVERS: (process.env.STAFF_SERVERS).split(",") as string[],
+
     DB_HOST: "mysql",
     DB_PORT: process.env.DATABASE_PORT,
     DB_USER: "iwek",
