@@ -97,45 +97,6 @@ export class CreateDefaultTables1712735349383 implements MigrationInterface {
 
         await queryRunner.createTable(
             new Table({
-                name: "guild_users",
-                columns: [
-                    {
-                        name: "_id",
-                        type: "int",
-                        isPrimary: true,
-                        isGenerated: true,
-                        generationStrategy: "increment"
-                    },
-                    {
-                        name: "guild_id",
-                        type: "bigint",
-                        unsigned: true,
-                        isNullable: false
-                    },
-                    {
-                        name: "user_id",
-                        type: "bigint",
-                        unsigned: true,
-                        isNullable: false
-                    },
-                    {
-                        name: "user_name",
-                        type: "varchar",
-                        length: "32",
-                        isNullable: false
-                    },
-                    {
-                        name: "level",
-                        type: "int",
-                        unsigned: true,
-                        isNullable: false
-                    }
-                ]
-            })
-        );
-
-        await queryRunner.createTable(
-            new Table({
                 name: "guild_plugins",
                 columns: [
                     {
@@ -164,7 +125,6 @@ export class CreateDefaultTables1712735349383 implements MigrationInterface {
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.dropTable("guild_config");
-        await queryRunner.dropTable("guild_admins");
         await queryRunner.dropTable("guild_plugins");
     }
 }
