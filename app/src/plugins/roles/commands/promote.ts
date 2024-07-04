@@ -115,9 +115,8 @@ export const PromoteSlash: SlashCommand = {
             
             var highestRole = await GetHighestRole(user.level + 1, roles);
             member.roles.add(highestRole).catch(() => {});
-            var memberRoles = member.roles.cache;
             for (let roleId of Object.values(roles)) {
-                if (roleId !== highestRole && memberRoles.has(roleId)) {
+                if (roleId !== highestRole && member.roles.cache.has(roleId)) {
                     member.roles.remove(roleId).catch(() => {});
                 }
             }
