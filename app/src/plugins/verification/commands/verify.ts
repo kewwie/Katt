@@ -24,6 +24,8 @@ import { PendingMessageEntity } from "../../../entities/PendingMessage";
 import { GuildGroupEntity } from "../../../entities/GuildGroup";
 import { GroupMemberEntity } from "../../../entities/GroupMember";
 
+import { GetHighestRole } from "../../roles/functions/getHighestRole";
+
 /**
  * @type {SlashCommand}
  */
@@ -59,13 +61,13 @@ export const VerifySlash: SlashCommand = {
      async autocomplete(interaction: AutocompleteInteraction, client: KiwiClient) {
         const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
         var guildConfig = await GuildConfigRepository.findOne({ where: { guildId: interaction.guild.id } });
-        let roles = {
-            levelFive: guildConfig?.levelFive,
-            levelFour: guildConfig?.levelFour,
-            levelThree: guildConfig?.levelThree,
-            levelTwo: guildConfig?.levelTwo,
-            levelOne: guildConfig?.levelOne
-        }
+        var roles = {
+            1: guildConfig.levelOne,
+            2: guildConfig.levelTwo,
+            3: guildConfig.levelThree,
+            4: guildConfig.levelFour,
+            5: guildConfig.levelFive
+        };
 
         let focusedValue = interaction.options.getFocused().toLowerCase();
         let choices = (await interaction.guild.members.fetch())
@@ -111,7 +113,7 @@ export const VerifySlash: SlashCommand = {
             interaction.reply("User not found");
             return;
         }
-        
+
         let silent = interaction.options.getBoolean("silent");
 
         let self = await GuildUserRepository.findOne({ where: { guildId: interaction.guild.id, userId: interaction.user.id } });
@@ -126,7 +128,7 @@ export const VerifySlash: SlashCommand = {
             return;
         }
 
-        if (!guildConfig.levelOne) {
+        if (!guildConfig?.levelOne) {
             interaction.followUp({ content: "Level One role is not set in config", ephemeral: true })
             return;
         }
