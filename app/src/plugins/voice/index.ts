@@ -1,6 +1,7 @@
 import { Plugin } from "../../types/plugin";
 
 import { VoiceSlash } from "./commands/voice";
+import { JoinedSlash } from "./commands/joined";
 
 import { VoiceActivityUser } from "./commands/voice-activity";
 
@@ -16,7 +17,8 @@ export const VoicePlugin: Plugin = {
         disableable: true
     },
     SlashCommands: [
-        VoiceSlash
+        VoiceSlash,
+        JoinedSlash
     ],
     UserCommands: [
         VoiceActivityUser
