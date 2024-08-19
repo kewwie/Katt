@@ -1,19 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, ObjectIdColumn } from 'typeorm';
 
 @Entity("voice_activity")
 export class VoiceActivityEntity {
-    @PrimaryGeneratedColumn()
+    @ObjectIdColumn()
     _id: number;
 
     @Column({ name: "guild_id", type: 'bigint' })
-    guildId: string;
+    guildId: string | null = null;
 
     @Column({ name: "user_id", type: 'bigint' })
-    userId: string;
+    userId: string | null = null;
 
     @Column({ name: "user_name", type: 'varchar' })
-    userName: string;
+    userName: string | null = null;
 
     @Column({ name: "seconds", type: 'int' })
-    seconds: number;
+    seconds: number | null = null;
 }

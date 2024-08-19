@@ -1,16 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, ObjectIdColumn } from "typeorm";
 
 @Entity("voice_states")
 export class VoiceStateEntity {
-    @PrimaryGeneratedColumn()
+    @ObjectIdColumn()
     _id: number;
 
     @Column({ name: "guild_id", type: 'bigint' })
-    guildId: string;
+    guildId: string | null = null;
 
     @Column({ name: "user_id", type: 'bigint' })
-    userId: string;
+    userId: string | null = null;
 
     @Column({ name: "join_time", type: 'datetime' })
-    joinTime: Date;
+    joinTime: Date | null = null;
 }

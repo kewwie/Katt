@@ -1,46 +1,46 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, ObjectIdColumn } from "typeorm";
 
 @Entity("guild_config")
 export class GuildConfigEntity {
-    @PrimaryGeneratedColumn()
+    @ObjectIdColumn()
     _id: number;
 
     @Column({ name: "guild_id", type: "bigint" })
-    guildId: string;
+    guildId: string | null = null;
 
     @Column({ name: "level_one", type: "bigint" })
-    levelOne: string;
+    levelOne: string | null = null;
 
     @Column({ name: "level_two", type: "bigint" })
-    levelTwo: string;
+    levelTwo: string | null = null;
 
     @Column({ name: "level_three", type: "bigint" })
-    levelThree: string;
+    levelThree: string | null = null;
 
     @Column({ name: "level_four", type: "bigint" })
-    levelFour: string;
+    levelFour: string | null = null;
 
     @Column({ name: "level_five", type: "bigint" })
-    levelFive: string;
+    levelFive: string | null = null;
 
     @Column({ name: "log_channel", type: "bigint" })
-    logChannel: string;
+    logChannel: string | null = null;
 
     @Column({ name: "pending_channel", type: "bigint" })
-    pendingChannel: string;
+    pendingChannel: string | null = null;
 
     @Column({ name: "verification_ping", type: "bigint" })
-    verificationPing: string;
+    verificationPing: string | null = null;
 
     @Column({ name: "welcome_channel", type: "bigint" })
-    welcomeChannel: string;
+    welcomeChannel: string | null = null;
 
     @Column({ name: "welcome_message", type: "text" })
-    welcomeMessage: string;
+    welcomeMessage: string | null = null;
 
     @Column({ name: "custom_category", type: "bigint" })
-    customCategory: string;
+    customCategory: string | null = null;
 
     @Column({ name: "custom_channel", type: "bigint" })
-    customChannel: string;
+    customChannel: string | null = null;
 }

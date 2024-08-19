@@ -1,19 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, ObjectIdColumn } from 'typeorm';
 
 @Entity("custom_channels")
 export class CustomChannelEntity {
-    @PrimaryGeneratedColumn()
+    @ObjectIdColumn()
     _id: number;
 
     @Column({ name: "guild_id", type: 'bigint' })
-    guildId: string;
+    guildId: string = null;
 
     @Column({ name: "user_id", type: 'bigint' })
-    userId: string;
+    userId: string = null;
 
     @Column({ name: "channel_id", type: 'bigint' })
-    channelId: string;
+    channelId: string = null;
 
     @Column({ name: "channel_name", type: 'varchar' })
-    channelName: string;
+    channelName: string = null;
 }

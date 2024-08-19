@@ -1,16 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, ObjectIdColumn } from 'typeorm';
 
 @Entity('group_members')
 export class GroupMemberEntity {
-    @PrimaryGeneratedColumn()
+    @ObjectIdColumn()
     _id: number;
 
     @Column({ name: "group_id", type: 'bigint' })
-    groupId: string;
+    groupId: string | null = null;
 
     @Column({ name: "user_id", type: 'bigint' })
-    userId: string;
+    userId: string | null = null;
 
     @Column({ name: "user_name", type: 'varchar' })
-    userName: string;
+    userName: string | null = null;
 }

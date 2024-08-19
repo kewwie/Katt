@@ -1,19 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, ObjectIdColumn } from 'typeorm';
 
 @Entity({ name: 'message_activity' })
 export class MessageActivityEntity {
-    @PrimaryGeneratedColumn()
+    @ObjectIdColumn()
     _id: number;
 
     @Column({ name: "guild_id", type: "bigint" })
-    guildId: string;
+    guildId: string | null = null;
 
     @Column({ name: "user_id", type: 'bigint' })
-    userId: string;
+    userId: string | null = null;
 
     @Column({ name: "user_name", type: 'varchar' })
-    userName: string;
+    userName: string | null = null;
 
     @Column({ name: "amount", type: 'int' })
-    amount: number;
+    amount: number | null = null;
 }

@@ -1,22 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, ObjectIdColumn, Column } from "typeorm";
 
 @Entity("user_verified")
 export class UserVerifiedEntity {
-    @PrimaryGeneratedColumn()
+    @ObjectIdColumn()
     _id: number;
 
     @Column({ name: "guild_id", type: "bigint" })
-    guildId: string;
+    guildId: string | null = null;
 
     @Column({ name: "user_id", type: "bigint" })
-    userId: string;
+    userId: string | null = null;
 
     @Column({ name: "user_name", type: "varchar" })
-    userName: string;
+    userName: string | null = null;
 
     @Column({ name: "mod_id", type: "bigint" })
-    modId: string;
+    modId: string | null = null;
 
     @Column({ name: "mod_name", type: "varchar" })
-    modName: string;
+    modName: string | null = null;
 }
