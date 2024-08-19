@@ -6,14 +6,14 @@ export class CustomChannelEntity {
     _id: number;
 
     @Column({ name: "guild_id", type: 'bigint' })
-    guildId: string = null;
+    guildId: string | null = null;
 
     @Column({ name: "user_id", type: 'bigint' })
-    userId: string = null;
+    userId: string | null = null;
 
     @Column({ name: "channel_id", type: 'bigint' })
-    channelId: string = null;
+    channelId: string | null = null;
 
     @Column({ name: "channel_name", type: 'varchar' })
-    channelName: string = null;
+    channelName: string | null = null;
 }
