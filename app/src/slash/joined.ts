@@ -2,7 +2,7 @@ import {
 	ChatInputCommandInteraction
 } from "discord.js";
 
-import { KiwiClient } from "../../../client";
+import { KiwiClient } from "../client";
 
 import { 
 	CommandTypes,
@@ -10,10 +10,10 @@ import {
 	IntegrationTypes,
 	OptionTypes,
     SlashCommand
-} from "../../../types/command";
+} from "../types/command";
 
-import { dataSource } from "../../../datasource";
-import { VoiceStateEntity } from "../../../entities/VoiceState";
+import { dataSource } from "../datasource";
+import { VoiceStateEntity } from "../entities/VoiceState";
 
 /**
  * @type {SlashCommand}
@@ -22,13 +22,13 @@ export const JoinedSlash: SlashCommand = {
 	config: {
         name: "joined",
         description: "See when a user joined a voice channel",
-        type: CommandTypes.CHAT_INPUT,
-        default_member_permissions: null,
-        contexts: [SlashCommandContexts.GUILD],
-        integration_types: [IntegrationTypes.GUILD],
+        type: CommandTypes.ChatInput,
+        defaultMemberPermissions: null,
+        contexts: [SlashCommandContexts.Guild],
+        integration_types: [IntegrationTypes.Guild],
         options: [
             {
-                type: OptionTypes.USER,
+                type: OptionTypes.User,
                 name: "user",
                 description: "The user you want to see the join time of",
                 required: false

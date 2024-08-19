@@ -1,8 +1,8 @@
-import { KiwiClient } from "../client";
-import { Button } from "../types/component";
+import { KiwiClient } from "./client";
+import { Button } from "./types/component";
 
-import { dataSource } from "../datasource";
-import { GuildPluginEntity } from "../entities/GuildPlugin";
+import { dataSource } from "./datasource";
+import { GuildPluginEntity } from "./entities/GuildPlugin";
 import { MessageComponentInteraction } from "discord.js";
 
 export class ComponentManager {

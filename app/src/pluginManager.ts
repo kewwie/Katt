@@ -1,6 +1,6 @@
-import { KiwiClient } from "../client";
-import { Events } from "../types/event";
-import { Plugin } from "../types/plugin";
+import { KiwiClient } from "./client";
+import { Events } from "./types/event";
+import { Plugin } from "./types/plugin";
 
 export class PluginManager {
     public client: KiwiClient

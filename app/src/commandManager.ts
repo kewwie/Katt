@@ -1,11 +1,11 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
-import { env } from "../env";
-import { KiwiClient } from "../client";
-import { SlashCommand, UserCommand } from "../types/command";
+import { env } from "./env";
+import { KiwiClient } from "./client";
+import { SlashCommand, UserCommand } from "./types/command";
 
-import { dataSource } from "../datasource";
-import { GuildPluginEntity } from "../entities/GuildPlugin";
+import { dataSource } from "./datasource";
+import { GuildPluginEntity } from "./entities/GuildPlugin";
 import { AutocompleteInteraction, Interaction, InteractionResponse } from "discord.js";
 
 export class CommandManager {

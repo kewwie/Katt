@@ -2,7 +2,7 @@ import {
 	ChatInputCommandInteraction
 } from "discord.js";
 
-import { KiwiClient } from "../../../client";
+import { KiwiClient } from "../client";
 
 import { 
 	CommandTypes,
@@ -12,10 +12,10 @@ import {
 	OptionTypes,
 	Permissions,
     SlashCommand
-} from "../../../types/command";
+} from "../types/command";
 
-import { dataSource } from "../../../datasource";
-import { NicknameEntity } from "../../../entities/Nickname";
+import { dataSource } from "../datasource";
+import { NicknameEntity } from "../entities/Nickname";
 
 /**
  * @type {SlashCommand}
@@ -24,18 +24,18 @@ export const NicknameSlash: SlashCommand = {
 	config: {
         name: "nickname",
         description: "Nickname Commands",
-        type: CommandTypes.CHAT_INPUT,
-        default_member_permissions: Permissions.ManageGuild,
-        contexts: [SlashCommandContexts.GUILD],
-        integration_types: [IntegrationTypes.GUILD],
+        type: CommandTypes.ChatInput,
+        defaultMemberPermissions: Permissions.ManageGuild,
+        contexts: [SlashCommandContexts.Guild],
+        integration_types: [IntegrationTypes.Guild],
         options: [
             {
-                type: OptionTypes.SUB_COMMAND,
+                type: OptionTypes.SubCommand,
                 name: "save",
                 description: "Saves a users nickname",
                 options: [
                     {
-                        type: OptionTypes.USER,
+                        type: OptionTypes.User,
                         name: "user",
                         description: "The user to save the nickname for",
                         required: true
@@ -43,23 +43,23 @@ export const NicknameSlash: SlashCommand = {
                 ]
             },
             {
-                type: OptionTypes.SUB_COMMAND,
+                type: OptionTypes.SubCommand,
                 name: "save-all",
                 description: "Saves every users nickname",
             },
             {
-                type: OptionTypes.SUB_COMMAND,
+                type: OptionTypes.SubCommand,
                 name: "set",
                 description: "Set a users nickname",
                 options: [
                     {
-                        type: OptionTypes.STRING,
+                        type: OptionTypes.String,
                         name: "nickname",
                         description: "The nickname to set",
                         required: true
                     },
                     {
-                        type: OptionTypes.USER,
+                        type: OptionTypes.User,
                         name: "user",
                         description: "The user to save the nickname for",
                         required: false

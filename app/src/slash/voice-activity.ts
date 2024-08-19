@@ -2,15 +2,15 @@ import {
 	UserContextMenuCommandInteraction
 } from "discord.js";
 
-import { KiwiClient } from "../../../client";
+import { KiwiClient } from "../client";
 
 import { 
 	CommandTypes,
     UserCommand
-} from "../../../types/command";
+} from "../types/command";
 
-import { dataSource } from "../../../datasource";
-import { VoiceActivityEntity } from "../../../entities/VoiceActivity";
+import { dataSource } from "../datasource";
+import { VoiceActivityEntity } from "../entities/VoiceActivity";
 
 /**
  * @type {UserCommand}
@@ -18,7 +18,7 @@ import { VoiceActivityEntity } from "../../../entities/VoiceActivity";
 export const VoiceActivityUser: UserCommand = {
 	config: {
         name: "View Voice Activity",
-        type: CommandTypes.USER
+        type: CommandTypes.User
     },
 
 	/**

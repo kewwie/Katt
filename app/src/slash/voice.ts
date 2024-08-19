@@ -2,7 +2,7 @@ import {
 	ChatInputCommandInteraction
 } from "discord.js";
 
-import { KiwiClient } from "../../../client";
+import { KiwiClient } from "../client";
 
 import { 
 	CommandTypes,
@@ -10,30 +10,31 @@ import {
 	IntegrationTypes,
 	OptionTypes,
     SlashCommand
-} from "../../../types/command";
+} from "../types/command";
 
-import { dataSource } from "../../../datasource";
-import { VoiceActivityEntity } from "../../../entities/VoiceActivity";
+import { dataSource } from "../datasource";
+import { VoiceActivityEntity } from "../entities/VoiceActivity";
 
 /**
  * @type {SlashCommand}
  */
-export const VoiceSlash: SlashCommand = {
+export const VoiceCommand: SlashCommand = {
+    pluginName: "Voice",
 	config: {
         name: "voice",
         description: "Voice Commands",
-        type: CommandTypes.CHAT_INPUT,
-        default_member_permissions: null,
-        contexts: [SlashCommandContexts.GUILD],
-        integration_types: [IntegrationTypes.GUILD],
+        type: CommandTypes.ChatInput,
+        defaultMemberPermissions: null,
+        contexts: [SlashCommandContexts.Guild],
+        integration_types: [IntegrationTypes.Guild],
         options: [
             {
-                type: OptionTypes.SUB_COMMAND,
+                type: OptionTypes.SubCommand,
                 name: "activity",
                 description: "View a users voice chat activity",
                 options: [
                     {
-                        type: OptionTypes.USER,
+                        type: OptionTypes.User,
                         name: "user",
                         description: "The user you want to check the activity of",
                         required: false
@@ -41,7 +42,7 @@ export const VoiceSlash: SlashCommand = {
                 ]
             },
             {
-                type: OptionTypes.SUB_COMMAND,
+                type: OptionTypes.SubCommand,
                 name: "leaderboard",
                 description: "View the voice chat leaderboard",
             }
@@ -53,8 +54,6 @@ export const VoiceSlash: SlashCommand = {
     * @param {KiwiClient} client
     */
 	async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        const VoiceActivityRepository = await dataSource.getRepository(VoiceActivityEntity);
-
         const vl = new Intl.NumberFormat("en-US", {
             minimumFractionDigits: 1,
             maximumFractionDigits: 2
@@ -72,9 +71,7 @@ export const VoiceSlash: SlashCommand = {
                     return;
                 } 
 
-                var voiceActivity = await VoiceActivityRepository.findOne(
-                    { where: { userId: user.id, guildId: interaction.guild.id } }
-                );
+                var voiceActivity = await client.DatabaseManager.getVoiceActivity(interaction.guild.id, user.id);
 
                 if (!voiceActivity || voiceActivity.seconds < 0) {
                     interaction.reply("No voice activity found for this user");
@@ -97,9 +94,7 @@ export const VoiceSlash: SlashCommand = {
                 break;
             }
             case "leaderboard": {
-                var voiceActivities = await VoiceActivityRepository.find(
-                    { where: { guildId: interaction.guild.id }, order: { seconds: "DESC" }, take: 10 }
-                );
+                var voiceActivities = await client.DatabaseManager.getVoiceActivityLeaderboard(interaction.guildId);
 
                 var leaderboard = voiceActivities.map((va, i) => {
                     return `${i + 1}. **${client.capitalize(va.userName)}** - ${vl.format(va.seconds / (60 * 60))} hours`;

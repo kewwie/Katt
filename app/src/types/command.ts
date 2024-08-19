@@ -1,12 +1,18 @@
 import { KiwiClient } from "../client";
 import { Plugin } from "./plugin";
 
-import { ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
+import { 
+    ApplicationCommand,
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+    AutocompleteInteraction,
+} from "discord.js";
 
 export interface UserCommand {
     plugin?: Plugin;
+    pluginName?: string;
     config: {
-        type: CommandTypes.USER;
+        type: CommandTypes.User;
         name: string;
     };
     execute: (interaction, client: KiwiClient) => Promise<void>;
@@ -14,11 +20,12 @@ export interface UserCommand {
 
 export interface SlashCommand {
     plugin?: Plugin;
+    pluginName?: string;
     config: {
-        type: CommandTypes.CHAT_INPUT;
+        type: CommandTypes.ChatInput;
         name: string;
         description: string;
-        default_member_permissions?: Permissions | null;
+        defaultMemberPermissions?: Permissions | null;
         contexts: SlashCommandContexts[];
         integration_types: IntegrationTypes[];
         options?: CommandOption[];
@@ -44,50 +51,50 @@ export interface Choice {
 }
 
 export enum CommandTypes {
-    CHAT_INPUT = 1,
-    USER = 2,
-    MESSAGE = 3
+    ChatInput = 1,
+    User = 2,
+    Message = 3
 }
 
 export enum SlashCommandContexts {
-    GUILD = 0,
-    BOT_DM = 1,
-    PRIVATE_CHANNEL = 2
+    Guild = 0,
+    BotDm = 1,
+    PrivateChannel = 2
 }
 
 export enum IntegrationTypes {
-    GUILD = 0,
-    USER = 1
+    Guild = 0,
+    User = 1
 }
 
 export enum OptionTypes {
-    SUB_COMMAND = 1,
-    SUB_COMMAND_GROUP = 2,
-    STRING = 3,
-    INTEGER = 4,
-    BOOLEAN = 5,
-    USER = 6,
-    CHANNEL = 7,
-    ROLE = 8,
-    MENTIONABLE = 9,
-    NUMBER = 10,
-    ATTACHMENT = 11
+    SubCommand = 1,
+    SubCommandGroup = 2,
+    String = 3,
+    Integer = 4,
+    Boolean = 5,
+    User = 6,
+    Channel = 7,
+    Role = 8,
+    Mentionable = 9,
+    Number = 10,
+    Attachment = 11
 }
 
 export enum ChannelTypes {
-    GUILD_TEXT = 0,
-    DM = 1,
-    GUILD_VOICE = 2,
-    GROUP_DM = 3,
-    GUILD_CATEGORY = 4,
-    GUILD_ANNOUNCEMENT = 5,
-    ANNOUNCEMENT_THREAD = 10,
-    PUBLIC_THREAD = 11,
-    PRIVATE_THREAD = 12,
-    GUILD_STAGE_VOICE = 13,
-    GUILD_DIRECTORY = 14,
-    GUILD_FORUM = 15,
-    GUILD_MEDIA = 16
+    GuildText = 0,
+    Dm = 1,
+    GuildVoice = 2,
+    GroupDm = 3,
+    GuildCategory = 4,
+    GuildAnnouncement = 5,
+    AnnouncementThread = 10,
+    PublicThread = 11,
+    PrivateThread = 12,
+    GuildStageVoice = 13,
+    GuildDirectory = 14,
+    GuildForum = 15,
+    GuildMedia = 16
 }
 
 export enum Permissions {

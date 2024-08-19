@@ -15,5 +15,5 @@ export class VoiceActivityEntity {
     userName: string | null = null;
 
     @Column({ name: "seconds", type: 'int' })
-    seconds: number | null = null;
+    seconds: number | null = 0;
 }

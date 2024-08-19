@@ -1,9 +1,9 @@
 import { Plugin } from "../../types/plugin";
 
-import { VoiceSlash } from "./commands/voice";
-import { JoinedSlash } from "./commands/joined";
+import { VoiceSlash } from "../../slash/voice";
+import { JoinedSlash } from "../../slash/joined";
 
-import { VoiceActivityUser } from "./commands/voice-activity";
+import { VoiceActivityUser } from "../../slash/voice-activity";
 
 import { GuildReady } from "./events/guildReady";
 import { VoiceStateUpdate } from "./events/voiceStateUpdate";

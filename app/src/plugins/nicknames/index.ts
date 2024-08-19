@@ -1,8 +1,8 @@
 import { Plugin } from "../../types/plugin";
 
-import { NicknameSlash } from "./commands/nickname";
+import { NicknameSlash } from "../../slash/nickname";
 
-import { SaveNicknameUser } from "./commands/save-nickname";
+import { SaveNicknameUser } from "../../slash/save-nickname";
 
 import { GuildMemberAdd } from "./events/guildMemberAdd";
 import { GuildMemberUpdate } from "./events/guildMemberUpdate";

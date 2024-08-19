@@ -9,12 +9,12 @@ import {
 
 import { DatabaseManager } from "./databaseManager";
 
-import { PluginManager } from "./managers/plugin";
+import { PluginManager } from "./pluginManager";
 import { Plugins } from "./plugins/plugins";
 
-import { CommandManager } from "./managers/command";
-import { ComponentManager } from "./managers/component";
-import { EventManager } from "./managers/event";
+import { CommandManager } from "./commandManager";
+import { ComponentManager } from "./componentManager";
+import { EventManager } from "./eventManager";
 import { LoopManager } from "./managers/loop";
 
 import { Button } from "./types/component";
