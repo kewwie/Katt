@@ -2,16 +2,16 @@ import { DataSource, DataSourceOptions } from "typeorm";
 import { env } from "./env";
 
 export const dataSourceOptions: DataSourceOptions = {
-    type: "mysql",
-    host: env.DB_HOST,
-    port: parseInt(env.DB_PORT || "3306"),
-    username: env.DB_USER,
-    password: env.DB_PASSWORD,
-    database: env.DB_DATABASE,
-    entities: ['dist/**/entities/*.js'],
-    //logging: ["error", "query"],
-    synchronize: false,
-    debug: false,
+    type: "mongodb",
+    url: env.DATABASE_URL,
+    database: env.DATABASE_NAME,
+    useUnifiedTopology: true,
+    synchronize: true,  // Set to false in production
+    logging: ["error", "query"],
+    entities: [
+        __dirname + '/**/entities/*.ts',
+        __dirname + '/**/entities/*.js'
+    ]
 }
 
 export const dataSource = new DataSource(dataSourceOptions);
