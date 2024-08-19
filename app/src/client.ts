@@ -7,6 +7,8 @@ import {
     ClientPresenceStatus
 } from "discord.js";
 
+import { DatabaseManager } from "./databaseManager";
+
 import { PluginManager } from "./managers/plugin";
 import { Plugins } from "./plugins/plugins";
 
@@ -32,6 +34,7 @@ export class KiwiClient extends Client {
     public events: Collection<string, Event>
     public loops: Collection<string, Loop>;
 
+    public DatabaseManager: DatabaseManager;
     public PluginManager: PluginManager;
     public CommandManager: CommandManager;
     public ComponentManager: ComponentManager;
@@ -72,6 +75,9 @@ export class KiwiClient extends Client {
         this.events = new Collection();
         this.buttons = new Collection();
         this.loops = new Collection();
+
+        // Database Manager
+        this.DatabaseManager = new DatabaseManager(this);
 
         // Plugin Manager
         this.PluginManager = new PluginManager(this);
