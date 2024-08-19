@@ -47,7 +47,6 @@ ___
 #### 4. Contact Information
 - Email - me@kewwie.com
 - X/Twitter - [@k3wwie](https://x.com/k3wwie)
-- [Bug Reports](https://github.com/kewwie/kewiapp/issues)
-- [Support](https://api.kewwie.com/join/kewi)
+- [Bug Reports](https://github.com/kewwie/iwek/issues)
 
 ---
