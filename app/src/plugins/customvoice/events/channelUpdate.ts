@@ -24,7 +24,7 @@ export const ChannelUpdate: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, oldChannel: GuildChannel, newChannel: GuildChannel) {
-        const CustomChannelRepository = await dataSource.getRepository(CustomChannelEntity);
+        const CustomChannelRepository = await dataSource.getMongoRepository(CustomChannelEntity);
 
         var customChannel = await CustomChannelRepository.findOne({
             where: {

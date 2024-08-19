@@ -26,9 +26,9 @@ export const GuildReady: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, guild: Guild) {
-        const CustomChannelRepository = await dataSource.getRepository(CustomChannelEntity);
-        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
-        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
+        const CustomChannelRepository = await dataSource.getMongoRepository(CustomChannelEntity);
+        const GuildConfigRepository = await dataSource.getMongoRepository(GuildConfigEntity);
+        const GuildUserRepository = await dataSource.getMongoRepository(GuildUserEntity);
 
         var customChannels = await CustomChannelRepository.find({ where: { guildId: guild.id } });
         for (let customChannel of customChannels) {

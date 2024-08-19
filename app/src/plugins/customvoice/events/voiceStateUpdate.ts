@@ -31,9 +31,9 @@ export const VoiceStateUpdate: Event = {
     * @param {VoiceState} newVoiceState
     */
     async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
-        const CustomChannelRepository = await dataSource.getRepository(CustomChannelEntity);
-        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
-        const GuildUserRepository = await dataSource.getRepository(GuildUserEntity);
+        const CustomChannelRepository = await dataSource.getMongoRepository(CustomChannelEntity);
+        const GuildConfigRepository = await dataSource.getMongoRepository(GuildConfigEntity);
+        const GuildUserRepository = await dataSource.getMongoRepository(GuildUserEntity);
 
         if (newVoiceState.member.user.bot) return;
 
