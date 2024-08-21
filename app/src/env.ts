@@ -7,7 +7,7 @@ export const env = {
     CLIENT_TOKEN: process.env.CLIENT_TOKEN as string,
 
     PREFIX: "!",
-    STAFF: (process.env.STAFF?.split(",") || []) as string[],
+    STAFF_USERS: (process.env.STAFF_USERS?.split(",") || []) as string[],
     STAFF_SERVERS: (process.env.STAFF_SERVERS?.split(",") || []) as string[],
 
     DATABASE_URL: process.env.DATABASE_URL as string,
