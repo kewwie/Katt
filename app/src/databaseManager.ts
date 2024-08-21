@@ -50,15 +50,6 @@ export class DatabaseManager {
         return await this.getConfigForGuild(guildId);
     }
 
-    /*public async setGuildConfig(guildId: string, config: GuildConfigEntity) {
-        await this.repositories.config.save(config);
-    }
-
-    public async updateGuildConfig(guildId: string, config: Partial<GuildConfigEntity>) {
-        let currentConfig = await this.getConfigForGuild(guildId);
-        await this.repositories.config.update(currentConfig, config);
-    } */
-
     private async createVoiceActivityForUser(userId: string, guildId: string) {
         let voiceActivity = new VoiceActivityEntity();
         voiceActivity.userId = userId;
@@ -80,9 +71,9 @@ export class DatabaseManager {
         return await this.GetVoiceActivityForUser(userId, guildId);
     }
 
-    public async getVoiceActivityLeaderboard(guildId: string) {
+    public async getVoiceActivityLeaderboard(guildId: string, amount: number) {
         let voiceLeaderboard = await this.repositories.voiceActivity.find(
-            { where: { guildId: guildId }, order: { seconds: "DESC" }, take: 10 }
+            { where: { guildId: guildId }, order: { seconds: "DESC" }, take: amount }
         );
         return voiceLeaderboard;
     }

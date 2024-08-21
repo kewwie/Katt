@@ -94,7 +94,7 @@ export const VoiceCommand: SlashCommand = {
                 break;
             }
             case "leaderboard": {
-                var voiceActivities = await client.DatabaseManager.getVoiceActivityLeaderboard(interaction.guildId);
+                var voiceActivities = await client.DatabaseManager.getVoiceActivityLeaderboard(interaction.guildId, 10);
 
                 var leaderboard = voiceActivities.map((va, i) => {
                     return `${i + 1}. **${client.capitalize(va.userName)}** - ${vl.format(va.seconds / (60 * 60))} hours`;
