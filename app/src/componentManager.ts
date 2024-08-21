@@ -14,7 +14,7 @@ export class ComponentManager {
 
     public loadButtons(buttons: Button[]) {
         for (var button of buttons) {
-            this.client.buttons.set(button.config.custom_id, button);
+            this.client.Buttons.set(button.config.custom_id, button);
         }
     }
 
@@ -23,7 +23,7 @@ export class ComponentManager {
 
         if (interaction.isButton()) {
             const buttonId = (interaction.customId).split("_")[0];
-            const button = this.client.buttons.get(buttonId);
+            const button = this.client.Buttons.get(buttonId);
 
             if (!button) return;
 

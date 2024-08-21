@@ -34,6 +34,13 @@ export class DatabaseManager {
         }
     }
 
+    public async createGuildConfig(guildId: string) {
+        let guildConfig = new GuildConfigEntity();
+        guildConfig.guildId = guildId;
+        await this.repos.config.save(guildConfig);
+        return guildConfig;
+    }
+
     public async getGuildConfig(guildId: string) {
         return await this.repos.config.findOne({ where: { guildId: guildId } });
     }
