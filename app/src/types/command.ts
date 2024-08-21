@@ -6,11 +6,28 @@ import {
     ApplicationCommandType,
     ChatInputCommandInteraction,
     AutocompleteInteraction,
+    Message
 } from "discord.js";
+
+export interface PrefixCommand {
+    premission_level?: number;
+    config: {
+        name: string;
+        description?: string;
+    };
+    execute: (message: Message, commandOptions: CommandOptions, client: KiwiClient) => Promise<void>;
+}
+
+export interface CommandOptions {
+    commandName: string;
+    auther: string;
+    args: string[];
+}
 
 export interface UserCommand {
     plugin?: Plugin;
     pluginName?: string;
+    premissionLevel?: number;
     config: {
         type: CommandTypes.User;
         name: string;
@@ -21,6 +38,7 @@ export interface UserCommand {
 export interface SlashCommand {
     plugin?: Plugin;
     pluginName?: string;
+    premissionLevel?: number;
     config: {
         type: CommandTypes.ChatInput;
         name: string;

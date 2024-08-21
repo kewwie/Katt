@@ -1,7 +1,7 @@
-import { KiwiClient } from "../../../client";
+import { KiwiClient } from "../client";
 
-import { dataSource } from "../../../datasource";
-import { GuildConfigEntity } from "../../../entities/GuildConfig";
+import { dataSource } from "../datasource";
+import { GuildConfigEntity } from "../entities/GuildConfig";
 
 import {
     AutocompleteInteraction,
@@ -17,7 +17,7 @@ import {
     OptionTypes,
     Permissions,
     SlashCommand
-} from "../../../types/command";
+} from "../types/command";
 
 /**
  * @type {SlashCommand}
@@ -26,25 +26,25 @@ export const ConfigSlash: SlashCommand = {
     config: {
         name: "config",
         description: "Config Commands",
-        type: CommandTypes.CHAT_INPUT,
-        default_member_permissions: Permissions.ManageGuild,
-        contexts: [SlashCommandContexts.GUILD],
-        integration_types: [IntegrationTypes.GUILD],
+        type: CommandTypes.ChatInput,
+        defaultMemberPermissions: Permissions.ManageGuild,
+        contexts: [SlashCommandContexts.Guild],
+        integration_types: [IntegrationTypes.Guild],
         options: [
             {
-                type: OptionTypes.SUB_COMMAND,
+                type: OptionTypes.SubCommand,
                 name: "set",
                 description: "Set an option for the server (Admin only)",
                 options: [
                     {
-                        type: OptionTypes.STRING,
+                        type: OptionTypes.String,
                         name: "option",
                         description: "The Option to set",
                         autocomplete: true,
                         required: true
                     },
                     {
-                        type: OptionTypes.STRING,
+                        type: OptionTypes.String,
                         name: "value",
                         description: "The Value to set option to",
                         autocomplete: true,
@@ -53,7 +53,7 @@ export const ConfigSlash: SlashCommand = {
                 ]
             },
             {
-                type: OptionTypes.SUB_COMMAND,
+                type: OptionTypes.SubCommand,
                 name: "view",
                 description: "View the server configuration (Admin only)"
             }
@@ -164,102 +164,96 @@ export const ConfigSlash: SlashCommand = {
             return;
         }
 
-        const GuildConfigRepository = await dataSource.getRepository(GuildConfigEntity);
+        const guildConfig = await client.DatabaseManager.getGuildConfig(interaction.guildId);
 
         switch (interaction.options.getSubcommand()) {
             case "set":
-                var guild = await GuildConfigRepository.findOne({ where: { guildId: interaction.guildId } });
-                if (!guild) {
-                    guild = new GuildConfigEntity();
-                    guild.guildId = interaction.guildId;
-                }
-
                 var option = interaction.options.get("option");
                 var value = interaction.options.getString("value");
 
                 switch (option.value) {
                     case "log_channel":
                         if (value) {
-                            guild.logChannel = value;
+                            guildConfig.logChannel = value;
                         } else {
-                            guild.logChannel = null;
+                            guildConfig.logChannel = null;
                         }
                         break;
 
                     case "pending_channel":
                         if (value) {
-                            guild.pendingChannel = value;
+                            guildConfig.pendingChannel = value;
                         } else {
-                            guild.pendingChannel = null;
+                            guildConfig.pendingChannel = null;
                         }
                         break;
 
                     case "verification_ping":
                         if (value) {
-                            guild.verificationPing = value;
+                            guildConfig.verificationPing = value;
                         } else {
-                            guild.verificationPing = null;
+                            guildConfig.verificationPing = null;
                         }
                         break;
 
                     case "level_one":
                         if (value) {
-                            guild.levelOne = value;
+                            guildConfig.levelOne = value;
                         } else {
-                            guild.levelOne = null;
+                            guildConfig.levelOne = null;
                         }
                         break;
 
                     case "level_two":
                         if (value) {
-                            guild.levelTwo = value;
+                            guildConfig.levelTwo = value;
                         } else {
-                            guild.levelTwo = null;
+                            guildConfig.levelTwo = null;
                         }
                         break;
 
                     case "level_three":
                         if (value) {
-                            guild.levelThree = value;
+                            guildConfig.levelThree = value;
                         } else {
-                            guild.levelThree = null;
+                            guildConfig.levelThree = null;
                         }
                         break;
 
                     case "level_four":
                         if (value) {
-                            guild.levelFour = value;
+                            guildConfig.levelFour = value;
                         } else {
-                            guild.levelFour = null;
+                            guildConfig.levelFour = null;
                         }
                         break;
 
                     case "level_five":
                         if (value) {
-                            guild.levelFive = value;
+                            guildConfig.levelFive = value;
                         } else {
-                            guild.levelFive = null;
+                            guildConfig.levelFive = null;
                         }
                         break;
 
                     case "customvoice_category":
                         if (value) {
-                            guild.customCategory = value;
+                            guildConfig.customCategory = value;
                         } else {
-                            guild.customCategory = null;
+                            guildConfig.customCategory = null;
                         }
                         break;
 
                     case "customvoice_channel":
                         if (value) {
-                            guild.customChannel = value;
+                            guildConfig.customChannel = value;
                         } else {
-                            guild.customChannel = null;
+                            guildConfig.customChannel = null;
                         }
                         break;
                 }
 
-                await GuildConfigRepository.save(guild);
+                await client.DatabaseManager.saveGuildConfig(guildConfig);
                 await interaction.reply({
                     content: `Updated **${option.value}** successfully!`,
                     ephemeral: true
@@ -267,18 +261,9 @@ export const ConfigSlash: SlashCommand = {
                 break;
 
             case "view":
-                var guild = await GuildConfigRepository.findOne({ where: { guildId: interaction.guildId } });
-                if (!guild) {
-                    await interaction.reply({
-                        content: "No configuration found for this server!",
-                        ephemeral: true
-                    });
-                    return;
-                }
-
                 var rows = new Array();
 
-                for (let [key, value] of Object.entries(guild)) {
+                for (let [key, value] of Object.entries(guildConfig)) {
                     if (key === "guildId") continue;
                     if (key === "_id") continue;
 

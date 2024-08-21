@@ -31,7 +31,6 @@ export class KiwiClient extends Client {
     public UserCommands: Collection<string, UserCommand>;
     public PrefixCommands: Collection<string, SlashCommand>;
     public events: Collection<string, Event>
-    public loops: Collection<string, Loop>;
 
     public DatabaseManager: DatabaseManager;
     public PluginManager: PluginManager;
@@ -70,7 +69,6 @@ export class KiwiClient extends Client {
         this.PrefixCommands = new Collection();
         this.events = new Collection();
         this.buttons = new Collection();
-        this.loops = new Collection();
 
         // Database Manager
         this.DatabaseManager = new DatabaseManager(this);
@@ -88,7 +86,7 @@ export class KiwiClient extends Client {
         this.EventManager = new EventManager(this);
 
         // Load all plugins
-        this.PluginManager.loadAll(Plugins);
+        //this.PluginManager.loadAll(Plugins);
 
         this.on(Events.Ready, async () => {
             console.log(`${this.user?.username} is Online`);

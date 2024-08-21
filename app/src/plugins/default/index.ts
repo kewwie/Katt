@@ -1,6 +1,5 @@
 import { Plugin } from "../../types/plugin";
 
-import { ConfigSlash } from "./commands/config";
 import { PluginSlash } from "./commands/plugin";
 
 /**
@@ -12,7 +11,6 @@ export const DefaultPlugin: Plugin = {
         hidden: true
     },
     SlashCommands: [
-        ConfigSlash,
         PluginSlash
     ],
     afterLoad: async () => {
