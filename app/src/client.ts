@@ -15,7 +15,6 @@ import { Plugins } from "./plugins/plugins";
 import { CommandManager } from "./commandManager";
 import { ComponentManager } from "./componentManager";
 import { EventManager } from "./eventManager";
-import { LoopManager } from "./managers/loop";
 
 import { Button } from "./types/component";
 import { SlashCommand, UserCommand } from "./types/command";
@@ -39,7 +38,6 @@ export class KiwiClient extends Client {
     public CommandManager: CommandManager;
     public ComponentManager: ComponentManager;
     public EventManager: EventManager;
-    public LoopManager: LoopManager;
 
     constructor() {
         super({
@@ -62,8 +60,6 @@ export class KiwiClient extends Client {
                 status: "online" as ClientPresenceStatus,
             }
         });
-
-        this.setMaxListeners(25);
 
         this.embed = {
             color: "#2b2d31"
@@ -90,9 +86,6 @@ export class KiwiClient extends Client {
 
         // Event Manager
         this.EventManager = new EventManager(this);
-
-        // Loop Manager
-        this.LoopManager = new LoopManager(this);
 
         // Load all plugins
         this.PluginManager.loadAll(Plugins);
