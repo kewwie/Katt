@@ -9,31 +9,33 @@ import {
 
 import { DatabaseManager } from "./databaseManager";
 
-import { PluginManager } from "./pluginManager";
-import { Plugins } from "./plugins/plugins";
-
 import { CommandManager } from "./commandManager";
 import { ComponentManager } from "./componentManager";
 import { EventManager } from "./eventManager";
 
 import { Button } from "./types/component";
-import { SlashCommand, UserCommand } from "./types/command";
+import { PrefixCommand, SlashCommand, UserCommand } from "./types/command";
 import { Event, Events } from "./types/event";
-import { Loop } from "./types/loop";
+
+import { ClientEvents } from "./clientEvents";
+import { ClientPrefixCommands } from "./clientPrefixCommands";
+import { ClientSlashCommands } from "./clientSlashCommands";
+
 
 export class KiwiClient extends Client {
     public embed: { 
         color: ColorResolvable | null;
     };
 
-    public buttons: Collection<string, Button>;
+    public PrefixCommands: Collection<string, PrefixCommand>;
     public SlashCommands: Collection<string, SlashCommand>;
     public UserCommands: Collection<string, UserCommand>;
-    public PrefixCommands: Collection<string, SlashCommand>;
-    public events: Collection<string, Event>
+
+    public Events: Collection<string, Event>
+    public Buttons: Collection<string, Button>;
 
     public DatabaseManager: DatabaseManager;
-    public PluginManager: PluginManager;
+
     public CommandManager: CommandManager;
     public ComponentManager: ComponentManager;
     public EventManager: EventManager;
@@ -60,33 +62,33 @@ export class KiwiClient extends Client {
             }
         });
 
-        this.embed = {
-            color: "#2b2d31"
-        }
-
+        this.PrefixCommands = new Collection();
         this.SlashCommands = new Collection();
         this.UserCommands = new Collection();
-        this.PrefixCommands = new Collection();
-        this.events = new Collection();
-        this.buttons = new Collection();
+        
+        this.Events = new Collection();
+        this.Buttons = new Collection();
 
         // Database Manager
         this.DatabaseManager = new DatabaseManager(this);
 
-        // Plugin Manager
-        this.PluginManager = new PluginManager(this);
+        // Event Manager
+        this.EventManager = new EventManager(this);
+        for (let event of ClientEvents) {
+            this.EventManager.load(event);
+        }
+        this.EventManager.register([...this.Events.values()]);
 
         // Command Manager
         this.CommandManager = new CommandManager(this);
-
-        // Component Manager
-        this.ComponentManager = new ComponentManager(this);
-
-        // Event Manager
-        this.EventManager = new EventManager(this);
-
-        // Load all plugins
-        //this.PluginManager.loadAll(Plugins);
+        for (let command of ClientPrefixCommands) {
+            this.CommandManager.loadPrefix(command);
+        }
+        for (let command of ClientSlashCommands) {
+            this.CommandManager.loadSlash(command);
+        }
+        this.on(Events.InteractionCreate, this.CommandManager.onInteraction.bind(this.CommandManager));
+        this.on(Events.MessageCreate, this.CommandManager.onMessage.bind(this.CommandManager));
 
         this.on(Events.Ready, async () => {
             console.log(`${this.user?.username} is Online`);

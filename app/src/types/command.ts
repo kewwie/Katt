@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 
 export interface PrefixCommand {
-    premission_level?: number;
+    premissionLevel?: number;
     config: {
         name: string;
         description?: string;

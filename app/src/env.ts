@@ -6,6 +6,7 @@ export const env = {
     CLIENT_ID: process.env.CLIENT_ID as string,
     CLIENT_TOKEN: process.env.CLIENT_TOKEN as string,
 
+    PREFIX: "!",
     STAFF: (process.env.STAFF?.split(",") || []) as string[],
     STAFF_SERVERS: (process.env.STAFF_SERVERS?.split(",") || []) as string[],
 

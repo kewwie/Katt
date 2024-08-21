@@ -55,15 +55,6 @@ export class PluginManager {
             this.client.EventManager.load(events);
         }
 
-        if (plugin.loops) {
-            var loops = new Array();
-            for (let loop of plugin.loops) {
-                loop.plugin = plugin;
-                loops.push(loop);
-            }
-            this.client.LoopManager.load(loops);
-        }
-
         if (!this.AppCommandEventSet && (plugin.SlashCommands || plugin.buttons)) {
             this.client.on(Events.InteractionCreate, (interaction: any) => this.client.CommandManager.onInteraction(interaction));
             this.AppCommandEventSet = true;

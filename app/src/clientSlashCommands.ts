@@ -1,5 +1,5 @@
 import { VoiceCommand } from "./slash/voice";
 
-export const SlashCommands = [
+export const ClientSlashCommands = [
     VoiceCommand
 ];
