@@ -8,30 +8,35 @@ import {
     UserCommand,
     CommandOptions
 } from "./types/command";
-import { Message } from "discord.js";
+import { Collection, Message } from "discord.js";
 
 export class CommandManager {
     public client: KiwiClient;
+    public PrefixCommands: Collection<string, PrefixCommand>;
+    public SlashCommands: Collection<string, SlashCommand>;
+    public UserCommands: Collection<string, UserCommand>;
     
     constructor(client: KiwiClient) {
         this.client = client;
+
+        this.PrefixCommands = new Collection();
+        this.SlashCommands = new Collection();
+        this.UserCommands = new Collection();
     }
 
     loadPrefix(command: PrefixCommand) {
-        this.client.PrefixCommands.set(command.config.name, command);
+        this.PrefixCommands.set(command.config.name, command);
     }
 
     loadSlash(command: SlashCommand) {
-        this.client.SlashCommands.set(command.config.name, command);
+        this.SlashCommands.set(command.config.name, command);
     }
 
-    loadUser(commands: UserCommand[]) {
-        for (var command of commands) {
-            this.client.UserCommands.set(command.config.name, command as UserCommand);
-        }
+    loadUser(command: UserCommand) {
+        this.UserCommands.set(command.config.name, command);
     }
 
-    async register(commands: SlashCommand[], guildId: string) {
+    async register(commands: any[], guildId: string) {
         var cmds = new Array();
 
         for (let command of commands) {
@@ -70,7 +75,7 @@ export class CommandManager {
 
         if (interaction.isChatInputCommand()) {
 
-            let command = this.client.SlashCommands.get(interaction.commandName);
+            let command = this.SlashCommands.get(interaction.commandName);
 
             if (!command) return;
 
@@ -110,7 +115,7 @@ export class CommandManager {
 
         } else if (interaction.isAutocomplete()) {
 
-            let command = this.client.SlashCommands.get(interaction.commandName);
+            let command = this.SlashCommands.get(interaction.commandName);
 
             if (!command) return;
 
@@ -123,7 +128,7 @@ export class CommandManager {
 
         } else if (interaction.isUserContextMenuCommand()) {
 
-            const command = this.client.UserCommands.get(interaction.commandName);
+            const command = this.UserCommands.get(interaction.commandName);
 
             if (!command) return;
 
@@ -171,7 +176,7 @@ export class CommandManager {
         let commandName = args.shift()?.toLowerCase();
         if (!commandName) return;
 
-        let command = this.client.PrefixCommands.get(commandName);
+        let command = this.PrefixCommands.get(commandName);
         if (!command) return;
 
         let commandOptions: CommandOptions = {

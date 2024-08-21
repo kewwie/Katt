@@ -23,14 +23,6 @@ import { ClientSlashCommands } from "./clientSlashCommands";
 
 
 export class KiwiClient extends Client {
-    public embed: { 
-        color: ColorResolvable | null;
-    };
-
-    public PrefixCommands: Collection<string, PrefixCommand>;
-    public SlashCommands: Collection<string, SlashCommand>;
-    public UserCommands: Collection<string, UserCommand>;
-
     public Events: Collection<string, Event>
     public Buttons: Collection<string, Button>;
 
@@ -61,10 +53,6 @@ export class KiwiClient extends Client {
                 status: "online" as ClientPresenceStatus,
             }
         });
-
-        this.PrefixCommands = new Collection();
-        this.SlashCommands = new Collection();
-        this.UserCommands = new Collection();
         
         this.Events = new Collection();
         this.Buttons = new Collection();
@@ -94,8 +82,9 @@ export class KiwiClient extends Client {
             console.log(`${this.user?.username} is Online`);
             for (let guild of await this.guilds.fetch()) {
                 this.CommandManager.register([
-                    ...this.SlashCommands.values(),
-                    ...this.UserCommands.values()
+                    ...this.CommandManager.PrefixCommands.values(),
+                    ...this.CommandManager.SlashCommands.values(),
+                    ...this.CommandManager.UserCommands.values()
                 ], guild[0]);
                 this.emit(Events.GuildReady, await guild[1].fetch());
             }
@@ -104,8 +93,9 @@ export class KiwiClient extends Client {
         this.on(Events.GuildCreate, async (guild) => {
             console.log(`Joined ${guild.name}`);
             this.CommandManager.register([
-                ...this.SlashCommands.values(),
-                ...this.UserCommands.values()
+                ...this.CommandManager.PrefixCommands.values(),
+                ...this.CommandManager.SlashCommands.values(),
+                ...this.CommandManager.UserCommands.values()
             ], guild.id);
         });
     }
