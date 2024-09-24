@@ -1,19 +1,12 @@
 import { Guild } from "discord.js";
 import { KiwiClient } from "../client";
-import { Events, Event } from "../types/event";
+import { EventList, Event } from "../types/event";
 
 /**
  * @type {Event}
  */
 export const GuildCreate: Event = {
-    name: Events.GuildCreate,
-
-    /**
-     * @param {Guild} guild
-     */
-    async getGuildId(guild: Guild) {
-        return guild.id;
-    },
+    name: EventList.GuildCreate,
 
     /**
     * @param {Client} client
@@ -21,6 +14,7 @@ export const GuildCreate: Event = {
     */
     async execute(client: KiwiClient, guild: Guild) {
         await client.DatabaseManager.createGuildConfig(guild.id);
+        await client.DatabaseManager.setMemberLevel(guild.id,guild.ownerId, 1000);
         console.log(`Guild ${guild.name} has been created`);
     }
 }

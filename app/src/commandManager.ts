@@ -15,6 +15,9 @@ export class CommandManager {
     public PrefixCommands: Collection<string, PrefixCommand>;
     public SlashCommands: Collection<string, SlashCommand>;
     public UserCommands: Collection<string, UserCommand>;
+    private RestAPI: REST;
+
+    public globalCommands: any[];
     
     constructor(client: KiwiClient) {
         this.client = client;
@@ -22,6 +25,9 @@ export class CommandManager {
         this.PrefixCommands = new Collection();
         this.SlashCommands = new Collection();
         this.UserCommands = new Collection();
+        this.RestAPI = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
+
+        this.globalCommands = [];
     }
 
     loadPrefix(command: PrefixCommand) {
@@ -36,38 +42,36 @@ export class CommandManager {
         this.UserCommands.set(command.config.name, command);
     }
 
-    async register(commands: any[], guildId: string) {
-        var cmds = new Array();
-
-        for (let command of commands) {
-            cmds.push(command.config);
+    async register(commands: any[], guildId?: string) {        
+        if (!guildId) {
+            this.RestAPI.put(
+                Routes.applicationCommands(env.CLIENT_ID),
+                { body: commands }
+            );
+        } else {
+            this.RestAPI.put(
+                Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
+                { body: commands }
+            )
         }
-
-        const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
-
-        var data: any = await rest.put(
-            Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
-            { body: cmds }
-        )
-        console.log(`Successfully reloaded ${data.length} (/) commands in ${guildId}`);
     }
 
-    async unregister(guildId?: string) {
-        const rest = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
-
-        if (!guildId) {
-            await rest.put(
-                Routes.applicationCommands(env.CLIENT_ID),
-                { body: [] }
-            )
-            console.log(`Successfully removed all (/) commands globally`);
-        }
-        else {
-            await rest.put(
-                Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
-                { body: [] }
-            )
-            console.log(`Successfully removed all (/) commands in ${guildId}`);
+    async unregisterAll(guildId?: string) {
+        try {
+            if (!guildId) {
+                this.RestAPI.put(
+                    Routes.applicationCommands(env.CLIENT_ID),
+                    { body: [] }
+                )
+            }
+            else {
+                this.RestAPI.put(
+                    Routes.applicationGuildCommands(env.CLIENT_ID, guildId),
+                    { body: [] }
+                )
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -79,34 +83,33 @@ export class CommandManager {
 
             if (!command) return;
 
-            if (interaction.guildId) {
-                if (command.premissionLevel) {
-                    let hasHigherPermission = false;
+            try {
+                /*if (interaction.guildId) {
+                    if (command.premissionLevel) {
+                        let hasHigherPermission = false;
 
-                    let permissionLevel = await this.client.DatabaseManager.getPermissionLevel(interaction.guildId, interaction.userId);
-                    if (permissionLevel >= command.premissionLevel) {
-                        hasHigherPermission = true;
-                    }
-
-                    interaction.member.roles.cache.forEach(async (role) => {
-                        let permissionLevel = await this.client.DatabaseManager.getPermissionLevel(interaction.guildId, role.id);
+                        let permissionLevel = await this.client.DatabaseManager.getPermissionLevel(interaction.guildId, interaction.userId);
                         if (permissionLevel >= command.premissionLevel) {
                             hasHigherPermission = true;
                         }
-                    });
 
-                    if (interaction.guild.ownerId === interaction.user.id) {
-                        hasHigherPermission = true;
+                        interaction.member.roles.cache.forEach(async (role) => {
+                            let permissionLevel = await this.client.DatabaseManager.getPermissionLevel(interaction.guildId, role.id);
+                            if (permissionLevel >= command.premissionLevel) {
+                                hasHigherPermission = true;
+                            }
+                        });
+
+                        if (interaction.guild.ownerId === interaction.user.id) {
+                            hasHigherPermission = true;
+                        }
+
+                        if (!hasHigherPermission) {
+                            await interaction.reply({ content: `You need permission level ${command.premissionLevel} to use this command!`, ephemeral: true });
+                            return;
+                        }
                     }
-
-                    if (!hasHigherPermission) {
-                        await interaction.reply({ content: `You need permission level ${command.premissionLevel} to use this command!`, ephemeral: true });
-                        return;
-                    }
-                }
-            }
-
-            try {
+                }*/
                 await command.execute(interaction, this.client);
             } catch (error) {
                 console.error(error);
@@ -133,7 +136,7 @@ export class CommandManager {
             if (!command) return;
 
             try {
-                if (interaction.guild) {
+                /*if (interaction.guild) {
                     if (command.premissionLevel) {
                         let hasHigherPermission = false;
 
@@ -158,7 +161,7 @@ export class CommandManager {
                             return;
                         }
                     }
-                }
+                }*/
                 await command.execute(interaction, this.client);
             } catch (error) {
                 console.error(error);
@@ -186,7 +189,7 @@ export class CommandManager {
         }
 
         try {
-            if (message.guildId) {
+            /*if (message.guildId) {
                 if (command.premissionLevel) {
                     let hasHigherPermission = false;
 
@@ -211,7 +214,7 @@ export class CommandManager {
                         return;
                     }
                 }
-            }
+            }*/
             await command.execute(message, commandOptions, this.client);
         } catch (error) {
             console.error(error);

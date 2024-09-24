@@ -1,19 +1,12 @@
 import { Guild } from "discord.js";
 import { KiwiClient } from "../client";
-import { Event, Events } from "../types/event";
+import { Event, EventList } from "../types/event";
 
 /**
  * @type {Event}
  */
 export const GuildReady: Event = {
-    name: Events.GuildReady,
-
-    /**
-     * @param {Guild} guild
-     */
-    async getGuildId(guild: Guild) {
-        return guild.id;
-    },
+    name: EventList.GuildReady,
 
     /**
     * @param {KiwiClient} client
@@ -24,6 +17,15 @@ export const GuildReady: Event = {
         if (!guildConfig) {
             await client.DatabaseManager.createGuildConfig(guild.id);
         }
-        console.log(`Guild ${guild.name} is ready`);
+
+        var moduleIds = await client.DatabaseManager.getEnabledModules(guild.id);
+        //await client.CommandManager.unregisterAll(guild.id);
+        client.ModuleManager.register(guild.id);
+
+        var ownerLevel = await client.DatabaseManager.getMemberLevel(guild.id, guild.ownerId);
+        if (ownerLevel < 1000) {
+            await client.DatabaseManager.setMemberLevel(guild.id, guild.ownerId, 1000);
+        }
+        console.log(`Guild "${guild.name}" Is Ready`);
     }
 }

@@ -1,7 +1,6 @@
 import { KiwiClient } from "../client";
-import { Plugin } from "./plugin";
 
-export enum Events {
+export enum EventList {
     GuildBanAdd = "guildBanAdd",
     GuildMemberAdd = "guildMemberAdd",
     GuildMemberUpdate = "guildMemberUpdate",
@@ -18,7 +17,5 @@ export enum Events {
 
 export interface Event {
     name: string;
-    plugin?: Plugin;
-    getGuildId?: (...args: any) => Promise<string>;
     execute: (client: KiwiClient, ...args: any) => void;
 }
