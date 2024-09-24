@@ -11,7 +11,7 @@ import { SelectMenu } from "../types/component";
  */
 export const ConfigSelectMenu: SelectMenu = {
     config: new StringSelectMenuBuilder()
-        .setCustomId('config-type?')
+        .setCustomId('config-type')
         .setPlaceholder('Config Page')
         .addOptions(
             new StringSelectMenuOptionBuilder()

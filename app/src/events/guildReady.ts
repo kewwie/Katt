@@ -18,7 +18,7 @@ export const GuildReady: Event = {
             await client.DatabaseManager.createGuildConfig(guild.id);
         }
 
-        var moduleIds = await client.DatabaseManager.getEnabledModules(guild.id);
+        //var moduleIds = await client.DatabaseManager.getEnabledModules(guild.id);
         //await client.CommandManager.unregisterAll(guild.id);
         client.ModuleManager.register(guild.id);
 

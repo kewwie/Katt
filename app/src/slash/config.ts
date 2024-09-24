@@ -4,8 +4,7 @@ import {
     ActionRowBuilder,
     ChatInputCommandInteraction,
     SlashCommandBuilder,
-    StringSelectMenuBuilder,
-    StringSelectMenuOptionBuilder
+    StringSelectMenuBuilder
 } from "discord.js";
 import { SlashCommand } from "../types/command";
 
@@ -38,8 +37,9 @@ export const ConfigSlash: SlashCommand = {
             await client.DatabaseManager.createGuildConfig(interaction.guildId);
         }
 
+        var SelectMenu = ConfigSelectMenu.config.setCustomId(`config-type+${interaction.user.id}`);
         var row = new ActionRowBuilder<StringSelectMenuBuilder>()
-            .addComponents(ConfigSelectMenu.config);
+            .addComponents(SelectMenu);
 
         interaction.reply({ content: "Config", components: [row] });
     },

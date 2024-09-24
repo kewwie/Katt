@@ -11,9 +11,9 @@ import { DatabaseManager } from "./databaseManager";
 
 import { ModuleManager } from "./moduleManager";
 import { CommandManager } from "./commandManager";
+import { ComponentManager } from "./componentManager";
 import { EventManager } from "./eventManager";
 
-import { Module } from "./types/module";
 import { Event, EventList } from "./types/event";
 
 import { ClientModules } from "./clientModules";
@@ -24,10 +24,10 @@ export class KiwiClient extends Client {
     public Events: Collection<string, Event>;
 
     public DatabaseManager: DatabaseManager;
-
-    public CommandManager: CommandManager;
-    public EventManager: EventManager;
     public ModuleManager: ModuleManager;
+    public CommandManager: CommandManager;
+    public ComponentManager: ComponentManager;
+    public EventManager: EventManager;
 
     constructor() {
         super({
@@ -62,6 +62,10 @@ export class KiwiClient extends Client {
             this.EventManager.load(event);
         }
         this.EventManager.register([...this.Events.values()]);
+
+        // Component Manager
+        this.ComponentManager = new ComponentManager(this);
+        this.on(EventList.InteractionCreate, this.ComponentManager.onInteraction.bind(this.ComponentManager));
 
         // Command Manager
         this.CommandManager = new CommandManager(this);

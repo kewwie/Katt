@@ -11,7 +11,7 @@ import { SelectMenu } from "../types/component";
  */
 export const ActivitySelectMenu: SelectMenu = {
     config: new StringSelectMenuBuilder()
-        .setCustomId('activity-type?')
+        .setCustomId('activity-type')
         .setPlaceholder('Activity Type')
         .addOptions(
             new StringSelectMenuOptionBuilder()
