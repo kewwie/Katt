@@ -33,6 +33,18 @@ export class ModuleManager {
                 //if (module.global) this.client.CommandManager.globalCommands.push(userCommand.config.toJSON());
             }
         }
+        if (module.selectMenus) {
+            for (let selectMenu of module.selectMenus) {
+                selectMenu.module = module;
+                this.client.ComponentManager.registerSelectMenu(selectMenu);
+            }
+        }
+        if (module.buttons) {
+            for (let button of module.buttons) {
+                button.module = module;
+                this.client.ComponentManager.registerButton(button);
+            }
+        }
     }
 
     async register(guildId?: string) {

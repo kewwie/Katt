@@ -17,8 +17,11 @@ import { EventManager } from "./eventManager";
 import { Event, EventList } from "./types/event";
 
 import { ClientModules } from "./clientModules";
-import { ClientEvents } from "./clientEvents";
 
+// Importing All Events
+import { GuildCreate } from "./events/guildCreate";
+import { GuildReady } from "./events/guildReady";
+import { Ready } from "./events/ready";
 
 export class KiwiClient extends Client {
     public Events: Collection<string, Event>;
@@ -51,13 +54,19 @@ export class KiwiClient extends Client {
             }
         });
 
-        this.Events = new Collection();
-
         // Database Manager
         this.DatabaseManager = new DatabaseManager(this);
 
+
         // Event Manager
         this.EventManager = new EventManager(this);
+        this.Events = new Collection();
+        var ClientEvents = [
+            GuildCreate,
+            GuildReady,
+            Ready
+        ]
+        
         for (let event of ClientEvents) {
             this.EventManager.load(event);
         }

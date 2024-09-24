@@ -14,12 +14,17 @@ export class ComponentManager {
     }
 
     public registerSelectMenu(selectMenu: SelectMenu) {
-        var customId = selectMenu.config.toJSON().custom_id;
+        var customId = selectMenu.customId;
+        console.log(customId);
         this.SelectMenus.set(customId, selectMenu);
     }
 
+    public registerButton(button: Button) {
+        var customId = button.customId;
+        this.Buttons.set(customId, button);
+    }
+
     async onInteraction(interaction: MessageComponentInteraction) {
-        console.log(interaction);
 
         if (interaction.isAnySelectMenu()) {
             var customId = interaction.customId.split("?")[0]
@@ -27,7 +32,6 @@ export class ComponentManager {
             if (!selectMenu) return;
 
             var ownerId = interaction.customId = interaction.customId.split("+")[1];
-            console.log(ownerId);
             if (ownerId != interaction.user.id && ownerId != null) {
                 interaction.reply({ content: "This isn't yours", ephemeral: true });
                 return;
@@ -41,7 +45,8 @@ export class ComponentManager {
             }
         } 
         else if (interaction.isButton()) {
-            let button = this.Buttons.get(interaction.customId);
+            let customId = interaction.customId.split("?")[0];
+            let button = this.Buttons.get(customId);
             if (!button) return;
 
             var ownerId = interaction.customId = interaction.customId.split("+")[1];
