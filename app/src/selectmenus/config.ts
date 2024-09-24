@@ -1,7 +1,7 @@
 import { 
     StringSelectMenuBuilder,
     StringSelectMenuOptionBuilder,
-    MessageContextMenuCommandInteraction
+    StringSelectMenuInteraction
 } from "discord.js";
 import { KiwiClient } from "../client";
 import { SelectMenu } from "../types/component";
@@ -11,7 +11,7 @@ import { SelectMenu } from "../types/component";
  */
 export const ConfigSelectMenu: SelectMenu = {
     config: new StringSelectMenuBuilder()
-        .setCustomId('config-type')
+        .setCustomId('config-type?')
         .setPlaceholder('Config Page')
         .addOptions(
             new StringSelectMenuOptionBuilder()
@@ -30,7 +30,8 @@ export const ConfigSelectMenu: SelectMenu = {
                 .setLabel('Verification')
                 .setValue('verification'),
         ),
-    execute: async (interaction: any, client: KiwiClient) => {
+    execute: async (interaction: StringSelectMenuInteraction, client: KiwiClient) => {
         interaction.reply("ok");
+        console.log(interaction);
     }
 }

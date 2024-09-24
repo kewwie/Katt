@@ -1,7 +1,7 @@
 import { 
     StringSelectMenuBuilder,
     StringSelectMenuOptionBuilder,
-    MessageContextMenuCommandInteraction
+    StringSelectMenuInteraction
 } from "discord.js";
 import { KiwiClient } from "../client";
 import { SelectMenu } from "../types/component";
@@ -31,7 +31,7 @@ export const ActivitySelectMenu: SelectMenu = {
                 .setDescription('...')
                 .setValue('message')
         ),
-    execute: async (interaction: any, client: KiwiClient) => {
+    execute: async (interaction: StringSelectMenuInteraction, client: KiwiClient) => {
         interaction.reply("ok");
     }
 }

@@ -24,7 +24,8 @@ export const ActivitySlash: SlashCommand = {
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
 
-        var SelectMenu = ActivitySelectMenu.config.setCustomId(`activity-type+${interaction.user.id}`);
+        var SelectMenu = ActivitySelectMenu.config as StringSelectMenuBuilder;
+        SelectMenu.setCustomId(`activity-type?+${interaction.user.id}`);
         var row = new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents(SelectMenu);
 

@@ -37,7 +37,8 @@ export const ConfigSlash: SlashCommand = {
             await client.DatabaseManager.createGuildConfig(interaction.guildId);
         }
 
-        var SelectMenu = ConfigSelectMenu.config.setCustomId(`config-type+${interaction.user.id}`);
+        var SelectMenu = ConfigSelectMenu.config as StringSelectMenuBuilder;
+        SelectMenu.setCustomId(`config-type?+${interaction.user.id}`);
         var row = new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents(SelectMenu);
 
