@@ -41,13 +41,10 @@ export class ModuleManager {
             return;
         }
 
-        console.log(1)
-
         var commands = [];
         for (let module of this.Modules.values()) {
             if (module.global) continue;
             var isEnabled = await this.client.DatabaseManager.isModuleEnabled(guildId, module.id);
-            console.log(isEnabled, module.name);
             if (!isEnabled) continue;
 
             if (module.slashCommands) {
