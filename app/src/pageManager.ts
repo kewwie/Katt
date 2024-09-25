@@ -99,7 +99,7 @@ export class PageManager {
                     new ActionRowBuilder<ButtonBuilder>()
                         .addComponents(await this.generateModuleButtons(pageId, interaction)),
                     new ActionRowBuilder<ChannelSelectMenuBuilder>()
-                        .addComponents(await this.generateChannelsSelectMenu({ moduleId: pageId, userId: interaction.user.id, currentChannel: actConf?.logChannel })
+                        .addComponents(await this.generateChannelsSelectMenu({ moduleId: pageId, userId: interaction.user.id, currentChannel: "" })
                             .setPlaceholder('Log Channel')),
                 );
                 break;
