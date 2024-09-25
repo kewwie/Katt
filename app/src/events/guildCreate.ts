@@ -13,7 +13,7 @@ export const GuildCreate: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, guild: Guild) {
-        await client.DatabaseManager.createGuildConfig(guild.id);
+        await client.DatabaseManager.generateConfigs(guild.id);
         await client.DatabaseManager.setMemberLevel(guild.id,guild.ownerId, 1000);
         console.log(`Guild ${guild.name} has been created`);
     }

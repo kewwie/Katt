@@ -15,12 +15,9 @@ export const ConfigToggle: Button = {
         .setLabel('Toggle')
         .setStyle(ButtonStyle.Primary),
     execute: async (interaction: ButtonInteraction, client: KiwiClient) => {
-        var moduleName = interaction.customId.split('?')[1].split('+')[0];
-        console.log(moduleName);
+        var moduleName = interaction.customId.split('?')[1].split('=')[0];
         var isEnabled = await client.DatabaseManager.isModuleEnabled(interaction.guild.id, moduleName);
-        console.log(isEnabled);
         if (isEnabled) {
-            console.log(11)
             await client.DatabaseManager.disableGuildModule(interaction.guild.id, moduleName);
         } else {
             await client.DatabaseManager.enableGuildModule(interaction.guild.id, moduleName);

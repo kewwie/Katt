@@ -101,4 +101,14 @@ export class KiwiClient extends Client {
     public capitalize(str: string): string {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
+
+    public genereateCustomId(
+        options: { 
+            start: string,
+            optionOne?: string,
+            optionTwo?: string,
+            userId?: string
+        }): string {
+        return `${options.start}?${options.optionOne}=${options.optionTwo}+${options.userId}`;
+    }
 };

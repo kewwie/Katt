@@ -13,10 +13,7 @@ export const GuildReady: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, guild: Guild) {
-        let guildConfig = await client.DatabaseManager.getGuildConfig(guild.id);
-        if (!guildConfig) {
-            await client.DatabaseManager.createGuildConfig(guild.id);
-        }
+        await client.DatabaseManager.generateConfigs(guild.id);
 
         //var moduleIds = await client.DatabaseManager.getEnabledModules(guild.id);
         //await client.CommandManager.unregisterAll(guild.id);

@@ -46,7 +46,6 @@ export class ComponentManager {
         else if (interaction.isButton()) {
             let customId = interaction.customId.split("?")[0];
             let button = this.Buttons.get(customId);
-            console.log(interaction.customId, 1011);
             if (!button) return;
 
             var ownerId = interaction.customId.split("+")[1];

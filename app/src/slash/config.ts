@@ -26,12 +26,6 @@ export const ConfigSlash: SlashCommand = {
             });
             return;
         }
-
-        const guildConfig = await client.DatabaseManager.getGuildConfig(interaction.guildId);
-
-        if (!guildConfig) {
-            await client.DatabaseManager.createGuildConfig(interaction.guildId);
-        }
         
         var page = await client.PageManager.generateConfigPage("overview", interaction);
         interaction.reply({ embeds: [...page.embeds], components: [...page.rows] });

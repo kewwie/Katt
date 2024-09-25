@@ -1,7 +1,8 @@
-import { ActionRowBuilder, BaseInteraction, ButtonBuilder, EmbedBuilder, MessageComponentInteraction, StringSelectMenuBuilder, User } from "discord.js";
+import { ActionRowBuilder, BaseInteraction, ButtonBuilder, ChannelSelectMenuBuilder, EmbedBuilder, MessageComponentInteraction, StringSelectMenuBuilder, User } from "discord.js";
 import { KiwiClient } from "./client";
 
 import { ConfigSelectMenu } from "./selectmenus/config";
+import { ConfigChannelSelectMenu } from "./selectmenus/config-channel";
 import { ConfigCancel } from "./buttons/config-cancel";
 import { ConfigToggle } from "./buttons/config-toggle";
 import { ConfigCommands } from "./buttons/config-commands";
@@ -28,18 +29,25 @@ export class PageManager {
 
     generateModuleButtons(moduleId: string, interaction: BaseInteraction) {
         var configToggleButton = ConfigToggle.config;
-        configToggleButton.setCustomId(`${ConfigToggle.customId}?${moduleId}+${interaction.user.id}`);
+        configToggleButton.setCustomId(this.client.genereateCustomId({start: ConfigToggle.customId , optionOne: moduleId, userId: interaction.user.id}));
         var commandsButton = ConfigCommands.config;
-        commandsButton.setCustomId(`${ConfigCommands.customId}?${moduleId}+${interaction.user.id}`);
+        commandsButton.setCustomId(this.client.genereateCustomId({start: ConfigCommands.customId , optionOne: moduleId, userId: interaction.user.id}));
         var cancelButton = ConfigCancel.config;
-        cancelButton.setCustomId(`${ConfigCancel.customId}?+${interaction.user.id}`);
+        cancelButton.setCustomId(this.client.genereateCustomId({start: ConfigCancel.customId , userId: interaction.user.id}));
 
         return [ configToggleButton, commandsButton, cancelButton ];
     }
 
+    generateChannelsSelectMenu(options: {moduleId: string, userId: string, currentChannel?: string, }) {
+        var SelectMenu = ConfigChannelSelectMenu.config as ChannelSelectMenuBuilder;
+        SelectMenu.setCustomId(this.client.genereateCustomId({start: ConfigChannelSelectMenu.customId , optionOne: options.moduleId, userId: options.userId}));
+        SelectMenu.addDefaultChannels([options.currentChannel]);
+        return SelectMenu;
+    }
+
     generateModulesSelectMenu(currentModule: string, interaction: BaseInteraction) {
         var SelectMenu = ConfigSelectMenu.config as StringSelectMenuBuilder;
-        SelectMenu.setCustomId(`${ConfigSelectMenu.customId}?+${interaction.user.id}`);
+        SelectMenu.setCustomId(this.client.genereateCustomId({start: ConfigSelectMenu.customId, userId: interaction.user.id}));
         SelectMenu.options.forEach(option => {
             if (option.data.value === currentModule) {
                 option.setDefault(true);
@@ -80,12 +88,16 @@ export class PageManager {
             }
 
             case "activity": {
+                var actConf = await this.client.DatabaseManager.getActivityConfig(interaction.guildId);
                 var embedDescription = [
                     `### Activity Module`,
                     `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
-                    `${Emojis.ReplyBottom}`,
+                    `${Emojis.ReplyMiddle} **Log Channel:** ${actConf?.logChannel ? `<#${actConf.logChannel}>` : 'None'}`,
+                    `${Emojis.ReplyBottom} **Most Active Role:** ${actConf?.mostActiveRole ? `<#${actConf.mostActiveRole}>` : 'None'}`,
                 ];
                 rows.push(
+                    new ActionRowBuilder<ChannelSelectMenuBuilder>()
+                        .addComponents(await this.generateChannelsSelectMenu({ moduleId: pageId, userId: interaction.user.id, currentChannel: actConf?.logChannel })),
                     new ActionRowBuilder<ButtonBuilder>()
                         .addComponents(await this.generateModuleButtons(pageId, interaction))
                 );
