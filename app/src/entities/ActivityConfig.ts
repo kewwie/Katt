@@ -11,6 +11,6 @@ export class ActivityConfigEntity {
     @Column({ name: "log_channel", type: 'bigint' })
     logChannel: string;
 
-    @Column({ name: "most_active_role", type: 'boolean' })
-    mostActiveRole: boolean;
+    @Column({ name: "most_active_role", type: 'bigint' })
+    mostActiveRole: string;
 }

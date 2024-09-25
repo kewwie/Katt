@@ -13,7 +13,6 @@ export class DatabaseManager {
     private client: KiwiClient;
     private repos: {
         activityConfig: Repository<ActivityConfigEntity>;
-        guildConfig: Repository<GuildConfigEntity>;
         guildModules: Repository<GuildModuleEntity>;
         memberLevels: Repository<MemberLevelEntity>;
     };
@@ -28,7 +27,6 @@ export class DatabaseManager {
     private async onCreate() {
         this.repos = {
             activityConfig: await this.dataSource.getMongoRepository(ActivityConfigEntity),
-            guildConfig: await this.dataSource.getMongoRepository(GuildConfigEntity),
             guildModules: await this.dataSource.getMongoRepository(GuildModuleEntity),
             memberLevels: await this.dataSource.getMongoRepository(MemberLevelEntity)
         }
@@ -38,14 +36,14 @@ export class DatabaseManager {
         var activityConfig = await this.getActivityConfig(guildId);
         if (!activityConfig) {
             await this.createActivityConfig(guildId);
+            console.log(`Activity Config Created for ${guildId}`);
         }
     }
 
     public async createActivityConfig(guildId: string) {
         let activityConfig = new ActivityConfigEntity();
         activityConfig.guildId = guildId;
-        await this.repos.guildConfig.save(activityConfig);
-        return activityConfig;
+        return await this.repos.activityConfig.save(activityConfig);
     }
 
     public async getActivityConfig(guildId: string) {
