@@ -29,8 +29,7 @@ export const ConfigToggle: Button = {
 
         var content = users.join("\n");
 
-        interaction.message.edit({ content });
-        interaction.reply({ content: `Moved **${options.optionOne}** to the bottom of the list!`, ephemeral: true });
+        interaction.update({ content });
 
         if (listConf.logChannel) {
             var log = await interaction.guild.channels.fetch(listConf.logChannel) as TextChannel;
