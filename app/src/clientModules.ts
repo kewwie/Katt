@@ -3,6 +3,7 @@ import { Module } from "./types/module";
 // Slash Commands
 import { ConfigSlash } from "./slash/config";
 import { ActivitySlash } from "./slash/activity";
+import { ListSlash } from "./slash/list";
 
 // Select Menus
 import { ConfigChannelSelectMenu } from "./selectmenus/configChannel";
@@ -33,7 +34,7 @@ export const ClientModules: Module[] = [
             ConfigCancel,
             ConfigCommands
         ],
-        global: true,
+        default: true,
         hidden: true
     },
     {
@@ -45,8 +46,14 @@ export const ClientModules: Module[] = [
         ],
         selectMenus: [
             ActivitySelectMenu
+        ]
+    },
+    {
+        id: "list",
+        name: "List",
+        description: "The list module allows you to manage list of items.",
+        slashCommands: [
+            ListSlash
         ],
-        global: false,
-        hidden: false
     }
 ]

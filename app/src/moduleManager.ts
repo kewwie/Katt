@@ -23,14 +23,13 @@ export class ModuleManager {
             for (let slashCommand of module.slashCommands) {
                 slashCommand.module = module;
                 this.client.CommandManager.loadSlash(slashCommand);
-                if (module.global) this.client.CommandManager.globalCommands.push(slashCommand.config);
+                if (module.staffServer) this.client.CommandManager.staffServerCommands.push(slashCommand.config);
             }
         }
         if (module.userCommands) {
             for (let userCommand of module.userCommands) {
                 userCommand.module = module;
                 this.client.CommandManager.loadUser(userCommand);
-                //if (module.global) this.client.CommandManager.globalCommands.push(userCommand.config.toJSON());
             }
         }
         if (module.selectMenus) {
@@ -47,25 +46,11 @@ export class ModuleManager {
         }
     }
 
-    async register(guildId?: string) {
-        if (!guildId) {
-            this.client.CommandManager.register(this.client.CommandManager.globalCommands);
-            return;
+    async register(commands: any[], guildId?: string) {
+        var cmds = [];
+        for (let command of commands) {
+            cmds.push(command.config);
         }
-
-        var commands = [];
-        for (let module of this.Modules.values()) {
-            if (module.global) continue;
-            var isEnabled = await this.client.DatabaseManager.isModuleEnabled(guildId, module.id);
-            if (!isEnabled) continue;
-
-            if (module.slashCommands) {
-                commands.push(...module.slashCommands.map(command => command.config.toJSON()));
-            }
-            if (module.userCommands) {
-                //commands.push(...module.userCommands.map(command => command.config.toJSON()));
-            }
-        }
-        this.client.CommandManager.register(commands, guildId);
+        this.client.CommandManager.register(cmds, guildId);
     }
 };

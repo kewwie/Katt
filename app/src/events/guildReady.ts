@@ -15,9 +15,7 @@ export const GuildReady: Event = {
     async execute(client: KiwiClient, guild: Guild) {
         await client.DatabaseManager.generateConfigs(guild.id);
 
-        //var moduleIds = await client.DatabaseManager.getEnabledModules(guild.id);
         //await client.CommandManager.unregisterAll(guild.id);
-        client.ModuleManager.register(guild.id);
 
         var ownerLevel = await client.DatabaseManager.getMemberLevel(guild.id, guild.ownerId);
         if (ownerLevel < 1000) {

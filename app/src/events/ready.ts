@@ -16,7 +16,11 @@ export const Ready: Event = {
             client.emit(EventList.GuildReady, await guild[1].fetch());
         }
         
-        //await client.CommandManager.unregisterAll();
-        client.ModuleManager.register();
+        client.ModuleManager.register(
+            [
+                ...client.CommandManager.SlashCommands.values(),
+                ...client.CommandManager.UserCommands.values(),
+            ]
+        );
     }
 }

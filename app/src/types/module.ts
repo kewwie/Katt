@@ -12,6 +12,9 @@ export interface Module {
     userCommands?: UserCommand[];
     selectMenus?: SelectMenu[];
     buttons?: Button[];
+    default?: boolean;
     global?: boolean;
     hidden?: boolean;
+    staffOnly?: boolean;
+    staffServer?: string;
 }

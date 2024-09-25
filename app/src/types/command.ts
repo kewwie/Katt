@@ -37,7 +37,7 @@ export interface UserCommand {
 export interface SlashCommand {
     module?: Module;
     level?: number;
-    config: SlashCommandBuilder;
+    config: SlashCommandBuilder | any;
     autocomplete?: (interaction: AutocompleteInteraction, client: KiwiClient) => Promise<void>;
     execute: (interaction: ChatInputCommandInteraction, client: KiwiClient) => Promise<void>;
 }

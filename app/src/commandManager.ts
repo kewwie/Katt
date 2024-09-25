@@ -17,7 +17,7 @@ export class CommandManager {
     public UserCommands: Collection<string, UserCommand>;
     private RestAPI: REST;
 
-    public globalCommands: any[];
+    public staffServerCommands: any[];
     
     constructor(client: KiwiClient) {
         this.client = client;
@@ -27,7 +27,7 @@ export class CommandManager {
         this.UserCommands = new Collection();
         this.RestAPI = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
 
-        this.globalCommands = [];
+        this.staffServerCommands = [];
     }
 
     loadPrefix(command: PrefixCommand) {
@@ -110,10 +110,17 @@ export class CommandManager {
                         }
                     }
                 }*/
+                if (interaction.guildId && command.module) {
+                    let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, command.module.id);
+                    if (!isEnabled) {
+                        interaction.reply({ content: `This command is disabled!`, ephemeral: true });
+                        return;
+                    }
+                }
                 await command.execute(interaction, this.client);
             } catch (error) {
                 console.error(error);
-                await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+                await interaction.reply({ content: 'There is an issue!', ephemeral: true });
             }
 
         } else if (interaction.isAutocomplete()) {
@@ -126,7 +133,7 @@ export class CommandManager {
                 await command.autocomplete(interaction, this.client);
             } catch (error) {
                 console.error(error);
-                await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+                await interaction.reply({ content: 'There is an issue!', ephemeral: true }); // Fix this to respond in autocomplete
             }
 
         } else if (interaction.isUserContextMenuCommand()) {
@@ -162,10 +169,17 @@ export class CommandManager {
                         }
                     }
                 }*/
+                if (interaction.guildId && command.module) {
+                    let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, command.module.id);
+                    if (!isEnabled) {
+                        interaction.reply({ content: `This command is disabled!`, ephemeral: true });
+                        return;
+                    }
+                }
                 await command.execute(interaction, this.client);
             } catch (error) {
                 console.error(error);
-                await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+                await interaction.reply({ content: 'There is an issue!', ephemeral: true });
             }
         }
     }
@@ -215,10 +229,17 @@ export class CommandManager {
                     }
                 }
             }*/
+            if (message.guildId && command.module) {
+                let isEnabled = await this.client.DatabaseManager.isModuleEnabled(message.guildId, command.module.id);
+                if (!isEnabled) {
+                    message.reply({ content: `This command is disabled!` });
+                    return;
+                }
+            }
             await command.execute(message, commandOptions, this.client);
         } catch (error) {
             console.error(error);
-            await message.reply('There was an error while executing this command!');
+            await message.reply('There is an issue!');
         }
     }
 }
