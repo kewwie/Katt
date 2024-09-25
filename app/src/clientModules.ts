@@ -5,13 +5,14 @@ import { ConfigSlash } from "./slash/config";
 import { ActivitySlash } from "./slash/activity";
 
 // Select Menus
+import { ConfigChannelSelectMenu } from "./selectmenus/configChannel";
 import { ConfigSelectMenu } from "./selectmenus/config";
 import { ActivitySelectMenu } from "./selectmenus/activity";
 
 // Buttons
-import { ConfigToggle } from "./buttons/config-toggle";
-import { ConfigCancel } from "./buttons/config-cancel";
-import { ConfigCommands } from "./buttons/config-commands";
+import { ConfigToggle } from "./buttons/configToggle";
+import { ConfigCancel } from "./buttons/configCancel";
+import { ConfigCommands } from "./buttons/configCommands";
 
 export const ClientModules: Module[] = [
     {
@@ -22,6 +23,7 @@ export const ClientModules: Module[] = [
             ConfigSlash
         ],
         selectMenus: [
+            ConfigChannelSelectMenu,
             ConfigSelectMenu
         ],
         buttons: [

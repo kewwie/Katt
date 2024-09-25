@@ -109,6 +109,9 @@ export class KiwiClient extends Client {
             optionTwo?: string,
             userId?: string
         }): string {
-        return `${options.start}?${options.optionOne}=${options.optionTwo}+${options.userId}`;
+            var optionOne = options.optionOne || "";
+            var optionTwo = options.optionTwo || "";
+            var userId = options.userId || "";
+        return `${options.start}+${optionOne}+${optionTwo}+${userId}`;
     }
 };

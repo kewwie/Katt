@@ -4,7 +4,7 @@ import {
     ButtonInteraction
 } from "discord.js";
 import { KiwiClient } from "../client";
-import { Button } from "../types/component";
+import { Button, CustomOptions } from "../types/component";
 
 /**
  * @type {Button}
@@ -14,7 +14,7 @@ export const ConfigCommands: Button = {
     config: new ButtonBuilder()
         .setLabel('Commands')
         .setStyle(ButtonStyle.Success),
-    execute: async (interaction: ButtonInteraction, client: KiwiClient) => {
+    execute: async (interaction: ButtonInteraction, options: CustomOptions, client: KiwiClient) => {
         interaction.reply({ content: "This doesn't exist yet", ephemeral: true } );
     }
 }

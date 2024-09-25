@@ -4,7 +4,7 @@ import {
     StringSelectMenuInteraction
 } from "discord.js";
 import { KiwiClient } from "../client";
-import { SelectMenu } from "../types/component";
+import { CustomOptions, SelectMenu } from "../types/component";
 
 /**
  * @type {SelectMenu}
@@ -31,7 +31,7 @@ export const ActivitySelectMenu: SelectMenu = {
                 .setDescription('...')
                 .setValue('message')
         ),
-    execute: async (interaction: StringSelectMenuInteraction, client: KiwiClient) => {
+    execute: async (interaction: StringSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
         interaction.reply("ok");
     }
 }

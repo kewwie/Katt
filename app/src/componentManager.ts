@@ -26,36 +26,34 @@ export class ComponentManager {
     async onInteraction(interaction: MessageComponentInteraction) {
 
         if (interaction.isAnySelectMenu()) {
-            var customId = interaction.customId.split("?")[0]
+            var [customId, optionOne, optionTwo, userId] = interaction.customId.split("+");
             let selectMenu = this.SelectMenus.get(customId);
             if (!selectMenu) return;
 
-            var ownerId = interaction.customId.split("+")[1];
-            if (ownerId != interaction.user.id && ownerId != null) {
+            if (userId != interaction.user.id && userId != null) {
                 interaction.reply({ content: "This isn't yours", ephemeral: true });
                 return;
             };
 
             try {
-                await selectMenu.execute(interaction, this.client);
+                await selectMenu.execute(interaction, { customId, optionOne, optionTwo, userId }, this.client);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ content: 'There was an error while executing this select menu!', ephemeral: true });
             }
         } 
         else if (interaction.isButton()) {
-            let customId = interaction.customId.split("?")[0];
+            var [customId, optionOne, optionTwo, userId] = interaction.customId.split("+");
             let button = this.Buttons.get(customId);
             if (!button) return;
 
-            var ownerId = interaction.customId.split("+")[1];
-            if (ownerId != interaction.user.id && ownerId != null) {
+            if (userId != interaction.user.id && userId != null) {
                 interaction.reply({ content: "This isn't yours", ephemeral: true });
                 return;
             };
 
             try {
-                await button.execute(interaction, this.client);
+                await button.execute(interaction, { customId, optionOne, optionTwo, userId }, this.client);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });

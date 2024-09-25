@@ -6,13 +6,8 @@ import {
     ActionRowBuilder
 } from "discord.js";
 import { KiwiClient } from "../client";
-import { Emojis } from "../emojis";
 
-import { SelectMenu } from "../types/component";
-
-import { ConfigCancel } from "../buttons/config-cancel";
-import { ConfigToggle } from "../buttons/config-toggle";
-import { ConfigCommands } from "../buttons/config-commands";
+import { CustomOptions, SelectMenu } from "../types/component";
 
 /**
  * @type {SelectMenu}
@@ -38,7 +33,7 @@ export const ConfigSelectMenu: SelectMenu = {
                 .setLabel('Lists')
                 .setValue('lists'),
         ),
-    execute: async (interaction: StringSelectMenuInteraction, client: KiwiClient) => {
+    execute: async (interaction: StringSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
         var page = await client.PageManager.generateConfigPage(interaction.values[0], interaction);
         interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
     }

@@ -1,16 +1,16 @@
-import { Entity, ObjectIdColumn, Column } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("member_levels")
 export class MemberLevelEntity {
-    @ObjectIdColumn()
+    @PrimaryGeneratedColumn()
     _id: number;
 
-    @Column()
+    @Column({ name: "guild_id", type: 'bigint' })
     guildId: string;
 
-    @Column()
+    @Column({ name: "user_id", type: 'bigint' })
     userId: string;
 
-    @Column()
+    @Column({ name: "level", type: 'int' })
     level: number;
 }

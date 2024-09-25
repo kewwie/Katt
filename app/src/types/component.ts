@@ -18,12 +18,19 @@ export interface SelectMenu {
     module?: Module;
     customId: string;
     config: RoleSelectMenuBuilder | UserSelectMenuBuilder | StringSelectMenuBuilder | ChannelSelectMenuBuilder;
-    execute: (interaction: AnySelectMenuInteraction | RoleSelectMenuInteraction | UserSelectMenuInteraction | StringSelectMenuInteraction | ChannelSelectMenuInteraction, client: KiwiClient) => Promise<void>;
+    execute: (interaction: AnySelectMenuInteraction | RoleSelectMenuInteraction | UserSelectMenuInteraction | StringSelectMenuInteraction | ChannelSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => Promise<void>;
 }
 
 export interface Button {
     module?: Module;
     customId: string;
     config: ButtonBuilder;
-    execute: (interaction: ButtonInteraction, client: KiwiClient) => Promise<void>;
+    execute: (interaction: ButtonInteraction, options: CustomOptions, client: KiwiClient) => Promise<void>;
+}
+
+export interface CustomOptions {
+    customId: string;
+    optionOne?: string;
+    optionTwo?: string;
+    userId?: string;
 }

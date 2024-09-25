@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "typeorm": "npx typeorm",
+    "migrate:create": "npm run typeorm -- migration:create src/migrations/new"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",

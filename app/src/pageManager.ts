@@ -2,10 +2,10 @@ import { ActionRowBuilder, BaseInteraction, ButtonBuilder, ChannelSelectMenuBuil
 import { KiwiClient } from "./client";
 
 import { ConfigSelectMenu } from "./selectmenus/config";
-import { ConfigChannelSelectMenu } from "./selectmenus/config-channel";
-import { ConfigCancel } from "./buttons/config-cancel";
-import { ConfigToggle } from "./buttons/config-toggle";
-import { ConfigCommands } from "./buttons/config-commands";
+import { ConfigChannelSelectMenu } from "./selectmenus/configChannel";
+import { ConfigCancel } from "./buttons/configCancel";
+import { ConfigToggle } from "./buttons/configToggle";
+import { ConfigCommands } from "./buttons/configCommands";
 import { Emojis } from "./emojis";
 
 export class PageManager {
@@ -38,9 +38,9 @@ export class PageManager {
         return [ configToggleButton, commandsButton, cancelButton ];
     }
 
-    generateChannelsSelectMenu(options: {moduleId: string, userId: string, currentChannel?: string, }) {
+    generateChannelsSelectMenu(options: {moduleId: string, option: string ,userId: string, currentChannel?: string, }) {
         var SelectMenu = ConfigChannelSelectMenu.config as ChannelSelectMenuBuilder;
-        SelectMenu.setCustomId(this.client.genereateCustomId({start: ConfigChannelSelectMenu.customId , optionOne: options.moduleId, userId: options.userId}));
+        SelectMenu.setCustomId(this.client.genereateCustomId({start: ConfigChannelSelectMenu.customId , optionOne: options.moduleId, optionTwo: options.option, userId: options.userId}));
         if (options.currentChannel) SelectMenu.addDefaultChannels([options.currentChannel]);
         return SelectMenu;
     }
@@ -89,6 +89,7 @@ export class PageManager {
 
             case "activity": {
                 var actConf = await this.client.DatabaseManager.getActivityConfig(interaction.guildId);
+                console.log(actConf?.logChannel);
                 var embedDescription = [
                     `### Activity Module`,
                     `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
@@ -99,7 +100,7 @@ export class PageManager {
                     new ActionRowBuilder<ButtonBuilder>()
                         .addComponents(await this.generateModuleButtons(pageId, interaction)),
                     new ActionRowBuilder<ChannelSelectMenuBuilder>()
-                        .addComponents(await this.generateChannelsSelectMenu({ moduleId: pageId, userId: interaction.user.id, currentChannel: "" })
+                        .addComponents(await this.generateChannelsSelectMenu({ moduleId: pageId, option: "logChannel", userId: interaction.user.id, currentChannel: "" })
                             .setPlaceholder('Log Channel')),
                 );
                 break;

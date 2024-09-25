@@ -1,8 +1,8 @@
-import { Entity, Column, ObjectIdColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("guild_modules")
 export class GuildModuleEntity {
-    @ObjectIdColumn()
+    @PrimaryGeneratedColumn()
     _id: number;
 
     @Column({ name: "guild_id", type: 'bigint' })
