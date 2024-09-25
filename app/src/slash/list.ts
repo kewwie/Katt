@@ -29,6 +29,45 @@ export const ListSlash: SlashCommand = {
      * @param {KiwiClient} client
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
-        await interaction.reply({ content: "ok" });
+        switch (interaction.options.getSubcommand()) {
+            case "create": {
+				var usersString = interaction.options.getString('users');
+				var users = usersString.split(",");
+
+				var buttons = [];
+				var userText = "";
+
+				/*for (let user of users) {
+					if (!user) break;
+					let button = new ButtonBuilder(UpdateList.config)
+						.setCustomId('update-list_' + user)
+						.setLabel(user);
+
+					buttons.push(button);
+					userText += `${user}\n`
+				}
+
+				var rows = [];
+
+				for (var i = 0; i < buttons.length; i += 3) {
+					rows.push(
+						new ActionRowBuilder()
+                    		.addComponents(buttons.slice(i, (i + 3))).toJSON()
+					);
+				}
+
+				await interaction.channel.send({
+					content: userText,
+					components: rows,
+				});
+
+				await interaction.reply({
+					content: "List has been created",
+					ephemeral: true
+				});*/
+				
+				break;
+			}
+		}
     },
 }
