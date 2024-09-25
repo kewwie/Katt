@@ -95,9 +95,8 @@ export class PageManager {
             case "verification": {
                 var embedDescription = [
                     `### Verification Module`,
-                    `${Emojis.ReplyTop}`,
-                    `${Emojis.ReplyMiddle}`,
-                    `${Emojis.ReplyBottom}`,
+                    `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
+                    `${Emojis.ReplyBottom} **Status:** Not Released`,
                 ];
                 rows.push(
                     new ActionRowBuilder<ButtonBuilder>()
@@ -109,9 +108,8 @@ export class PageManager {
             case "lists": {
                 var embedDescription = [
                     `### Lists Module`,
-                    `${Emojis.ReplyTop}`,
-                    `${Emojis.ReplyMiddle}`,
-                    `${Emojis.ReplyBottom}`,
+                    `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
+                    `${Emojis.ReplyBottom} **Status:** Not Released`,
                 ];
                 rows.push(
                     new ActionRowBuilder<ButtonBuilder>()

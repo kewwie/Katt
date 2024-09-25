@@ -48,7 +48,6 @@ export class DatabaseManager {
 
     public async enableGuildModule(guildId: string, moduleId: string) {
         var isAlreadyEnabled = await this.isModuleEnabled(guildId, moduleId);
-        console.log(isAlreadyEnabled);
         if (!isAlreadyEnabled) {
             let guildModule = new GuildModuleEntity();
             guildModule.guildId = guildId;
@@ -70,7 +69,8 @@ export class DatabaseManager {
     }
 
     public async disableGuildModule(guildId: string, moduleId: string) {
-        return await this.repos.modules.delete({ guildId: guildId, moduleId: moduleId });
+        var moduleInsert = await this.repos.modules.findOne({ where: { guildId: guildId, moduleId: moduleId } });
+        return await this.repos.modules.delete({ _id: moduleInsert._id });
     }
 
     public async setMemberLevel(guildId: string, userId: string, level: number) {
