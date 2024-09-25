@@ -1,9 +1,7 @@
 import { 
     StringSelectMenuBuilder,
     StringSelectMenuOptionBuilder,
-    StringSelectMenuInteraction,
-    EmbedBuilder,
-    ActionRowBuilder
+    StringSelectMenuInteraction
 } from "discord.js";
 import { KiwiClient } from "../client";
 
@@ -19,6 +17,7 @@ export const ConfigSelectMenu: SelectMenu = {
         .addOptions(
             new StringSelectMenuOptionBuilder()
                 .setLabel('Overview')
+                .setDescription('The server overview')
                 .setValue('overview'),
             new StringSelectMenuOptionBuilder()
                 .setLabel('Permissions')
@@ -30,8 +29,8 @@ export const ConfigSelectMenu: SelectMenu = {
                 .setLabel('Verification')
                 .setValue('verification'),
             new StringSelectMenuOptionBuilder()
-                .setLabel('Lists')
-                .setValue('lists'),
+                .setLabel('List')
+                .setValue('list'),
         ),
     execute: async (interaction: StringSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
         var page = await client.PageManager.generateConfigPage(interaction.values[0], interaction);

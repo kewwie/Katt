@@ -5,6 +5,7 @@ import { dataSource } from "./datasource";
 
 import { ActivityConfigEntity } from "./entities/ActivityConfig";
 import { GuildModuleEntity } from "./entities/GuildModule";
+import { ListConfigEntity } from "./entities/ListConfig";
 import { MemberLevelEntity } from "./entities/MemberLevel";
 
 export class DatabaseManager {
@@ -13,6 +14,7 @@ export class DatabaseManager {
     private repos: {
         activityConfig: Repository<ActivityConfigEntity>;
         guildModules: Repository<GuildModuleEntity>;
+        listConfig: Repository<ListConfigEntity>;
         memberLevels: Repository<MemberLevelEntity>;
     };
 
@@ -27,6 +29,7 @@ export class DatabaseManager {
         this.repos = {
             activityConfig: await this.dataSource.getRepository(ActivityConfigEntity),
             guildModules: await this.dataSource.getRepository(GuildModuleEntity),
+            listConfig: await this.dataSource.getRepository(ListConfigEntity),
             memberLevels: await this.dataSource.getRepository(MemberLevelEntity)
         }
     }
@@ -35,7 +38,11 @@ export class DatabaseManager {
         var activityConfig = await this.getActivityConfig(guildId);
         if (!activityConfig) {
             await this.createActivityConfig(guildId);
-            console.log(`Activity Config Created for ${guildId}`);
+        }
+
+        var listConfig = await this.getListConfig(guildId);
+        if (!listConfig) {
+            await this.createListConfig(guildId);
         }
     }
 
@@ -51,6 +58,20 @@ export class DatabaseManager {
 
     public async saveActivityConfig(config: ActivityConfigEntity) {
         return await this.repos.activityConfig.save(config);
+    }
+
+    public async createListConfig(guildId: string) {
+        let listConfig = new ListConfigEntity();
+        listConfig.guildId = guildId;
+        return await this.repos.listConfig.save(listConfig);
+    }
+
+    public async getListConfig(guildId: string) {
+        return await this.repos.listConfig.findOne({ where: { guildId: guildId }});
+    }
+
+    public async saveListConfig(config: ListConfigEntity) {
+        return await this.repos.listConfig.save(config);
     }
 
     public async enableGuildModule(guildId: string, moduleId: string) {
@@ -76,13 +97,11 @@ export class DatabaseManager {
     }
 
     public async disableGuildModule(guildId: string, moduleId: string) {
-        var moduleInsert = await this.repos.guildModules.findOne({ where: { guildId: guildId, moduleId: moduleId } });
-        return await this.repos.guildModules.delete({ _id: moduleInsert._id });
+        await this.repos.guildModules.delete({ guildId: guildId, moduleId: moduleId });
     }
 
     public async setMemberLevel(guildId: string, userId: string, level: number) {
-        var memberLevel = await this.repos.memberLevels.findOne({ where: { guildId: guildId, userId: userId } });
-        await this.repos.guildModules.delete({ _id: memberLevel._id });
+        await this.repos.memberLevels.delete({ guildId: guildId, userId: userId });
         if (level > 0) {
             let memberLevel = new MemberLevelEntity();
             memberLevel.guildId = guildId;

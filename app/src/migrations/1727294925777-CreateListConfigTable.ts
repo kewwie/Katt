@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateActivityConfigTable1727286580382 implements MigrationInterface {
+export class CreateListsConfigTable1727294925777 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: 'activity_config',
+                name: 'list_config',
                 columns: [
                     {
                         name: 'guild_id',
@@ -20,13 +20,6 @@ export class CreateActivityConfigTable1727286580382 implements MigrationInterfac
                         isNullable: true,
                         unsigned: true,
                         default: null
-                    },
-                    {
-                        name: 'most_active_role',
-                        type: 'bigint',
-                        isNullable: true,
-                        unsigned: true,
-                        default: null
                     }
                 ]
             }), true
@@ -34,6 +27,7 @@ export class CreateActivityConfigTable1727286580382 implements MigrationInterfac
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('activity_config');
+        await queryRunner.dropTable('list_config');
     }
+
 }

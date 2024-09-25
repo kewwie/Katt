@@ -1,22 +1,39 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class CreateGuildModulesTable1727287303779 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
-            CREATE TABLE guild_modules (
-                _id         INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
-                guild_id    BIGINT(20) UNSIGNED NOT NULL,
-                module_id   INT(10) UNSIGNED    NOT NULL,
-                PRIMARY KEY (_id),
-            );
-        `);
+        await queryRunner.createTable(
+            new Table({
+                name: "guild_modules",
+                columns: [
+                    {
+                        name: "_id",
+                        type: "int",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "increment",
+                        unsigned: true
+                    },
+                    {
+                        name: "guild_id",
+                        type: "bigint",
+                        unsigned: true,
+                        isNullable: false
+                    },
+                    {
+                        name: "module_id",
+                        type: "int",
+                        unsigned: true,
+                        isNullable: false
+                    }
+                ]
+            }), true
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
-            DROP TABLE guild_modules;
-        `);
+        await queryRunner.dropTable("guild_modules");
     }
 
 }

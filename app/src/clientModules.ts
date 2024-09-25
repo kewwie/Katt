@@ -6,6 +6,7 @@ import { ActivitySlash } from "./slash/activity";
 
 // Select Menus
 import { ConfigChannelSelectMenu } from "./selectmenus/configChannel";
+import { ConfigRoleSelectMenu } from "./selectmenus/configRole";
 import { ConfigSelectMenu } from "./selectmenus/config";
 import { ActivitySelectMenu } from "./selectmenus/activity";
 
@@ -24,6 +25,7 @@ export const ClientModules: Module[] = [
         ],
         selectMenus: [
             ConfigChannelSelectMenu,
+            ConfigRoleSelectMenu,
             ConfigSelectMenu
         ],
         buttons: [

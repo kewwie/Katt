@@ -1,8 +1,9 @@
-import { ActionRowBuilder, BaseInteraction, ButtonBuilder, ChannelSelectMenuBuilder, EmbedBuilder, MessageComponentInteraction, StringSelectMenuBuilder, User } from "discord.js";
+import { ActionRowBuilder, BaseInteraction, ButtonBuilder, ChannelSelectMenuBuilder, EmbedBuilder, MessageComponentInteraction, RoleSelectMenuBuilder, StringSelectMenuBuilder, User } from "discord.js";
 import { KiwiClient } from "./client";
 
 import { ConfigSelectMenu } from "./selectmenus/config";
 import { ConfigChannelSelectMenu } from "./selectmenus/configChannel";
+import { ConfigRoleSelectMenu } from "./selectmenus/configRole";
 import { ConfigCancel } from "./buttons/configCancel";
 import { ConfigToggle } from "./buttons/configToggle";
 import { ConfigCommands } from "./buttons/configCommands";
@@ -38,10 +39,25 @@ export class PageManager {
         return [ configToggleButton, commandsButton, cancelButton ];
     }
 
-    generateChannelsSelectMenu(options: {moduleId: string, option: string ,userId: string, currentChannel?: string, }) {
+    generateChannelsSelectMenu(options: {moduleId: string, option: string ,userId: string, currentChannels?: string, }) {
         var SelectMenu = ConfigChannelSelectMenu.config as ChannelSelectMenuBuilder;
         SelectMenu.setCustomId(this.client.genereateCustomId({start: ConfigChannelSelectMenu.customId , optionOne: options.moduleId, optionTwo: options.option, userId: options.userId}));
-        if (options.currentChannel) SelectMenu.addDefaultChannels([options.currentChannel]);
+        if (options.currentChannels) {
+            SelectMenu.setDefaultChannels(options.currentChannels);
+        } else {
+            SelectMenu.setDefaultChannels();
+        }
+        return SelectMenu;
+    }
+
+    generateRolesSelectMenu(options: {moduleId: string, option: string ,userId: string, currentRoles?: string, }) {
+        var SelectMenu = ConfigRoleSelectMenu.config as RoleSelectMenuBuilder;
+        SelectMenu.setCustomId(this.client.genereateCustomId({start: ConfigRoleSelectMenu.customId , optionOne: options.moduleId, optionTwo: options.option, userId: options.userId}));
+        if (options.currentRoles) {
+            SelectMenu.setDefaultRoles(options.currentRoles);
+        } else {
+            SelectMenu.setDefaultRoles();
+        }
         return SelectMenu;
     }
 
@@ -82,26 +98,28 @@ export class PageManager {
                 ];
                 rows.push(
                     new ActionRowBuilder<ButtonBuilder>()
-                        .addComponents(await this.generateModuleButtons(pageId, interaction))
+                        .addComponents(this.generateModuleButtons(pageId, interaction)),
                 );
                 break;
             }
 
             case "activity": {
                 var actConf = await this.client.DatabaseManager.getActivityConfig(interaction.guildId);
-                console.log(actConf?.logChannel);
                 var embedDescription = [
                     `### Activity Module`,
                     `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
                     `${Emojis.ReplyMiddle} **Log Channel:** ${actConf?.logChannel ? `<#${actConf.logChannel}>` : 'None'}`,
-                    `${Emojis.ReplyBottom} **Most Active Role:** ${actConf?.mostActiveRole ? `<#${actConf.mostActiveRole}>` : 'None'}`,
+                    `${Emojis.ReplyBottom} **Most Active Role:** ${actConf?.mostActiveRole ? `<@&${actConf.mostActiveRole}>` : 'None'}`,
                 ];
                 rows.push(
                     new ActionRowBuilder<ButtonBuilder>()
-                        .addComponents(await this.generateModuleButtons(pageId, interaction)),
+                        .addComponents(this.generateModuleButtons(pageId, interaction)),
                     new ActionRowBuilder<ChannelSelectMenuBuilder>()
-                        .addComponents(await this.generateChannelsSelectMenu({ moduleId: pageId, option: "logChannel", userId: interaction.user.id, currentChannel: "" })
-                            .setPlaceholder('Log Channel')),
+                        .addComponents(this.generateChannelsSelectMenu({ moduleId: pageId, option: "logChannel", userId: interaction.user.id, currentChannels: actConf?.logChannel })
+                                .setPlaceholder('Log Channel')),
+                    new ActionRowBuilder<RoleSelectMenuBuilder>()
+                        .addComponents(this.generateRolesSelectMenu({ moduleId: pageId, option: "mostActiveRole", userId: interaction.user.id, currentRoles: actConf?.mostActiveRole })
+                                .setPlaceholder('Most Active Role')),
                 );
                 break;
             }
@@ -114,20 +132,24 @@ export class PageManager {
                 ];
                 rows.push(
                     new ActionRowBuilder<ButtonBuilder>()
-                        .addComponents(await this.generateModuleButtons(pageId, interaction))
+                        .addComponents(this.generateModuleButtons(pageId, interaction)),
                 );
                 break;
             }
 
-            case "lists": {
+            case "list": {
+                var listConf = await this.client.DatabaseManager.getListConfig(interaction.guildId);
                 var embedDescription = [
-                    `### Lists Module`,
+                    `### List Module`,
                     `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
-                    `${Emojis.ReplyBottom} **Status:** Not Released`,
+                    `${Emojis.ReplyBottom} **Log Channel:** ${listConf?.logChannel ? `<#${listConf.logChannel}>` : 'None'}`,
                 ];
                 rows.push(
                     new ActionRowBuilder<ButtonBuilder>()
-                        .addComponents(await this.generateModuleButtons(pageId, interaction))
+                        .addComponents(this.generateModuleButtons(pageId, interaction)),
+                    new ActionRowBuilder<ChannelSelectMenuBuilder>()
+                    .addComponents(this.generateChannelsSelectMenu({ moduleId: pageId, option: "logChannel", userId: interaction.user.id, currentChannels: listConf?.logChannel })
+                            .setPlaceholder('Log Channel')),
                 );
                 break;
             }
@@ -135,12 +157,12 @@ export class PageManager {
 
         rows.push(
             new ActionRowBuilder<StringSelectMenuBuilder>()
-                .addComponents(await this.generateModulesSelectMenu(pageId, interaction))
+                .addComponents(this.generateModulesSelectMenu(pageId, interaction))
         );
 
         return {
             embeds: [
-                ...await this.generateEmbeds({ 
+                ...this.generateEmbeds({
                     title: `Server Configuration`,
                     thumbnail: interaction.guild.iconURL(),
                     description: embedDescription.join("\n"),

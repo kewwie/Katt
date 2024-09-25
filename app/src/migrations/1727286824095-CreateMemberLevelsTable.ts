@@ -1,23 +1,40 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class CreateMemberLevelsTable1727286824095 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
-            CREATE TABLE member_levels (
-                _id         INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
-                guild_id    BIGINT(20) UNSIGNED NOT NULL,
-                user_id     BIGINT(20) UNSIGNED NOT NULL,
-                level       INT(5) UNSIGNED     NOT NULL DEFAULT 0,
-                PRIMARY KEY (_id),
-            );
-        `);
+        await queryRunner.createTable(
+            new Table({
+                name: 'member_levels',
+                columns: [
+                    {
+                        name: 'guild_id',
+                        type: 'bigint',
+                        isPrimary: true,
+                        isNullable: false,
+                        unsigned: true
+                    },
+                    {
+                        name: 'user_id',
+                        type: 'bigint',
+                        isPrimary: true,
+                        isNullable: false,
+                        unsigned: true
+                    },
+                    {
+                        name: 'level',
+                        type: 'int',
+                        isNullable: false,
+                        unsigned: true,
+                        default: '0'
+                    }
+                ]
+            }), true
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
-            DROP TABLE member_levels;
-        `);
+        await queryRunner.dropTable('member_levels');
     }
 
 }
