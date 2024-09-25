@@ -1,5 +1,5 @@
 export const Emojis = {
-    ReplyTop: "<:replytop:1288221071836708987>",
-    ReplyMiddle: "<:replymiddle:1288219573039923364>",
-    ReplyBottom: "<:replybottom:1288219560608137364>",
+    ReplyTop: "<:replytop:1288431443332173884>",
+    ReplyMiddle: "<:replymiddle:1288431441809641512>",
+    ReplyBottom: "<:replybottom:1288431440115269672>",
 }

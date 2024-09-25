@@ -1,16 +1,10 @@
 import { KiwiClient } from "../client";
 
 import {
-    ActionRowBuilder,
     ChatInputCommandInteraction,
-    EmbedBuilder,
-    SlashCommandBuilder,
-    StringSelectMenuBuilder
+    SlashCommandBuilder
 } from "discord.js";
 import { SlashCommand } from "../types/command";
-import { Emojis } from "../emojis";
-
-import { ConfigSelectMenu } from "../selectmenus/config";
 
 /**
  * @type {SlashCommand}
@@ -38,24 +32,8 @@ export const ConfigSlash: SlashCommand = {
         if (!guildConfig) {
             await client.DatabaseManager.createGuildConfig(interaction.guildId);
         }
-
-        var SelectMenu = ConfigSelectMenu.config as StringSelectMenuBuilder;
-        SelectMenu.setCustomId(`${ConfigSelectMenu.customId}?+${interaction.user.id}`);
-        var row = new ActionRowBuilder<StringSelectMenuBuilder>()
-            .addComponents(SelectMenu);
-
-        var owner = await client.users.fetch(interaction.guild.ownerId);
-        var embedDescription = [
-            `${Emojis.ReplyTop} **Owner:** ${owner.displayName} (${owner.username})`,
-            `${Emojis.ReplyMiddle} **Members:** ${interaction.guild.memberCount}`,
-            `${Emojis.ReplyBottom} **Ping:** ${Math.round(client.ws.ping)}ms`,
-        ];
-
-        var em = new EmbedBuilder()
-            .setTitle(`${client.capitalize(interaction.guild.name)} Configuration`)
-            .setThumbnail(interaction.guild.iconURL())
-            .setDescription(embedDescription.join("\n"))
-            .setFooter({ text: `${client.capitalize(interaction.user.displayName)} (${interaction.user.username})`, iconURL: interaction.user.avatarURL() });
-        interaction.reply({ embeds: [em], components: [row] });
+        
+        var page = await client.PageManager.generateConfigPage("overview", interaction);
+        interaction.reply({ embeds: [...page.embeds], components: [...page.rows] });
     },
 }

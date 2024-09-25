@@ -13,6 +13,7 @@ import { ModuleManager } from "./moduleManager";
 import { CommandManager } from "./commandManager";
 import { ComponentManager } from "./componentManager";
 import { EventManager } from "./eventManager";
+import { PageManager } from "./pageManager";
 
 import { Event, EventList } from "./types/event";
 
@@ -24,6 +25,9 @@ import { GuildReady } from "./events/guildReady";
 import { Ready } from "./events/ready";
 
 export class KiwiClient extends Client {
+    public Settings: {
+        color: ColorResolvable
+    }
     public Events: Collection<string, Event>;
 
     public DatabaseManager: DatabaseManager;
@@ -31,6 +35,7 @@ export class KiwiClient extends Client {
     public CommandManager: CommandManager;
     public ComponentManager: ComponentManager;
     public EventManager: EventManager;
+    public PageManager: PageManager;
 
     constructor() {
         super({
@@ -54,6 +59,10 @@ export class KiwiClient extends Client {
             }
         });
 
+        this.Settings = {
+            color: "#7289DA"
+        }
+
         // Database Manager
         this.DatabaseManager = new DatabaseManager(this);
 
@@ -75,6 +84,8 @@ export class KiwiClient extends Client {
         // Component Manager
         this.ComponentManager = new ComponentManager(this);
         this.on(EventList.InteractionCreate, this.ComponentManager.onInteraction.bind(this.ComponentManager));
+        // Page Manager
+        this.PageManager = new PageManager(this);
 
         // Command Manager
         this.CommandManager = new CommandManager(this);

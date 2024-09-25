@@ -23,6 +23,9 @@ export const ConfigSelectMenu: SelectMenu = {
         .setPlaceholder('Config Module')
         .addOptions(
             new StringSelectMenuOptionBuilder()
+                .setLabel('Overview')
+                .setValue('overview'),
+            new StringSelectMenuOptionBuilder()
                 .setLabel('Permissions')
                 .setValue('permissions'),
             new StringSelectMenuOptionBuilder()
@@ -36,7 +39,9 @@ export const ConfigSelectMenu: SelectMenu = {
                 .setValue('lists'),
         ),
     execute: async (interaction: StringSelectMenuInteraction, client: KiwiClient) => {
-        var rows = [];
+        var page = await client.PageManager.generateConfigPage(interaction.values[0], interaction);
+        interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
+        /*var rows = [];
         var em = new EmbedBuilder()
             .setTitle(`${client.capitalize(interaction.guild.name)} Configuration`)
             .setThumbnail(interaction.guild.iconURL())
@@ -46,9 +51,9 @@ export const ConfigSelectMenu: SelectMenu = {
         SelectMenu.setCustomId(`${ConfigSelectMenu.customId}?+${interaction.user.id}`);
 
         var cancelButton = ConfigCancel.config;
-        cancelButton.setCustomId(`${ConfigCancel.customId}?+${interaction.user.id}`);
+        cancelButton.setCustomId(`${ConfigCancel.customId}?+${interaction.user.id}`);*/
 
-        switch (interaction.values[0]) {
+        /*switch (interaction.values[0]) {
             case 'permissions':
                 var isEnabled = await client.DatabaseManager.isModuleEnabled(interaction.guildId, 'permissions');
                 var embedDescription = [
@@ -168,14 +173,14 @@ export const ConfigSelectMenu: SelectMenu = {
                     }
                 });
                 break;
-        }
+        }*/
         
         
-        var row = new ActionRowBuilder<StringSelectMenuBuilder>()
+        /*var row = new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents(SelectMenu);
-        rows.push(row);
+        rows.push(row);*/
 
-        em.setDescription(embedDescription.join("\n"));
-        interaction.update({ embeds: [em], components: rows });
+        //em.setDescription(embedDescription.join("\n"));
+        //interaction.update({ embeds: [em], components: rows });
     }
 }
