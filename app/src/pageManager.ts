@@ -41,7 +41,7 @@ export class PageManager {
     generateChannelsSelectMenu(options: {moduleId: string, userId: string, currentChannel?: string, }) {
         var SelectMenu = ConfigChannelSelectMenu.config as ChannelSelectMenuBuilder;
         SelectMenu.setCustomId(this.client.genereateCustomId({start: ConfigChannelSelectMenu.customId , optionOne: options.moduleId, userId: options.userId}));
-        SelectMenu.addDefaultChannels([options.currentChannel]);
+        if (options.currentChannel) SelectMenu.addDefaultChannels([options.currentChannel]);
         return SelectMenu;
     }
 
@@ -96,10 +96,10 @@ export class PageManager {
                     `${Emojis.ReplyBottom} **Most Active Role:** ${actConf?.mostActiveRole ? `<#${actConf.mostActiveRole}>` : 'None'}`,
                 ];
                 rows.push(
-                    new ActionRowBuilder<ChannelSelectMenuBuilder>()
-                        .addComponents(await this.generateChannelsSelectMenu({ moduleId: pageId, userId: interaction.user.id, currentChannel: actConf?.logChannel })),
                     new ActionRowBuilder<ButtonBuilder>()
-                        .addComponents(await this.generateModuleButtons(pageId, interaction))
+                        .addComponents(await this.generateModuleButtons(pageId, interaction)),
+                        new ActionRowBuilder<ChannelSelectMenuBuilder>()
+                        .addComponents(await this.generateChannelsSelectMenu({ moduleId: pageId, userId: interaction.user.id, currentChannel: actConf?.logChannel }))
                 );
                 break;
             }
