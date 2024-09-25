@@ -19,10 +19,10 @@ export const ConfigToggle: Button = {
         var isEnabled = await client.DatabaseManager.isModuleEnabled(interaction.guild.id, moduleName);
         if (isEnabled) {
             await client.DatabaseManager.disableGuildModule(interaction.guild.id, moduleName);
-            interaction.reply({ content: `Disabled ${moduleName} module`, ephemeral: true });
         } else {
             await client.DatabaseManager.enableGuildModule(interaction.guild.id, moduleName);
-            interaction.reply({ content: `Enabled ${moduleName} module`, ephemeral: true });
         }
+        var page = await client.PageManager.generateConfigPage(moduleName, interaction);
+        interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
     }
 }
