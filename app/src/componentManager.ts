@@ -35,11 +35,19 @@ export class ComponentManager {
                 return;
             };
 
+            if (interaction.guildId && selectMenu.module && !selectMenu.module?.default) {
+                let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, selectMenu.module.id);
+                if (!isEnabled) {
+                    interaction.reply({ content: `This select menu is disabled!`, ephemeral: true });
+                    return;
+                }
+            }
+
             try {
                 await selectMenu.execute(interaction, { customId, optionOne, optionTwo, userId }, this.client);
             } catch (error) {
                 console.error(error);
-                await interaction.reply({ content: 'There was an error while executing this select menu!', ephemeral: true });
+                await interaction.reply({ content: 'There is an issue!', ephemeral: true });
             }
         } 
         else if (interaction.isButton()) {
@@ -52,11 +60,19 @@ export class ComponentManager {
                 return;
             };
 
+            if (interaction.guildId && button.module && !button.module?.default) {
+                let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, button.module.id);
+                if (!isEnabled) {
+                    interaction.reply({ content: `This button is disabled!`, ephemeral: true });
+                    return;
+                }
+            }
+
             try {
                 await button.execute(interaction, { customId, optionOne, optionTwo, userId }, this.client);
             } catch (error) {
                 console.error(error);
-                await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
+                await interaction.reply({ content: 'There is an issue!', ephemeral: true });
             }
         }
     }

@@ -110,7 +110,7 @@ export class CommandManager {
                         }
                     }
                 }*/
-                if (interaction.guildId && command.module) {
+                if (interaction.guildId && command.module && !command.module?.default) {
                     let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, command.module.id);
                     if (!isEnabled) {
                         interaction.reply({ content: `This command is disabled!`, ephemeral: true });
@@ -169,7 +169,7 @@ export class CommandManager {
                         }
                     }
                 }*/
-                if (interaction.guildId && command.module) {
+                    if (interaction.guildId && command.module && !command.module?.default) {
                     let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, command.module.id);
                     if (!isEnabled) {
                         interaction.reply({ content: `This command is disabled!`, ephemeral: true });
@@ -229,7 +229,7 @@ export class CommandManager {
                     }
                 }
             }*/
-            if (message.guildId && command.module) {
+                if (message.guildId && command.module && !command.module?.default) {
                 let isEnabled = await this.client.DatabaseManager.isModuleEnabled(message.guildId, command.module.id);
                 if (!isEnabled) {
                     message.reply({ content: `This command is disabled!` });
