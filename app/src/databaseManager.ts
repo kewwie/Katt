@@ -4,6 +4,9 @@ import { KiwiClient } from "./client";
 import { dataSource } from "./datasource";
 
 import { ActivityConfigEntity } from "./entities/ActivityConfig";
+import { ActivityMessageEntity } from "./entities/ActivityMessage";
+import { ActivityVoiceEntity } from "./entities/ActivityVoice";
+import { ActivityVoicestateEntity } from "./entities/ActivityVoicestate";
 import { GuildModuleEntity } from "./entities/GuildModule";
 import { ListConfigEntity } from "./entities/ListConfig";
 import { MemberLevelEntity } from "./entities/MemberLevel";
@@ -13,6 +16,9 @@ export class DatabaseManager {
     public client: KiwiClient;
     public repos: {
         activityConfig: Repository<ActivityConfigEntity>;
+        activityMessages: Repository<ActivityMessageEntity>;
+        activityVoice: Repository<ActivityVoiceEntity>;
+        activityVoicestates: Repository<ActivityVoicestateEntity>
         guildModules: Repository<GuildModuleEntity>;
         listConfig: Repository<ListConfigEntity>;
         memberLevels: Repository<MemberLevelEntity>;
@@ -28,6 +34,9 @@ export class DatabaseManager {
     private async onCreate() {
         this.repos = {
             activityConfig: await this.dataSource.getRepository(ActivityConfigEntity),
+            activityMessages: await this.dataSource.getRepository(ActivityMessageEntity),
+            activityVoice: await this.dataSource.getRepository(ActivityVoiceEntity),
+            activityVoicestates: await this.dataSource.getRepository(ActivityVoicestateEntity),
             guildModules: await this.dataSource.getRepository(GuildModuleEntity),
             listConfig: await this.dataSource.getRepository(ListConfigEntity),
             memberLevels: await this.dataSource.getRepository(MemberLevelEntity)
@@ -48,6 +57,10 @@ export class DatabaseManager {
             listConf.guildId = guildId;
             await this.repos.listConfig.save(listConf);
         }
+    }
+
+    public async isModuleEnabled(guildId: string, moduleId: string) {
+        return await this.repos.guildModules.findOneBy({ guildId, moduleId });
     }
 
     /*public async createActivityConfig(guildId: string) {

@@ -23,6 +23,7 @@ import { ClientModules } from "./clientModules";
 import { GuildCreate } from "./events/guildCreate";
 import { GuildReady } from "./events/guildReady";
 import { Ready } from "./events/ready";
+import { VoiceStateUpdate } from "./events/voiceStateUpdate";
 
 export class KiwiClient extends Client {
     public Settings: {
@@ -74,7 +75,8 @@ export class KiwiClient extends Client {
         var ClientEvents = [
             GuildCreate,
             GuildReady,
-            Ready
+            Ready,
+            VoiceStateUpdate
         ]
         
         for (let event of ClientEvents) {
