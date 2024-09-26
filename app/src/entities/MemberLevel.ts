@@ -2,12 +2,12 @@ import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity("member_levels")
 export class MemberLevelEntity {
-    @PrimaryColumn({ name: "guild_id", type: 'bigint' })
+    @PrimaryColumn({ name: "guild_id" })
     guildId: string;
 
-    @PrimaryColumn({ name: "user_id", type: 'bigint' })
+    @PrimaryColumn({ name: "user_id" })
     userId: string;
 
-    @Column({ name: "level", type: 'int' })
+    @Column({ name: "level" })
     level: number;
 }

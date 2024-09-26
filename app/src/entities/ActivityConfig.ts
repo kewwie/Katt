@@ -2,12 +2,12 @@ import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity("activity_config")
 export class ActivityConfigEntity {
-    @PrimaryColumn({ name: "guild_id", type: 'bigint' })
+    @PrimaryColumn({ name: "guild_id" })
     guildId: string;
 
-    @Column({ name: "log_channel", type: 'bigint', nullable: true })
+    @Column({ name: "log_channel" })
     logChannel: string;
 
-    @Column({ name: "most_active_role", type: 'bigint', nullable: true })
+    @Column({ name: "most_active_role" })
     mostActiveRole: string;
 }

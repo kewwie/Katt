@@ -23,8 +23,8 @@ export class CreateGuildModulesTable1727287303779 implements MigrationInterface 
                     },
                     {
                         name: "module_id",
-                        type: "int",
-                        unsigned: true,
+                        type: "varchar",
+                        length: "25",
                         isNullable: false
                     }
                 ]

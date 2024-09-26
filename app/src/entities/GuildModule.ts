@@ -5,9 +5,9 @@ export class GuildModuleEntity {
     @PrimaryGeneratedColumn()
     _id: number;
 
-    @Column({ name: "guild_id", type: 'bigint' })
+    @Column({ name: "guild_id" })
     guildId: string;
 
-    @Column({ name: "module_id", type: 'varchar' })
+    @Column({ name: "module_id" })
     moduleId: string;
 }

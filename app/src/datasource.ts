@@ -26,7 +26,7 @@ export const dataSourceOptions: DataSourceOptions = {
         __dirname + '/**/migrations/*.js'
     ],
     //logging: ["error", "query"],
-    synchronize: true,
+    synchronize: false,
     debug: false,
 }
 
