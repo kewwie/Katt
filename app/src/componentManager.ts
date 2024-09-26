@@ -36,7 +36,8 @@ export class ComponentManager {
             };
 
             if (interaction.guildId && selectMenu.module && !selectMenu.module?.default) {
-                let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, selectMenu.module.id);
+                let isEnabled = await this.client.db.repos.guildModules
+                    .findOneBy({ guildId: interaction.guildId, moduleId: selectMenu.module.id });
                 if (!isEnabled) {
                     interaction.reply({ content: `This select menu is disabled!`, ephemeral: true });
                     return;
@@ -61,7 +62,8 @@ export class ComponentManager {
             };
 
             if (interaction.guildId && button.module && !button.module?.default) {
-                let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, button.module.id);
+                let isEnabled = await this.client.db.repos.guildModules
+                    .findOneBy({ guildId: interaction.guildId, moduleId: button.module.id });
                 if (!isEnabled) {
                     interaction.reply({ content: `This button is disabled!`, ephemeral: true });
                     return;

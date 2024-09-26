@@ -13,8 +13,13 @@ export const GuildCreate: Event = {
     * @param {Guild} guild
     */
     async execute(client: KiwiClient, guild: Guild) {
-        await client.DatabaseManager.generateConfigs(guild.id);
-        await client.DatabaseManager.setMemberLevel(guild.id,guild.ownerId, 1000);
+        await client.db.generateConfigs(guild.id);
+        var ownerLevel = await client.db.repos.memberLevels
+            .findOneBy({ guildId: guild.id, userId: guild.ownerId });
+        if (ownerLevel.level < 1000) {
+            ownerLevel.level = 1000;
+            await client.db.repos.memberLevels.save(ownerLevel);
+        }
         console.log(`Guild ${guild.name} has been created`);
     }
 }

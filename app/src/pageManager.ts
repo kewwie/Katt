@@ -76,7 +76,8 @@ export class PageManager {
     }
 
     async generateConfigPage(pageId: string, interaction: BaseInteraction) {
-        var isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, pageId);
+        var isEnabled = await this.client.db.repos.guildModules
+            .findOneBy({ guildId: interaction.guildId, moduleId: pageId });
         var rows = [];
 
         switch (pageId) {
@@ -104,7 +105,8 @@ export class PageManager {
             }
 
             case "activity": {
-                var actConf = await this.client.DatabaseManager.getActivityConfig(interaction.guildId);
+                var actConf = await this.client.db.repos.activityConfig
+                    .findOneBy({ guildId: interaction.guildId });
                 var embedDescription = [
                     `### Activity Module`,
                     `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
@@ -138,7 +140,8 @@ export class PageManager {
             }
 
             case "list": {
-                var listConf = await this.client.DatabaseManager.getListConfig(interaction.guildId);
+                var listConf = await this.client.db.repos.listConfig
+                    .findOneBy({ guildId: interaction.guildId });
                 var embedDescription = [
                     `### List Module`,
                     `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,

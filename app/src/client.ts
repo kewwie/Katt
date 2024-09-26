@@ -27,10 +27,11 @@ import { Ready } from "./events/ready";
 export class KiwiClient extends Client {
     public Settings: {
         color: ColorResolvable
-    }
+    };
     public Events: Collection<string, Event>;
 
-    public DatabaseManager: DatabaseManager;
+    public db: DatabaseManager;
+    
     public ModuleManager: ModuleManager;
     public CommandManager: CommandManager;
     public ComponentManager: ComponentManager;
@@ -64,7 +65,7 @@ export class KiwiClient extends Client {
         }
 
         // Database Manager
-        this.DatabaseManager = new DatabaseManager(this);
+        this.db = new DatabaseManager(this);
 
 
         // Event Manager

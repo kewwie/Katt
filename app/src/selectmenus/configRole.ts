@@ -18,13 +18,14 @@ export const ConfigRoleSelectMenu: SelectMenu = {
             case "activity": {
 
                 if (options.optionTwo == "mostActiveRole") {
-                    var actConf = await client.DatabaseManager.getActivityConfig(interaction.guild.id);
+                    var actConf = await client.db.repos.activityConfig
+                        .findOneBy({ guildId: interaction.guildId });
                     if (interaction.values[0]) {
                         actConf.mostActiveRole = interaction.values[0];
                     } else {
                         actConf.mostActiveRole = null;
                     }
-                    await client.DatabaseManager.saveActivityConfig(actConf);
+                    await client.db.repos.activityConfig.save(actConf);
                 }
                 
                 break;

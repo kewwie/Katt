@@ -111,7 +111,8 @@ export class CommandManager {
                     }
                 }*/
                 if (interaction.guildId && command.module && !command.module?.default) {
-                    let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, command.module.id);
+                    let isEnabled = await this.client.db.repos.guildModules
+                        .findOneBy({ guildId: interaction.guildId, moduleId: command.module.id });
                     if (!isEnabled) {
                         interaction.reply({ content: `This command is disabled!`, ephemeral: true });
                         return;
@@ -170,7 +171,8 @@ export class CommandManager {
                     }
                 }*/
                     if (interaction.guildId && command.module && !command.module?.default) {
-                    let isEnabled = await this.client.DatabaseManager.isModuleEnabled(interaction.guildId, command.module.id);
+                    let isEnabled = await this.client.db.repos.guildModules
+                        .findOneBy({ guildId: interaction.guildId, moduleId: command.module.id });
                     if (!isEnabled) {
                         interaction.reply({ content: `This command is disabled!`, ephemeral: true });
                         return;
@@ -230,7 +232,8 @@ export class CommandManager {
                 }
             }*/
                 if (message.guildId && command.module && !command.module?.default) {
-                let isEnabled = await this.client.DatabaseManager.isModuleEnabled(message.guildId, command.module.id);
+                let isEnabled = await await this.client.db.repos.guildModules
+                    .findOneBy({ guildId: message.guildId, moduleId: command.module.id });
                 if (!isEnabled) {
                     message.reply({ content: `This command is disabled!` });
                     return;

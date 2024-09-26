@@ -18,7 +18,8 @@ export const ConfigChannelSelectMenu: SelectMenu = {
     execute: async (interaction: ChannelSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
         switch (options.optionOne) {
             case "activity": {
-                var actConf = await client.DatabaseManager.getActivityConfig(interaction.guild.id);
+                var actConf = await client.db.repos.activityConfig
+                    .findOne({ where: { guildId: interaction.guild.id }});
 
                 if (options.optionTwo == "logChannel") {
                     if (interaction.values[0]) {
@@ -36,12 +37,13 @@ export const ConfigChannelSelectMenu: SelectMenu = {
                     }
                 }
 
-                await client.DatabaseManager.saveActivityConfig(actConf);
+                await client.db.repos.activityConfig.save(actConf);
                 break;
             }
 
             case "list": {
-                var listConf = await client.DatabaseManager.getListConfig(interaction.guild.id);
+                var listConf = await client.db.repos.listConfig
+                    .findOne({ where: { guildId: interaction.guild.id }});
 
                 if (options.optionTwo == "logChannel") {
                     if (interaction.values[0]) {
@@ -51,7 +53,7 @@ export const ConfigChannelSelectMenu: SelectMenu = {
                     }
                 }
 
-                await client.DatabaseManager.saveListConfig(listConf);
+                await client.db.repos.listConfig.save(listConf);
                 break;
             }
         }

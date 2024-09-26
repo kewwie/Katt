@@ -16,7 +16,7 @@ import { Button, CustomOptions } from "../types/component";
 export const UpdateListButton: Button = {
     customId: 'update-list',
     execute: async (interaction: ButtonInteraction, options: CustomOptions, client: KiwiClient) => {
-        var listConf = await client.DatabaseManager.getListConfig(interaction.guild.id);
+        var listConf = await client.db.repos.listConfig.findOneBy({ guildId: interaction.guild.id });
         var users = interaction.message.content.split("\n");
 
         let index = users.indexOf(options.optionOne);

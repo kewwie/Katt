@@ -6,6 +6,8 @@ import {
 import { KiwiClient } from "../client";
 import { Button, CustomOptions } from "../types/component";
 
+import { GuildModuleEntity } from "../entities/GuildModule";
+
 /**
  * @type {Button}
  */
@@ -15,11 +17,15 @@ export const ConfigToggle: Button = {
         .setLabel('Toggle')
         .setStyle(ButtonStyle.Primary),
     execute: async (interaction: ButtonInteraction, options: CustomOptions, client: KiwiClient) => {
-        var isEnabled = await client.DatabaseManager.isModuleEnabled(interaction.guild.id, options.optionOne);
-        if (isEnabled) {
-            await client.DatabaseManager.disableGuildModule(interaction.guild.id, options.optionOne);
+        var module = await client.db.repos.guildModules
+            .findOneBy({ guildId: interaction.guild.id, moduleId: options.optionOne });
+        if (module) {
+            await client.db.repos.guildModules.delete(module);
         } else {
-            await client.DatabaseManager.enableGuildModule(interaction.guild.id, options.optionOne);
+            module = new GuildModuleEntity();
+            module.guildId = interaction.guild.id;
+            module.moduleId = options.optionOne;
+            await client.db.repos.guildModules.save(module);
         }
         var page = await client.PageManager.generateConfigPage(options.optionOne, interaction);
         interaction.update({ embeds: [...page.embeds], components: [...page.rows] });

@@ -9,9 +9,9 @@ import { ListConfigEntity } from "./entities/ListConfig";
 import { MemberLevelEntity } from "./entities/MemberLevel";
 
 export class DatabaseManager {
-    private dataSource: DataSource;
-    private client: KiwiClient;
-    private repos: {
+    public dataSource: DataSource;
+    public client: KiwiClient;
+    public repos: {
         activityConfig: Repository<ActivityConfigEntity>;
         guildModules: Repository<GuildModuleEntity>;
         listConfig: Repository<ListConfigEntity>;
@@ -35,18 +35,22 @@ export class DatabaseManager {
     }
 
     public async generateConfigs(guildId: string) {
-        var activityConfig = await this.getActivityConfig(guildId);
+        var activityConfig = await this.repos.activityConfig.findOne({ where: { guildId } });
         if (!activityConfig) {
-            await this.createActivityConfig(guildId);
+            let actConf = new ActivityConfigEntity();
+            actConf.guildId = guildId;
+            await this.repos.activityConfig.save(actConf);
         }
 
-        var listConfig = await this.getListConfig(guildId);
+        var listConfig = await this.repos.listConfig.findOne({ where: { guildId } });
         if (!listConfig) {
-            await this.createListConfig(guildId);
+            let listConf = new ListConfigEntity();
+            listConf.guildId = guildId;
+            await this.repos.listConfig.save(listConf);
         }
     }
 
-    public async createActivityConfig(guildId: string) {
+    /*public async createActivityConfig(guildId: string) {
         let activityConfig = new ActivityConfigEntity();
         activityConfig.guildId = guildId;
         return await this.repos.activityConfig.save(activityConfig);
@@ -118,5 +122,5 @@ export class DatabaseManager {
         } else {
             return 0;
         }
-    }
+    }*/
 }
