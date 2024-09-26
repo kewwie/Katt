@@ -4,7 +4,8 @@ import {
     ButtonBuilder,
     ButtonStyle,
     ButtonInteraction,
-    TextChannel
+    TextChannel,
+    EmbedBuilder
 } from "discord.js";
 import { KiwiClient } from "../client";
 import { Button, CustomOptions } from "../types/component";
@@ -12,10 +13,8 @@ import { Button, CustomOptions } from "../types/component";
 /**
  * @type {Button}
  */
-export const ConfigToggle: Button = {
+export const UpdateListButton: Button = {
     customId: 'update-list',
-    config: new ButtonBuilder()
-        .setStyle(ButtonStyle.Primary),
     execute: async (interaction: ButtonInteraction, options: CustomOptions, client: KiwiClient) => {
         var listConf = await client.DatabaseManager.getListConfig(interaction.guild.id);
         var users = interaction.message.content.split("\n");
@@ -34,7 +33,19 @@ export const ConfigToggle: Button = {
         if (listConf.logChannel) {
             var log = await interaction.guild.channels.fetch(listConf.logChannel) as TextChannel;
             if (!log) return;
-            log.send(`**${client.capitalize(interaction.user.username)}** has moved down **${options.optionOne}** in [${interaction.channel.name}](${interaction.message.url})`);
+            var emDescription = [
+                `**Value:** ${options.optionOne}`,
+                `**By:** <@${interaction.user.id}> (${interaction.user.username})`,
+                `**In: <#${interaction.channelId}> [Go to Message](${interaction.message.url})** `
+            ];
+            var em = new EmbedBuilder()
+            .setTitle("List Updated")
+                .setThumbnail(interaction.user.avatarURL())
+                .setDescription(emDescription.join("\n"))
+                .setColor(client.Settings.color)
+                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+                .setTimestamp(new Date());
+            log.send({ embeds: [em] });
         }
     }
 }

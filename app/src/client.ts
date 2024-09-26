@@ -102,7 +102,7 @@ export class KiwiClient extends Client {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    public genereateCustomId(
+    public createCustomId(
         options: { 
             start: string,
             optionOne?: string,

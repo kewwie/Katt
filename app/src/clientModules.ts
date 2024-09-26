@@ -15,6 +15,7 @@ import { ActivitySelectMenu } from "./selectmenus/activity";
 import { ConfigToggle } from "./buttons/configToggle";
 import { ConfigCancel } from "./buttons/configCancel";
 import { ConfigCommands } from "./buttons/configCommands";
+import { UpdateListButton } from "./buttons/updateList";
 
 export const ClientModules: Module[] = [
     {
@@ -55,5 +56,8 @@ export const ClientModules: Module[] = [
         slashCommands: [
             ListSlash
         ],
+        buttons: [
+            UpdateListButton
+        ]
     }
 ]

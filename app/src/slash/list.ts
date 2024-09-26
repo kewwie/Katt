@@ -1,10 +1,15 @@
 import { KiwiClient } from "../client";
 
 import {
+	ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
     ChatInputCommandInteraction,
     SlashCommandBuilder
 } from "discord.js";
 import { SlashCommand } from "../types/command";
+
+import { UpdateListButton } from "../buttons/updateList";
 
 /**
  * @type {SlashCommand}
@@ -31,40 +36,36 @@ export const ListSlash: SlashCommand = {
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         switch (interaction.options.getSubcommand()) {
             case "create": {
-				var usersString = interaction.options.getString('users');
-				var users = usersString.split(",");
-
+				var rows = [];
 				var buttons = [];
 				var userText = "";
+				var users = interaction.options.getString('users').split(",");
 
-				/*for (let user of users) {
+
+				for (let user of users) {
 					if (!user) break;
-					let button = new ButtonBuilder(UpdateList.config)
-						.setCustomId('update-list_' + user)
+					var customId = await client.createCustomId({ start: UpdateListButton.customId, optionOne: user });	
+					let button = new ButtonBuilder()
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId(customId)
 						.setLabel(user);
 
 					buttons.push(button);
 					userText += `${user}\n`
 				}
 
-				var rows = [];
-
 				for (var i = 0; i < buttons.length; i += 3) {
 					rows.push(
 						new ActionRowBuilder()
-                    		.addComponents(buttons.slice(i, (i + 3))).toJSON()
+                    		.addComponents(buttons.slice(i, (i + 3)))
 					);
 				}
 
-				await interaction.channel.send({
+				interaction.reply({
 					content: userText,
 					components: rows,
+					ephemeral: false
 				});
-
-				await interaction.reply({
-					content: "List has been created",
-					ephemeral: true
-				});*/
 				
 				break;
 			}

@@ -47,7 +47,7 @@ export class ComponentManager {
             let button = this.Buttons.get(customId);
             if (!button) return;
 
-            if (userId != interaction.user.id && userId != null) {
+            if (userId != interaction.user.id && userId) {
                 interaction.reply({ content: "This isn't yours", ephemeral: true });
                 return;
             };
