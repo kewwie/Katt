@@ -44,6 +44,12 @@ export class ModuleManager {
                 this.client.ComponentManager.registerButton(button);
             }
         }
+        if (module.schedules) {
+            for (let schedule of module.schedules) {
+                schedule.module = module;
+                this.client.ScheduleManager.register(schedule);
+            }
+        }
     }
 
     async register(commands: any[], guildId?: string) {

@@ -9,11 +9,12 @@ import {
 
 import { DatabaseManager } from "./databaseManager";
 
-import { ModuleManager } from "./moduleManager";
-import { CommandManager } from "./commandManager";
-import { ComponentManager } from "./componentManager";
 import { EventManager } from "./eventManager";
+import { ComponentManager } from "./componentManager";
 import { PageManager } from "./pageManager";
+import { CommandManager } from "./commandManager";
+import { ScheduleManager } from "./scheduleManager";
+import { ModuleManager } from "./moduleManager";
 
 import { Event, EventList } from "./types/event";
 
@@ -33,11 +34,12 @@ export class KiwiClient extends Client {
 
     public db: DatabaseManager;
     
-    public ModuleManager: ModuleManager;
-    public CommandManager: CommandManager;
-    public ComponentManager: ComponentManager;
     public EventManager: EventManager;
+    public ComponentManager: ComponentManager;
     public PageManager: PageManager;
+    public CommandManager: CommandManager;
+    public ScheduleManager: ScheduleManager;
+    public ModuleManager: ModuleManager;
 
     constructor() {
         super({
@@ -94,6 +96,9 @@ export class KiwiClient extends Client {
         this.CommandManager = new CommandManager(this);
         this.on(EventList.InteractionCreate, this.CommandManager.onInteraction.bind(this.CommandManager));
         this.on(EventList.MessageCreate, this.CommandManager.onMessage.bind(this.CommandManager));
+
+        // Schedule Manager
+        this.ScheduleManager = new ScheduleManager(this);
 
         this.ModuleManager = new ModuleManager(this);
         for (let module of ClientModules) {

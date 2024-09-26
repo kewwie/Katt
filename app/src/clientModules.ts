@@ -17,11 +17,15 @@ import { ConfigCancel } from "./buttons/configCancel";
 import { ConfigCommands } from "./buttons/configCommands";
 import { UpdateListButton } from "./buttons/updateList";
 
+// Schedules
+import { ActivityDailySchedule } from "./schedules/activity-daily";
+import { ActivityWeeklySchedule } from "./schedules/activity-weekly";
+import { ActivityMonthlySchedule } from "./schedules/activity-monthly";
+
 export const ClientModules: Module[] = [
     {
         id: "root",
         name: "Root",
-        description: "All of the main commands that are required for the bot to function.",
         slashCommands: [
             ConfigSlash
         ],
@@ -35,24 +39,26 @@ export const ClientModules: Module[] = [
             ConfigCancel,
             ConfigCommands
         ],
-        default: true,
-        hidden: true
+        default: true
     },
     {
         id: "activity",
         name: "Activity",
-        description: "The activity module allows you to view the activity of a user.",
         slashCommands: [
             ActivitySlash
         ],
         selectMenus: [
             ActivitySelectMenu
+        ],
+        schedules: [
+            ActivityDailySchedule,
+            ActivityWeeklySchedule,
+            ActivityMonthlySchedule
         ]
     },
     {
         id: "list",
         name: "List",
-        description: "The list module allows you to manage list of items.",
         slashCommands: [
             ListSlash
         ],
