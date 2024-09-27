@@ -1,4 +1,4 @@
-# Iwek
+# Katt
 
 Custom Discord application designed for stuff I need.
 
@@ -15,7 +15,7 @@ Custom Discord application designed for stuff I need.
 Steps to install your project locally:
 
 ```bash
-git clone https://github.com/kewwie/iwek.git
+git clone https://github.com/kewwie/katt.git
 cd iwek
 ```
 
@@ -50,4 +50,4 @@ Kewi - [@k3wwie](https://twitter.com/k3wwie)
 
 Support - [Discord](https://discord.gg/JKbtSTCmbz)
 
-Project Link: [github.com/kewwie/iwek](https://github.com/kewwie/iwek)
+Project Link: [github.com/kewwie/katt](https://github.com/kewwie/katt)

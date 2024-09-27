@@ -1,4 +1,4 @@
-### User Documentation for [Kewi App](https://github.com/kewwie/kewiapp)
+### User Documentation for [Katt](https://github.com/kewwie/katt)
 ___
 
 #### Table of Contents
@@ -47,6 +47,6 @@ ___
 #### 4. Contact Information
 - Email - me@kewwie.com
 - X/Twitter - [@k3wwie](https://x.com/k3wwie)
-- [Bug Reports](https://github.com/kewwie/iwek/issues)
+- [Bug Reports](https://github.com/kewwie/katt/issues)
 
 ---

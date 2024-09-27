@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last Updated and Effective:** June 27, 2024
+**Last Updated and Effective:** September 27, 2024
 
 This Privacy Policy describes how we collect, use, and handle your personal information when you use our Discord application.
 
