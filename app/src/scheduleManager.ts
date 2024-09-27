@@ -11,8 +11,15 @@ export class ScheduleManager {
 
     register(schedule: Schedule) {
         scheduleJob(schedule.rule, async () => {
-            console.log("Gonna check here if the module is enavled or not...");
-            schedule.execute(this.client);
+            for (var guild of await this.client.guilds.fetch()) {
+                if (guild[0] && schedule.module && !schedule.module?.default) {
+                    let isEnabled = await this.client.db.repos.guildModules
+                        .findOneBy({ guildId: guild[0], moduleId: schedule.module.id });
+                    if (isEnabled) {
+                        schedule.execute(this.client, guild[0]);
+                    }
+                }
+            }
         });        
     }
 };
