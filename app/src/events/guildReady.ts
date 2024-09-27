@@ -19,9 +19,12 @@ export const GuildReady: Event = {
 
         var ownerLevel = await client.db.repos.memberLevels
             .findOneBy({ guildId: guild.id, userId: guild.ownerId });
-        if (ownerLevel.level < 1000) {
-            ownerLevel.level = 1000;
-            await client.db.repos.memberLevels.save(ownerLevel);
+        if (ownerLevel?.level < 1000) {
+            await client.db.repos.memberLevels.save({
+                guildId: guild.id,
+                userId: guild.ownerId,
+                level: 1000
+            });
         }
 
         console.log(`Guild "${guild.name}" Is Ready`);
