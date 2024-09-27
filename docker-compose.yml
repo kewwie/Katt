@@ -1,5 +1,5 @@
 version: "3"
-name: "iwek"
+name: "katt"
 
 services:
   app:
