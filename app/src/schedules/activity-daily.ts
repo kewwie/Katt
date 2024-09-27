@@ -49,6 +49,7 @@ const grantMostActiveRole = async (client: KiwiClient, guildId: string) => {
     
     var mostActiveRole = await guild.roles.fetch(actConf.mostActiveRole);
     if (!mostActiveRole) return;
+    mostActiveRole.members.forEach(member => member.roles.remove(mostActiveRole).catch());
 
     activeMember.roles.add(mostActiveRole).catch();
 
