@@ -1,5 +1,10 @@
 import { KiwiClient } from "../client";
 
+
+export const getVoiceState = async (client: KiwiClient, guildId: string, userId: string) => {
+    return await client.db.repos.activityVoicestates.findOneBy({ guildId, userId });
+}
+
 export const saveVoiceState = async (client: KiwiClient, guildId: string, userId: string, channelId: string) => {
     client.db.repos.activityVoicestates.save({
         guildId: guildId,
@@ -9,11 +14,26 @@ export const saveVoiceState = async (client: KiwiClient, guildId: string, userId
     });
 }
 
+export const updateVoiceState = async (client: KiwiClient, guildId: string, userId: string, channelId: string) => {
+    client.db.repos.activityVoicestates.update(
+        { 
+            guildId,
+            userId
+        }, { 
+            channelId, 
+            joinedAt: new Date()
+        });
+}
+
 export const removeVoiceState = async (client: KiwiClient, guildId: string, userId: string) => {
     var voiceState = await client.db.repos.activityVoicestates.findOneBy({ guildId, userId });
     if (voiceState) {
         await client.db.repos.activityVoicestates.delete(voiceState);
     }
+}
+
+export const getVoice = async (client: KiwiClient, guildId: string, userId: string) => {
+    return await client.db.repos.activityVoice.findOneBy({ guildId, userId });
 }
 
 export const saveVoice = async (client: KiwiClient, guildId: string, userId: string, seconds: number) => {

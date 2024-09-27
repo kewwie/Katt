@@ -10,7 +10,17 @@ timeRule.dayOfWeek = 1;
 
 export const ActivityWeeklySchedule: Schedule = {
     rule: timeRule,
-    execute: (client: KiwiClient) => {
+    execute: async (client: KiwiClient) => {
         console.log("Weekly Activity");
+        for (var guild of await client.guilds.fetch()) {
+            var voiceStates = await client.db.repos.activityVoicestates.findBy({ guildId: guild[0] });
+            voiceStates.forEach(async (userVoiceState) => {
+                client.db.repos.activityVoice.save({
+                    guildId: guild[0],
+                    userId: userVoiceState.userId,
+                    weeklySeconds: 0
+                })
+            });
+        }
     }
 }

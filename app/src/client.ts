@@ -18,8 +18,6 @@ import { ModuleManager } from "./moduleManager";
 
 import { Event, EventList } from "./types/event";
 
-import { ClientModules } from "./clientModules";
-
 // Importing All Events
 import { GuildCreate } from "./events/guildCreate";
 import { GuildReady } from "./events/guildReady";
@@ -101,9 +99,6 @@ export class KiwiClient extends Client {
         this.ScheduleManager = new ScheduleManager(this);
 
         this.ModuleManager = new ModuleManager(this);
-        for (let module of ClientModules) {
-            this.ModuleManager.load(module);
-        }
     }
 
     public capitalize(str: string): string {
