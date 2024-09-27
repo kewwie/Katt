@@ -1,7 +1,8 @@
 import { VoiceState } from "discord.js";
 import { KiwiClient } from "../client";
 import { Event, EventList } from "../types/event";
-import { ActivityVoiceEntity } from "../entities/ActivityVoice";
+
+import { saveVoiceState, removeVoiceState, saveVoice } from "../utils/activity";
 
 /**
  * @type {Event}
@@ -23,46 +24,25 @@ export const VoiceStateUpdate: Event = {
 const ActivityEvent = async (client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
     if (newVoiceState.member.user.bot) return;
 
-    var userVoiceState = await client.db.repos.activityVoicestates.findOneBy({ userId: oldVoiceState.id, guildId: oldVoiceState.guild.id });
-    var userVoice = await client.db.repos.activityVoice.findOneBy({ userId: oldVoiceState.id, guildId: oldVoiceState.guild.id });
+    var userVoiceState = await client.db.repos.activityVoicestates
+        .findOneBy({ userId: oldVoiceState.id, guildId: oldVoiceState.guild.id });
 
     if (userVoiceState && !newVoiceState.channelId) {
         // User left voice channel
-        client.db.repos.activityVoicestates.delete(userVoiceState);
+        removeVoiceState(client, newVoiceState.guild.id, newVoiceState.id);
         
         var secondsSinceLastUpdate = (new Date().getTime() - userVoiceState.joinedAt.getTime()) / 1000;
-        client.db.repos.activityVoice.save({
-            guildId: newVoiceState.guild.id,
-            userId: newVoiceState.id,
-            totalSeconds: secondsSinceLastUpdate + (userVoice?.totalSeconds || 0),
-            dailySeconds: secondsSinceLastUpdate + (userVoice?.dailySeconds || 0),
-            weeklySeconds: secondsSinceLastUpdate + (userVoice?.weeklySeconds || 0),
-            monthlySeconds: secondsSinceLastUpdate + (userVoice?.monthlySeconds || 0)
-        });
+        saveVoice(client, newVoiceState.guild.id, newVoiceState.id, secondsSinceLastUpdate);
 
     } else if (!userVoiceState && newVoiceState.channelId) {
         // User joined a voice channel
-        client.db.repos.activityVoicestates.save({
-            guildId: newVoiceState.guild.id,
-            userId: newVoiceState.id,
-            channelId: newVoiceState.channelId,
-            joinedAt: new Date()
-        });
+        saveVoiceState(client, newVoiceState.guild.id, newVoiceState.id, newVoiceState.channelId);
 
     } else if (userVoiceState && newVoiceState.channelId) {
         // User switched voice channel
-        userVoiceState.channelId = newVoiceState.channelId;
-        userVoiceState.joinedAt = new Date();
-        client.db.repos.activityVoicestates.save(userVoiceState);
+        saveVoiceState(client, newVoiceState.guild.id, newVoiceState.id, newVoiceState.channelId);
 
         var secondsSinceLastUpdate = (new Date().getTime() - userVoiceState.joinedAt.getTime()) / 1000;
-        client.db.repos.activityVoice.save({
-            guildId: newVoiceState.guild.id,
-            userId: newVoiceState.id,
-            totalSeconds: secondsSinceLastUpdate + (userVoice?.totalSeconds || 0),
-            dailySeconds: secondsSinceLastUpdate + (userVoice?.dailySeconds || 0),
-            weeklySeconds: secondsSinceLastUpdate + (userVoice?.weeklySeconds || 0),
-            monthlySeconds: secondsSinceLastUpdate + (userVoice?.monthlySeconds || 0)
-        });
+        saveVoice(client, newVoiceState.guild.id, newVoiceState.id, secondsSinceLastUpdate);
     }
 }
