@@ -10,7 +10,6 @@ export class ScheduleManager {
     }
 
     register(schedule: Schedule) {
-        
         scheduleJob(schedule.rule, async () => {
             console.log("Gonna check here if the module is enavled or not...");
             schedule.execute(this.client);
