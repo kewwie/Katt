@@ -6,7 +6,7 @@ import { getActivityConfig, saveVoice, updateVoiceState } from "../utils/activit
 import { TextChannel } from "discord.js";
 
 var timeRule = new RecurrenceRule();
-timeRule.tz = 'CST';
+timeRule.tz = 'UTC';
 timeRule.hour = 0;
 timeRule.minute = 0
 
