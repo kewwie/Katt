@@ -2,8 +2,8 @@ version: "3"
 name: "katt"
 
 services:
-  app:
-    container_name: app
+  kattapp:
+    container_name: kattapp
     restart: unless-stopped
     build:
       context: .
