@@ -14,7 +14,6 @@ export const VoiceStateUpdate: Event = {
     * @param {KiwiClient} client
     */
     async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
-        console.log("Voice State Update", await client.db.isModuleEnabled(newVoiceState.guild.id, "activity"));
         if (await client.db.isModuleEnabled(newVoiceState.guild.id, "activity")) {
             ActivityEvent(client, oldVoiceState, newVoiceState);
         }
