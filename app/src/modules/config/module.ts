@@ -1,4 +1,7 @@
-import { Module } from "@/types/module";
+import { Module } from "../../types/module";
+
+// Events
+import { GuildReady } from "./events/guildReady";
 
 // Slash Commands
 import { ConfigSlash } from "./commands/config";
@@ -15,6 +18,9 @@ import { ConfigCommands } from "./buttons/configCommands";
 
 export const ConfigModule: Module = {
     id: "config",
+    events: [
+        GuildReady
+    ],
     slashCommands: [
         ConfigSlash
     ],

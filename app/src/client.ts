@@ -7,14 +7,14 @@ import {
     ClientPresenceStatus
 } from "discord.js";
 
-import { DatabaseManager } from "./databaseManager";
+import { DatabaseManager } from "./managers/databaseManager";
 
-import { EventManager } from "./eventManager";
-import { ComponentManager } from "./componentManager";
+import { EventManager } from "./managers/eventManager";
+import { ComponentManager } from "./managers/componentManager";
 import { PageManager } from "./pageManager";
-import { CommandManager } from "./commandManager";
-import { ScheduleManager } from "./scheduleManager";
-import { ModuleManager } from "./moduleManager";
+import { CommandManager } from "./managers/commandManager";
+import { ScheduleManager } from "./managers/scheduleManager";
+import { ModuleManager } from "./managers/moduleManager";
 
 export class KiwiClient extends Client {
     public Settings: {

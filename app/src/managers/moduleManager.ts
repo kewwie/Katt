@@ -1,6 +1,6 @@
 import { Collection } from "discord.js";
-import { KiwiClient } from "./client";
-import { Module } from "./types/module";
+import { KiwiClient } from "../client";
+import { Module } from "../types/module";
 
 export class ModuleManager {
     private client: KiwiClient;

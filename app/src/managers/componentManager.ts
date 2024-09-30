@@ -1,7 +1,7 @@
 import { Collection, MessageComponentInteraction } from "discord.js";
-import { KiwiClient } from "./client";
-import { SelectMenu, Button } from "./types/component";
-import { EventList } from "./types/event";
+import { KiwiClient } from "../client";
+import { SelectMenu, Button } from "../types/component";
+import { EventList } from "../types/event";
 
 export class ComponentManager {
     private client: KiwiClient;

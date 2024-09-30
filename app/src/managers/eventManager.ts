@@ -1,8 +1,8 @@
 import { Collection } from "discord.js";
-import { KiwiClient } from "./client";
-import { Event, EventList } from "./types/event";
+import { KiwiClient } from "../client";
+import { Event, EventList } from "../types/event";
 
-import { ClientModules } from "./modules/modules";
+import { ClientModules } from "../modules/modules";
 
 export class EventManager {
     private client: KiwiClient;
@@ -34,7 +34,11 @@ export class EventManager {
 
     load(event: Event) {
         var EventArray = this.Events.get(event.name);
-        console.log(EventArray);
+        if (!EventArray) {
+            EventArray = [];
+        }
+        EventArray.push(event);
+        this.Events.set(event.name, EventArray);
     }
 
     register(events: Event[]) {

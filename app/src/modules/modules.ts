@@ -1,4 +1,4 @@
-import { Module } from "@/types/module";
+import { Module } from "../types/module";
 
 // Modules Imports
 import { ConfigModule } from "./config/module";

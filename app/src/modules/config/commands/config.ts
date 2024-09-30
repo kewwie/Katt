@@ -1,10 +1,10 @@
-import { KiwiClient } from "@/client";
+import { KiwiClient } from "../../../client";
 
 import {
     ChatInputCommandInteraction,
     SlashCommandBuilder
 } from "discord.js";
-import { SlashCommand } from "@/types/command";
+import { SlashCommand } from "../../../types/command";
 
 /**
  * @type {SlashCommand}

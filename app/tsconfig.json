@@ -17,10 +17,6 @@
     "noImplicitThis": true,
     //"strict": true,
     "strictPropertyInitialization": false,
-    "useUnknownInCatchVariables": false,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "useUnknownInCatchVariables": false
   }
 }

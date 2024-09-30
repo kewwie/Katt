@@ -1,15 +1,15 @@
 import { DataSource, Repository } from "typeorm";
-import { KiwiClient } from "./client";
+import { KiwiClient } from "../client";
 
-import { dataSource } from "./datasource";
+import { dataSource } from "../datasource";
 
-import { ActivityConfigEntity } from "./entities/ActivityConfig";
-import { ActivityMessageEntity } from "./entities/ActivityMessage";
-import { ActivityVoiceEntity } from "./entities/ActivityVoice";
-import { ActivityVoicestateEntity } from "./entities/ActivityVoicestate";
-import { GuildModuleEntity } from "./entities/GuildModule";
-import { ListConfigEntity } from "./entities/ListConfig";
-import { MemberLevelEntity } from "./entities/MemberLevel";
+import { ActivityConfigEntity } from "../entities/ActivityConfig";
+import { ActivityMessageEntity } from "../entities/ActivityMessage";
+import { ActivityVoiceEntity } from "../entities/ActivityVoice";
+import { ActivityVoicestateEntity } from "../entities/ActivityVoicestate";
+import { GuildModuleEntity } from "../entities/GuildModule";
+import { ListConfigEntity } from "../entities/ListConfig";
+import { MemberLevelEntity } from "../entities/MemberLevel";
 
 export class DatabaseManager {
     public dataSource: DataSource;

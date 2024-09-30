@@ -1,15 +1,15 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
-import { env } from "./env";
-import { KiwiClient } from "./client";
+import { env } from "../env";
+import { KiwiClient } from "../client";
 import {
     PrefixCommand,
     SlashCommand,
     UserCommand,
     CommandOptions
-} from "./types/command";
+} from "../types/command";
 import { Collection, Message } from "discord.js";
-import { EventList } from "./types/event";
+import { EventList } from "../types/event";
 
 export class CommandManager {
     public client: KiwiClient;

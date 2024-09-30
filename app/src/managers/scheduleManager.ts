@@ -1,6 +1,6 @@
 import { scheduleJob } from "node-schedule";
-import { KiwiClient } from "./client";
-import { Schedule } from "./types/schedule";
+import { KiwiClient } from "../client";
+import { Schedule } from "../types/schedule";
 
 export class ScheduleManager {
     private client: KiwiClient;
