@@ -8,6 +8,9 @@ export class MemberLevelEntity {
     @PrimaryColumn({ name: "user_id" })
     userId: string;
 
+    @Column({ name: "user_name" })
+    userName: string;
+
     @Column({ name: "level" })
     level: number;
 }

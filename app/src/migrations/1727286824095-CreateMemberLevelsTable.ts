@@ -22,6 +22,12 @@ export class CreateMemberLevelsTable1727286824095 implements MigrationInterface 
                         unsigned: true
                     },
                     {
+                        name: "user_name",
+                        type: "varchar",
+                        length: "32",
+                        isNullable: false
+                    },
+                    {
                         name: 'level',
                         type: 'int',
                         isNullable: false,
