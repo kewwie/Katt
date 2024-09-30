@@ -1,6 +1,7 @@
 import { Collection, MessageComponentInteraction } from "discord.js";
 import { KiwiClient } from "./client";
 import { SelectMenu, Button } from "./types/component";
+import { EventList } from "./types/event";
 
 export class ComponentManager {
     private client: KiwiClient;
@@ -11,6 +12,8 @@ export class ComponentManager {
         this.client = client;
         this.SelectMenus = new Collection();
         this.Buttons = new Collection();
+
+        this.client.on(EventList.InteractionCreate, this.onInteraction.bind(this));
     }
 
     public registerSelectMenu(selectMenu: SelectMenu) {

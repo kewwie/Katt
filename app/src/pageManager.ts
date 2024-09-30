@@ -1,12 +1,12 @@
 import { ActionRowBuilder, BaseInteraction, ButtonBuilder, ChannelSelectMenuBuilder, EmbedBuilder, MessageComponentInteraction, RoleSelectMenuBuilder, StringSelectMenuBuilder, User } from "discord.js";
 import { KiwiClient } from "./client";
 
-import { ConfigSelectMenu } from "./modules/root/selectmenus/config";
-import { ConfigChannelSelectMenu } from "./modules/root/selectmenus/configChannel";
-import { ConfigRoleSelectMenu } from "./modules/root/selectmenus/configRole";
-import { ConfigCancel } from "./modules/root/buttons/configCancel";
-import { ConfigToggle } from "./modules/root/buttons/configToggle";
-import { ConfigCommands } from "./modules/root/buttons/configCommands";
+import { ConfigSelectMenu } from "./modules/config/selectmenus/config";
+import { ConfigChannelSelectMenu } from "./modules/config/selectmenus/configChannel";
+import { ConfigRoleSelectMenu } from "./modules/config/selectmenus/configRole";
+import { ConfigCancel } from "./modules/config/buttons/configCancel";
+import { ConfigToggle } from "./modules/config/buttons/configToggle";
+import { ConfigCommands } from "./modules/config/buttons/configCommands";
 import { Emojis } from "./emojis";
 
 export class PageManager {

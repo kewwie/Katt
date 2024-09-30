@@ -16,20 +16,10 @@ import { CommandManager } from "./commandManager";
 import { ScheduleManager } from "./scheduleManager";
 import { ModuleManager } from "./moduleManager";
 
-import { Event, EventList } from "./types/event";
-
-// Importing All Events
-import { GuildCreate } from "./events/guildCreate";
-import { GuildReady } from "./events/guildReady";
-import { Ready } from "./events/ready";
-import { VoiceStateUpdate } from "./modules/activity/events/voiceStateUpdate";
-
 export class KiwiClient extends Client {
     public Settings: {
         color: ColorResolvable
     };
-    public Events: Collection<string, Event>;
-
     public db: DatabaseManager;
     
     public EventManager: EventManager;
@@ -71,29 +61,15 @@ export class KiwiClient extends Client {
 
         // Event Manager
         this.EventManager = new EventManager(this);
-        this.Events = new Collection();
-        var ClientEvents = [
-            GuildCreate,
-            GuildReady,
-            Ready,
-            VoiceStateUpdate
-        ]
-        
-        for (let event of ClientEvents) {
-            this.EventManager.load(event);
-        }
-        this.EventManager.register([...this.Events.values()]);
 
         // Component Manager
         this.ComponentManager = new ComponentManager(this);
-        this.on(EventList.InteractionCreate, this.ComponentManager.onInteraction.bind(this.ComponentManager));
+
         // Page Manager
         this.PageManager = new PageManager(this);
 
         // Command Manager
         this.CommandManager = new CommandManager(this);
-        this.on(EventList.InteractionCreate, this.CommandManager.onInteraction.bind(this.CommandManager));
-        this.on(EventList.MessageCreate, this.CommandManager.onMessage.bind(this.CommandManager));
 
         // Schedule Manager
         this.ScheduleManager = new ScheduleManager(this);

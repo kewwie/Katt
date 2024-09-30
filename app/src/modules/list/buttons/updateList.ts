@@ -7,8 +7,8 @@ import {
     TextChannel,
     EmbedBuilder
 } from "discord.js";
-import { KiwiClient } from "../client";
-import { Button, CustomOptions } from "../types/component";
+import { KiwiClient } from "@/client";
+import { Button, CustomOptions } from "@/types/component";
 
 /**
  * @type {Button}

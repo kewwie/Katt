@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import { SlashCommand } from "../../../types/command";
 
-import { ActivitySelectMenu } from "../modules/root/selectmenus/activity";
+import { ActivitySelectMenu } from "../selectmenus/activity";
 
 /**
  * @type {SlashCommand}

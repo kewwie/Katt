@@ -9,6 +9,7 @@ import {
     CommandOptions
 } from "./types/command";
 import { Collection, Message } from "discord.js";
+import { EventList } from "./types/event";
 
 export class CommandManager {
     public client: KiwiClient;
@@ -28,6 +29,9 @@ export class CommandManager {
         this.RestAPI = new REST({ version: '10' }).setToken(env.CLIENT_TOKEN);
 
         this.staffServerCommands = [];
+
+        this.client.on(EventList.InteractionCreate, this.onInteraction.bind(this));
+        this.client.on(EventList.MessageCreate, this.onMessage.bind(this));
     }
 
     loadPrefix(command: PrefixCommand) {

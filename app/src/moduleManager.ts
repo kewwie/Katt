@@ -13,6 +13,12 @@ export class ModuleManager {
 
     load(module: Module) {
         this.Modules.set(module.id, module);
+        if (module.events) {
+            for (let event of module.events) {
+                event.module = module;
+                this.client.EventManager.load(event);
+            }
+        }
         if (module.prefixCommands) {
             for (let prefixCommand of module.prefixCommands) {
                 prefixCommand.module = module;
@@ -52,7 +58,7 @@ export class ModuleManager {
         }
     }
 
-    async register(commands: any[], guildId?: string) {
+    async registerCommands(commands: any[], guildId?: string) {
         var cmds = [];
         for (let command of commands) {
             cmds.push(command.config);
