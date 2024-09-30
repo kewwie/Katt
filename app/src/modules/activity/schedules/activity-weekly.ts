@@ -1,6 +1,6 @@
 import { RecurrenceRule } from "node-schedule";
-import { Schedule } from "../types/schedule";
-import { KiwiClient } from "../client";
+import { Schedule } from "../../../types/schedule";
+import { KiwiClient } from "../../../client";
 
 var timeRule = new RecurrenceRule();
 timeRule.tz = 'UTC';

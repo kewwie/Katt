@@ -1,4 +1,4 @@
-import { KiwiClient } from "../client";
+import { KiwiClient } from "../../../client";
 
 import {
     ActionRowBuilder,
@@ -6,9 +6,9 @@ import {
     SlashCommandBuilder,
     StringSelectMenuBuilder
 } from "discord.js";
-import { SlashCommand } from "../types/command";
+import { SlashCommand } from "../../../types/command";
 
-import { ActivitySelectMenu } from "../selectmenus/activity";
+import { ActivitySelectMenu } from "../modules/root/selectmenus/activity";
 
 /**
  * @type {SlashCommand}

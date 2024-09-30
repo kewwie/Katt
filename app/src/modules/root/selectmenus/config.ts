@@ -3,9 +3,9 @@ import {
     StringSelectMenuOptionBuilder,
     StringSelectMenuInteraction
 } from "discord.js";
-import { KiwiClient } from "../client";
+import { KiwiClient } from "../../../client";
 
-import { CustomOptions, SelectMenu } from "../types/component";
+import { CustomOptions, SelectMenu } from "../../../types/component";
 
 /**
  * @type {SelectMenu}

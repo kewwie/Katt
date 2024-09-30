@@ -6,7 +6,7 @@ import { Schedule } from './schedule';
 
 export interface Module {
     id: string;
-    name: string;
+    name?: string;
     prefixCommands?: PrefixCommand[];
     slashCommands?: SlashCommand[];
     userCommands?: UserCommand[];

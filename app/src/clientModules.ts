@@ -2,25 +2,25 @@ import { Module } from "./types/module";
 
 // Slash Commands
 import { ConfigSlash } from "./slash/config";
-import { ActivitySlash } from "./slash/activity";
+import { ActivitySlash } from "./modules/activity/commands/activity";
 import { ListSlash } from "./slash/list";
 
 // Select Menus
-import { ConfigChannelSelectMenu } from "./selectmenus/configChannel";
-import { ConfigRoleSelectMenu } from "./selectmenus/configRole";
-import { ConfigSelectMenu } from "./selectmenus/config";
-import { ActivitySelectMenu } from "./selectmenus/activity";
+import { ConfigChannelSelectMenu } from "./modules/root/selectmenus/configChannel";
+import { ConfigRoleSelectMenu } from "./modules/root/selectmenus/configRole";
+import { ConfigSelectMenu } from "./modules/root/selectmenus/config";
+import { ActivitySelectMenu } from "./modules/root/selectmenus/activity";
 
 // Buttons
-import { ConfigToggle } from "./buttons/configToggle";
-import { ConfigCancel } from "./buttons/configCancel";
-import { ConfigCommands } from "./buttons/configCommands";
+import { ConfigToggle } from "./modules/root/buttons/configToggle";
+import { ConfigCancel } from "./modules/root/buttons/configCancel";
+import { ConfigCommands } from "./modules/root/buttons/configCommands";
 import { UpdateListButton } from "./buttons/updateList";
 
 // Schedules
-import { ActivityDailySchedule } from "./schedules/activity-daily";
-import { ActivityWeeklySchedule } from "./schedules/activity-weekly";
-import { ActivityMonthlySchedule } from "./schedules/activity-monthly";
+import { ActivityDailySchedule } from "./modules/activity/schedules/activity-daily";
+import { ActivityWeeklySchedule } from "./modules/activity/schedules/activity-weekly";
+import { ActivityMonthlySchedule } from "./modules/activity/schedules/activity-monthly";
 
 export const ClientModules: Module[] = [
     {

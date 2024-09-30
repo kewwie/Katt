@@ -22,7 +22,7 @@ import { Event, EventList } from "./types/event";
 import { GuildCreate } from "./events/guildCreate";
 import { GuildReady } from "./events/guildReady";
 import { Ready } from "./events/ready";
-import { VoiceStateUpdate } from "./events/voiceStateUpdate";
+import { VoiceStateUpdate } from "./modules/activity/events/voiceStateUpdate";
 
 export class KiwiClient extends Client {
     public Settings: {

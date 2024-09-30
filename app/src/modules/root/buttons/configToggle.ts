@@ -3,10 +3,10 @@ import {
     ButtonStyle,
     ButtonInteraction
 } from "discord.js";
-import { KiwiClient } from "../client";
-import { Button, CustomOptions } from "../types/component";
+import { KiwiClient } from "../../../client";
+import { Button, CustomOptions } from "../../../types/component";
 
-import { GuildModuleEntity } from "../entities/GuildModule";
+import { GuildModuleEntity } from "../../../entities/GuildModule";
 
 /**
  * @type {Button}

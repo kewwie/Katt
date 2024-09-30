@@ -1,6 +1,6 @@
 import { RecurrenceRule } from "node-schedule";
-import { Schedule } from "../types/schedule";
-import { KiwiClient } from "../client";
+import { Schedule } from "../../../types/schedule";
+import { KiwiClient } from "../../../client";
 
 import { getActivityConfig, saveVoice, updateVoiceState } from "../utils/activity";
 import { TextChannel } from "discord.js";

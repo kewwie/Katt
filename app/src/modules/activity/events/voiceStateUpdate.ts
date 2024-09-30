@@ -1,6 +1,6 @@
 import { VoiceState } from "discord.js";
-import { KiwiClient } from "../client";
-import { Event, EventList } from "../types/event";
+import { KiwiClient } from "../../../client";
+import { Event, EventList } from "../../../types/event";
 
 import { saveVoiceState, removeVoiceState, saveVoice } from "../utils/activity";
 
