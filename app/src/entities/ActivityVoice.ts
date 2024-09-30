@@ -8,6 +8,9 @@ export class ActivityVoiceEntity {
     @PrimaryColumn({ name: "user_id" })
     userId: string;
 
+    @Column({ name: "user_name" })
+    userName: string;
+
     @Column({ name: "total_seconds" })
     totalSeconds: number;
 
