@@ -16,13 +16,12 @@ export class EventManager {
 
     private async onReady(client: KiwiClient) {
         console.log(`${client.user?.username} is Online`);
-        for (let guild of await client.guilds.fetch()) {
-            client.emit(EventList.GuildReady, await guild[1].fetch());
-        }
 
         for (let module of ClientModules) {
             client.ModuleManager.load(module);
         }
+
+        client.ModuleManager.register();
         
         client.ModuleManager.registerCommands(
             [
@@ -30,6 +29,10 @@ export class EventManager {
                 ...client.CommandManager.UserCommands.values(),
             ]
         );
+
+        for (let guild of await client.guilds.fetch()) {
+            client.emit(EventList.GuildReady, await guild[1].fetch());
+        }
     }
 
     load(event: Event) {
@@ -41,11 +44,13 @@ export class EventManager {
         this.Events.set(event.name, EventArray);
     }
 
-    register(events: Event[]) {
-        for (let event of events) {
-            this.client.on(event.name, async (...args: any[]) => {
-                event.execute(this.client, ...args);
+    register(eventKey) {
+        this.client.on(eventKey, async (...args: any[]) => {
+            var event = this.Events.get(eventKey);
+            if (!event) return;
+            event.forEach(async (e) => {
+                e.execute(this.client, ...args);
             });
-        }
+        });
     }
 };

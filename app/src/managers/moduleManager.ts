@@ -58,6 +58,12 @@ export class ModuleManager {
         }
     }
 
+    async register() {
+        for (var eventKey of this.client.EventManager.Events.keys()) {
+            this.client.EventManager.register(eventKey);
+        }
+    }
+
     async registerCommands(commands: any[], guildId?: string) {
         var cmds = [];
         for (let command of commands) {
