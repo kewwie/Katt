@@ -19,5 +19,6 @@ export enum EventList {
 export interface Event {
     module?: Module;
     name: string;
+    getGuildId?: (...args: any) => Promise<string>;
     execute: (client: KiwiClient, ...args: any) => void;
 }

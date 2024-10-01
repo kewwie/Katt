@@ -9,5 +9,6 @@ export const PermissionsModule: Module = {
     events: [
         GuildCreate,
         GuildReady
-    ]
+    ],
+    default: true
 }

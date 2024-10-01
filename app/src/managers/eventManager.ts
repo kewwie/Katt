@@ -45,11 +45,19 @@ export class EventManager {
     }
 
     register(eventKey) {
+        console.log(`Registering Event: ${eventKey}`);
         this.client.on(eventKey, async (...args: any[]) => {
             var event = this.Events.get(eventKey);
             if (!event) return;
             event.forEach(async (e) => {
-                e.execute(this.client, ...args);
+                console.log(`Event: ${e.name}`);
+                if (e.module?.default) {
+                    e.execute(this.client, ...args);
+                } else {
+                    var guildId = await e.getGuildId(...args);
+                    var isEnabled = await this.client.db.isModuleEnabled(guildId, e.module.id);
+                    if (isEnabled) e.execute(this.client, ...args);
+                }
             });
         });
     }

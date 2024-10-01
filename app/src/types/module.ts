@@ -16,7 +16,6 @@ export interface Module {
     buttons?: Button[];
     schedules?: Schedule[];
     default?: boolean;
-    global?: boolean;
     hidden?: boolean;
     staffOnly?: boolean;
     staffServer?: string;

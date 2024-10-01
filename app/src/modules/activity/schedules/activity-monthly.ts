@@ -12,13 +12,10 @@ export const ActivityMonthlySchedule: Schedule = {
     rule: timeRule,
     execute: async (client: KiwiClient, guildId: string) => {
         console.log("Monthly Activity");
-        var voiceStates = await client.db.repos.activityVoicestates.findBy({ guildId: guildId });
-        voiceStates.forEach(async (userVoiceState) => {
-            client.db.repos.activityVoice.save({
-                guildId: guildId,
-                userId: userVoiceState.userId,
-                monthlySeconds: 0
-            })
-        });
+        client.db.repos.activityVoice.update({
+            guildId: guildId
+        }, {
+            monthlySeconds: 0
+        })
     }
 }

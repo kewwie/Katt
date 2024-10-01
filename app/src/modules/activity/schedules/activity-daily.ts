@@ -1,9 +1,11 @@
 import { RecurrenceRule } from "node-schedule";
+import { TextChannel } from "discord.js";
 import { Schedule } from "../../../types/schedule";
 import { KiwiClient } from "../../../client";
 
-import { getActivityConfig, saveVoice, updateVoiceState } from "../utils/activity";
-import { TextChannel } from "discord.js";
+import { getActivityConfig } from "../utils/getActivityConfig";
+import { updateVoiceState } from "../utils/updateVoiceState";
+import { saveVoice } from "../utils/saveVoice";
 
 var timeRule = new RecurrenceRule();
 timeRule.tz = 'UTC';
@@ -23,11 +25,11 @@ export const ActivityDailySchedule: Schedule = {
 
         await grantMostActiveRole(client, guildId);
 
-        client.db.repos.activityVoice.save({
-            guildId: guildId,
-            userId: userVoiceState.userId,
+        client.db.repos.activityVoice.update({
+            guildId: guildId
+        }, {
             dailySeconds: 0
-        })
+        });
 
     }
 }
