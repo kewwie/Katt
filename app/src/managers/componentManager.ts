@@ -29,11 +29,15 @@ export class ComponentManager {
     async onInteraction(interaction: MessageComponentInteraction) {
 
         if (interaction.isAnySelectMenu()) {
-            var [customId, optionOne, optionTwo, userId] = interaction.customId.split("+");
+            var customId = interaction.customId.split("+")[1];
+            var optionOne = interaction.customId.split("?")[1];
+            var optionTwo = interaction.customId.split("&")[1];
+            var ownerId = interaction.customId.split("=")[1];
+
             let selectMenu = this.SelectMenus.get(customId);
             if (!selectMenu) return;
 
-            if (userId != interaction.user.id && userId != null) {
+            if (ownerId != interaction.user.id && ownerId != null) {
                 interaction.reply({ content: "This isn't yours", ephemeral: true });
                 return;
             };
@@ -48,18 +52,22 @@ export class ComponentManager {
             }
 
             try {
-                await selectMenu.execute(interaction, { customId, optionOne, optionTwo, userId }, this.client);
+                await selectMenu.execute(interaction, { customId, optionOne, optionTwo, ownerId }, this.client);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ content: 'There is an issue!', ephemeral: true });
             }
         } 
         else if (interaction.isButton()) {
-            var [customId, optionOne, optionTwo, userId] = interaction.customId.split("+");
+            var customId = interaction.customId.split("+")[1];
+            var optionOne = interaction.customId.split("?")[1];
+            var optionTwo = interaction.customId.split("&")[1];
+            var ownerId = interaction.customId.split("=")[1];
+
             let button = this.Buttons.get(customId);
             if (!button) return;
 
-            if (userId != interaction.user.id && userId) {
+            if (ownerId != interaction.user.id && ownerId) {
                 interaction.reply({ content: "This isn't yours", ephemeral: true });
                 return;
             };
@@ -74,7 +82,7 @@ export class ComponentManager {
             }
 
             try {
-                await button.execute(interaction, { customId, optionOne, optionTwo, userId }, this.client);
+                await button.execute(interaction, { customId, optionOne, optionTwo, ownerId }, this.client);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ content: 'There is an issue!', ephemeral: true });

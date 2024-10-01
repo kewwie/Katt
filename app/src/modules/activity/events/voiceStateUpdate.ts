@@ -34,13 +34,10 @@ export const VoiceStateUpdate: Event = {
 
         if (userVoiceState && !newVoiceState.channelId) {
             // User left voice channel
-            var guildId = newVoiceState.guild.id;
-            var userId = newVoiceState.id;
-            removeVoiceState(client, guildId, userId);
+            removeVoiceState(client, newVoiceState.guild.id, newVoiceState.id);
             
-            var username = newVoiceState.member.user.username;
             var secondsSinceLastUpdate = (new Date().getTime() - userVoiceState.joinedAt.getTime()) / 1000;
-            saveVoice(client, guildId, userId, username, secondsSinceLastUpdate);
+            saveVoice(client, newVoiceState.guild.id, newVoiceState.id, secondsSinceLastUpdate);
 
         } else if (!userVoiceState && newVoiceState.channelId) {
             // User joined a voice channel
@@ -48,15 +45,10 @@ export const VoiceStateUpdate: Event = {
 
         } else if (userVoiceState && newVoiceState.channelId) {
             // User switched voice channel
+            saveVoiceState(client, newVoiceState.guild.id, newVoiceState.id, newVoiceState.channelId);
 
-            var guildId = newVoiceState.guild.id;
-            var userId = newVoiceState.id;
-            var channelId = newVoiceState.channelId;
-            saveVoiceState(client, guildId, userId, channelId);
-
-            var username = newVoiceState.member.user.username;
             var secondsSinceLastUpdate = (new Date().getTime() - userVoiceState.joinedAt.getTime()) / 1000;
-            saveVoice(client, guildId, userId, username, secondsSinceLastUpdate);
+            saveVoice(client, newVoiceState.guild.id, newVoiceState.id, secondsSinceLastUpdate);
         }
     }
 }

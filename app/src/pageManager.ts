@@ -30,18 +30,18 @@ export class PageManager {
 
     generateModuleButtons(moduleId: string, interaction: BaseInteraction) {
         var configToggleButton = ConfigToggle.config;
-        configToggleButton.setCustomId(this.client.createCustomId({start: ConfigToggle.customId , optionOne: moduleId, userId: interaction.user.id}));
+        configToggleButton.setCustomId(this.client.createCustomId({customId: ConfigToggle.customId , optionOne: moduleId, ownerId: interaction.user.id}));
         var commandsButton = ConfigCommands.config;
-        commandsButton.setCustomId(this.client.createCustomId({start: ConfigCommands.customId , optionOne: moduleId, userId: interaction.user.id}));
+        commandsButton.setCustomId(this.client.createCustomId({customId: ConfigCommands.customId , optionOne: moduleId, ownerId: interaction.user.id}));
         var cancelButton = ConfigCancel.config;
-        cancelButton.setCustomId(this.client.createCustomId({start: ConfigCancel.customId , userId: interaction.user.id}));
+        cancelButton.setCustomId(this.client.createCustomId({customId: ConfigCancel.customId , ownerId: interaction.user.id}));
 
         return [ configToggleButton, commandsButton, cancelButton ];
     }
 
     generateChannelsSelectMenu(options: {moduleId: string, option: string ,userId: string, currentChannels?: string, }) {
         var SelectMenu = ConfigChannelSelectMenu.config as ChannelSelectMenuBuilder;
-        SelectMenu.setCustomId(this.client.createCustomId({start: ConfigChannelSelectMenu.customId , optionOne: options.moduleId, optionTwo: options.option, userId: options.userId}));
+        SelectMenu.setCustomId(this.client.createCustomId({customId: ConfigChannelSelectMenu.customId , optionOne: options.moduleId, optionTwo: options.option, ownerId: options.userId}));
         if (options.currentChannels) {
             SelectMenu.setDefaultChannels(options.currentChannels);
         } else {
@@ -52,7 +52,7 @@ export class PageManager {
 
     generateRolesSelectMenu(options: {moduleId: string, option: string ,userId: string, currentRoles?: string, }) {
         var SelectMenu = ConfigRoleSelectMenu.config as RoleSelectMenuBuilder;
-        SelectMenu.setCustomId(this.client.createCustomId({start: ConfigRoleSelectMenu.customId , optionOne: options.moduleId, optionTwo: options.option, userId: options.userId}));
+        SelectMenu.setCustomId(this.client.createCustomId({customId: ConfigRoleSelectMenu.customId , optionOne: options.moduleId, optionTwo: options.option, ownerId: options.userId}));
         if (options.currentRoles) {
             SelectMenu.setDefaultRoles(options.currentRoles);
         } else {
@@ -63,7 +63,7 @@ export class PageManager {
 
     generateModulesSelectMenu(currentModule: string, interaction: BaseInteraction) {
         var SelectMenu = ConfigSelectMenu.config as StringSelectMenuBuilder;
-        SelectMenu.setCustomId(this.client.createCustomId({start: ConfigSelectMenu.customId, userId: interaction.user.id}));
+        SelectMenu.setCustomId(this.client.createCustomId({customId: ConfigSelectMenu.customId, ownerId: interaction.user.id}));
         SelectMenu.options.forEach(option => {
             if (option.data.value === currentModule) {
                 option.setDefault(true);

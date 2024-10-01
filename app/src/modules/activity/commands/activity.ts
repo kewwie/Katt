@@ -16,7 +16,7 @@ import { ActivitySelectMenu } from "../selectmenus/activity";
 export const ActivitySlash: SlashCommand = {
     config: new SlashCommandBuilder()
         .setName("activity")
-        .setDescription("Manage the bot activity"),
+        .setDescription("View server activity"),
     
     /**
      * @param {ChatInputCommandInteraction} interaction
