@@ -6,6 +6,7 @@ import { KiwiClient } from "../../../client";
 import { getActivityConfig } from "../utils/getActivityConfig";
 import { updateVoiceState } from "../utils/updateVoiceState";
 import { saveVoice } from "../utils/saveVoice";
+import { sendVoiceLeaderboard } from "../utils/sendVoiceLeaderboard";
 
 var timeRule = new RecurrenceRule();
 timeRule.tz = 'UTC';
@@ -24,6 +25,8 @@ export const ActivityDailySchedule: Schedule = {
         }
 
         await grantMostActiveRole(client, guildId);
+        var actConf = await getActivityConfig(client, guildId);
+        if (actConf?.logChannel) await sendVoiceLeaderboard(client, guildId, actConf.logChannel, "daily");
 
         client.db.repos.activityVoice.update({
             guildId: guildId
@@ -54,8 +57,4 @@ const grantMostActiveRole = async (client: KiwiClient, guildId: string) => {
     mostActiveRole.members.forEach(member => member.roles.remove(mostActiveRole).catch());
 
     activeMember.roles.add(mostActiveRole).catch();
-
-    var logChannel = await client.channels.fetch(actConf.logChannel) as TextChannel;
-    if (!logChannel) return;
-    logChannel.send(`Congratulations <@${activeMember.id}>! You are the most active user today with ${activeUserVoice.dailySeconds / 60} minutes!`);
 }

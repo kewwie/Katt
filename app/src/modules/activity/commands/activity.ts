@@ -9,6 +9,7 @@ import {
 import { SlashCommand } from "../../../types/command";
 
 import { ActivitySelectMenu } from "../selectmenus/activity";
+import { sendVoiceLeaderboard } from "../utils/sendVoiceLeaderboard";
 
 /**
  * @type {SlashCommand}
@@ -31,6 +32,8 @@ export const ActivitySlash: SlashCommand = {
         }));
         var row = new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents(SelectMenu);
+
+        sendVoiceLeaderboard(client, interaction.guildId, interaction.channelId, "daily");
 
         interaction.reply({ content: "Select the activity type", components: [row] });
     },
