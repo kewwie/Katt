@@ -7,6 +7,14 @@ export const sendVoiceLeaderboard = async (
     channelId: string,
     type: string
 ) => {
+
+    const lb = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 2
+    });
+
+    var leaderboard = [];
+
     var em = new EmbedBuilder()
         .setColor(client.Settings.color)
         .setTimestamp(new Date());
@@ -19,7 +27,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
-            em.setTitle("Daily Voice Activity Leaderboard");
+            leaderboard.push("## Daily Voice Activity Leaderboard");
             break;
 
         case "weekly":
@@ -29,7 +37,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
-            em.setTitle("Weekly Voice Activity Leaderboard");
+            leaderboard.push("## Weekly Voice Activity Leaderboard");
             break;
 
         case "monthly":
@@ -39,7 +47,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
-            em.setTitle("Monthly Voice Activity Leaderboard");
+            leaderboard.push("## Monthly Voice Activity Leaderboard");
             break;
 
         case "total":
@@ -49,21 +57,16 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
-            em.setTitle("Voice Activity Leaderboard");
+            leaderboard.push("## Voice Activity Leaderboard");
             break;
     }
-    var typeName = type.charAt(0).toUpperCase() + type.slice(1);
 
-    var embedDescription = [];
-    for (var user of users) {
-        embedDescription.push(
-            `**${user.userName}** - ${Math.round(user[type.toLowerCase() + "Seconds"] / 60 / 60)} hours`
-        );        
-    }
-
-    em.setDescription(embedDescription.join("\n"));
+    var leaderboardUsers = users.map((user, i) => {
+        return `${i + 1}. **${client.capitalize(user.userName)}** - ${lb.format(user[type + "Seconds"] / (60 * 60))} hours`;
+    }); 
+    leaderboard.push(leaderboardUsers.join("\n"));
 
     var channel = await client.channels.fetch(channelId) as TextChannel;
     if (!channel) return;
-    channel.send({ embeds: [em]}).catch();
+    channel.send(leaderboard.join("\n")).catch();
 }
