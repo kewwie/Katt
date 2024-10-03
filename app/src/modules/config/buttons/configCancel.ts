@@ -9,7 +9,7 @@ import { Button, CustomOptions } from "../../../types/component";
 /**
  * @type {Button}
  */
-export const ConfigCancel: Button = {
+export const ConfigCancelButton: Button = {
     customId: 'config-cancel',
     config: new ButtonBuilder()
         .setLabel('Cancel')

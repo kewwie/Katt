@@ -10,12 +10,12 @@ import { ConfigSlash } from "./commands/config";
 // Select Menus
 import { ConfigChannelSelectMenu } from "./selectmenus/configChannel";
 import { ConfigRoleSelectMenu } from "./selectmenus/configRole";
-import { ConfigSelectMenu } from "./selectmenus/config";
+import { ConfigSelectMenu } from "./selectmenus/configType";
 
 // Buttons
-import { ConfigToggle } from "./buttons/configToggle";
-import { ConfigCancel } from "./buttons/configCancel";
-import { ConfigCommands } from "./buttons/configCommands";
+import { ConfigToggleButton } from "./buttons/configToggle";
+import { ModuleInfoButton } from "./buttons/moduleInfo";
+import { ConfigCancelButton } from "./buttons/configCancel";
 
 export const ConfigModule: Module = {
     id: "config",
@@ -32,9 +32,9 @@ export const ConfigModule: Module = {
         ConfigSelectMenu
     ],
     buttons: [
-        ConfigToggle,
-        ConfigCancel,
-        ConfigCommands
+        ConfigToggleButton,
+        ModuleInfoButton,
+        ConfigCancelButton
     ],
     default: true
 }

@@ -8,10 +8,12 @@ import { Button, CustomOptions } from "../../../types/component";
 
 import { GuildModuleEntity } from "../../../entities/GuildModule";
 
+import { getPage } from "../utils/getPage";
+
 /**
  * @type {Button}
  */
-export const ConfigToggle: Button = {
+export const ConfigToggleButton: Button = {
     customId: 'config-toggle',
     config: new ButtonBuilder()
         .setLabel('Toggle')
@@ -27,7 +29,12 @@ export const ConfigToggle: Button = {
             module.moduleId = options.optionOne;
             await client.db.repos.guildModules.save(module);
         }
-        var page = await client.PageManager.generateConfigPage(options.optionOne, interaction);
+
+        var page = await getPage(client, { 
+            guildId: interaction.guildId,
+            pageId: options.optionOne,
+            pageOwner: interaction.user 
+        });
         interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
     }
 }

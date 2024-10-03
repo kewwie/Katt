@@ -58,7 +58,7 @@ export const ConfigChannelSelectMenu: SelectMenu = {
             }
         }
 
-        var page = await client.PageManager.generateConfigPage(options.optionOne, interaction);
-        interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
+        //var page = await client.PageManager.generateConfigPage(options.optionOne, interaction);
+        //interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
     }
 }

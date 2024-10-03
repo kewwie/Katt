@@ -6,6 +6,7 @@ import {
 import { KiwiClient } from "../../../client";
 
 import { CustomOptions, SelectMenu } from "../../../types/component";
+import { getPage } from "../utils/getPage";
 
 /**
  * @type {SelectMenu}
@@ -33,7 +34,11 @@ export const ConfigSelectMenu: SelectMenu = {
                 .setValue('list'),
         ),
     execute: async (interaction: StringSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
-        var page = await client.PageManager.generateConfigPage(interaction.values[0], interaction);
+        var page = await getPage(client, { 
+            guildId: interaction.guildId,
+            pageId: interaction.values[0],
+            pageOwner: interaction.user 
+        });
         interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
     }
 }

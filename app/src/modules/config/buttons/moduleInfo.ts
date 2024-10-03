@@ -9,10 +9,10 @@ import { Button, CustomOptions } from "../../../types/component";
 /**
  * @type {Button}
  */
-export const ConfigCommands: Button = {
-    customId: 'config-commands',
+export const ModuleInfoButton: Button = {
+    customId: 'config-module-info',
     config: new ButtonBuilder()
-        .setLabel('Commands')
+        .setLabel('Information')
         .setStyle(ButtonStyle.Success),
     execute: async (interaction: ButtonInteraction, options: CustomOptions, client: KiwiClient) => {
         interaction.reply({ content: "This doesn't exist yet", ephemeral: true } );

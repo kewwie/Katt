@@ -24,10 +24,11 @@ export class KiwiClient extends Client {
     
     public EventManager: EventManager;
     public ComponentManager: ComponentManager;
-    public PageManager: PageManager;
     public CommandManager: CommandManager;
     public ScheduleManager: ScheduleManager;
     public ModuleManager: ModuleManager;
+
+    public Pages: PageManager;
 
     constructor() {
         super({
@@ -66,7 +67,7 @@ export class KiwiClient extends Client {
         this.ComponentManager = new ComponentManager(this);
 
         // Page Manager
-        this.PageManager = new PageManager(this);
+        this.Pages = new PageManager(this);
 
         // Command Manager
         this.CommandManager = new CommandManager(this);

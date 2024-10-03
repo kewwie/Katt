@@ -6,6 +6,8 @@ import {
 } from "discord.js";
 import { SlashCommand } from "../../../types/command";
 
+import { getPage } from "../utils/getPage";
+
 /**
  * @type {SlashCommand}
  */
@@ -27,7 +29,7 @@ export const ConfigSlash: SlashCommand = {
             return;
         }
         
-        var page = await client.PageManager.generateConfigPage("overview", interaction);
+        var page = await getPage(client, { guildId: interaction.guildId, pageId: "overview", pageOwner: interaction.user });
         interaction.reply({ embeds: [...page.embeds], components: [...page.rows] });
     },
 }
