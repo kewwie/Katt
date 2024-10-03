@@ -44,7 +44,7 @@ export const ListSlash: SlashCommand = {
 
 				for (let user of users) {
 					if (!user) break;
-					var customId = await client.createCustomId({ customId: UpdateListButton.customId, optionOne: user });	
+					var customId = await client.createCustomId({ customId: UpdateListButton.customId, valueOne: user });	
 					let button = new ButtonBuilder()
 						.setStyle(ButtonStyle.Primary)
 						.setCustomId(customId)

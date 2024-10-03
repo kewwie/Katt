@@ -15,7 +15,7 @@ export const generateModuleButtons = (client: KiwiClient, config: { pageId: stri
         client.Pages.generateButton({
             customId: client.createCustomId({ 
                 customId: ConfigToggleButton.customId,
-                optionOne: pageId,
+                valueOne: pageId,
                 ownerId: pageOwner.id 
             }),
             label: toggleModuleButton.data.label,
@@ -24,7 +24,7 @@ export const generateModuleButtons = (client: KiwiClient, config: { pageId: stri
         client.Pages.generateButton({
             customId: client.createCustomId({ 
                 customId: ModuleInfoButton.customId,
-                optionOne: pageId,
+                valueOne: pageId,
                 ownerId: pageOwner.id 
             }),
             label: moduleInfoButton.data.label,

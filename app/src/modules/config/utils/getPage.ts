@@ -1,10 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder, ChannelSelectMenuBuilder, StringSelectMenuBuilder, User } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ChannelSelectMenuBuilder, ChannelType, RoleSelectMenuBuilder, StringSelectMenuBuilder, User } from "discord.js";
 import { KiwiClient } from "../../../client";
 import { Emojis } from "../../../emojis";
 
 import { ConfigSelectMenu } from "../selectmenus/configType"
-import { ConfigChannelSelectMenu } from "../selectmenus/configChannel";
-import { ConfigRoleSelectMenu } from "../selectmenus/configRole";
+import { ConfigChannelSelectMenu as ChannelSM } from "../selectmenus/configChannel";
+import { ConfigRoleSelectMenu as RoleSM } from "../selectmenus/configRole";
 
 import { generateModuleButtons } from "./generateModuleButtons";
 
@@ -43,10 +43,8 @@ export const getPage = async (
                 `### Activity Module`,
                 `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
                 `${Emojis.ReplyMiddle} **Log Channel:** ${actConf?.logChannel ? `<#${actConf.logChannel}>` : 'None'}`,
-                `${Emojis.ReplyMiddle} **Most Active Role:** ${actConf?.mostActiveRole ? `<@&${actConf.mostActiveRole}>` : 'None'}`,
-                `${Emojis.ReplyMiddle} **Daily Active Role:** ${actConf?.dailyMostActiveRole ? `<@&${actConf.dailyMostActiveRole}>` : 'None'}`,
-                `${Emojis.ReplyMiddle} **Weekly Active Role:** ${actConf?.weeklyMostActiveRole ? `<@&${actConf.weeklyMostActiveRole}>` : 'None'}`,
-                `${Emojis.ReplyBottom} **Monthly Active Role:** ${actConf?.monthlyMostActiveRole ? `<@&${actConf.monthlyMostActiveRole}>` : 'None'}`,                
+                `${Emojis.ReplyMiddle} **Daily Active Role:** ${actConf?.dailyActiveRole ? `<@&${actConf.dailyActiveRole}>` : 'None'}`,
+                `${Emojis.ReplyBottom} **Weekly Active Role:** ${actConf?.weeklyActiveRole ? `<@&${actConf.weeklyActiveRole}>` : 'None'}`,
             ];
 
             rows.push(
@@ -56,14 +54,34 @@ export const getPage = async (
                     .addComponents(
                         client.Pages.generateSelectMenu({
                             customId: client.createCustomId({ 
-                                customId: ConfigChannelSelectMenu.customId, 
-                                optionOne: pageId,
-                                optionTwo: "logChannel",
-                                ownerId: pageOwner.id 
+                                customId: ChannelSM.customId, valueOne: pageId, valueTwo: "logChannel", ownerId: pageOwner.id 
                             }),
                             placeholder: "Log Channel",
-                            defaults: [actConf?.logChannel],
+                            channelTypes: [ChannelType.GuildText],
+                            defaults: actConf?.logChannel ? [actConf.logChannel] : [],
                             type: "channel"
+                        })
+                    ),
+                new ActionRowBuilder<RoleSelectMenuBuilder>()
+                    .addComponents(
+                        client.Pages.generateSelectMenu({
+                            customId: client.createCustomId({ 
+                                customId: RoleSM.customId, valueOne: pageId, valueTwo: "dailyActiveRole", ownerId: pageOwner.id 
+                            }),
+                            placeholder: "Daily Active Role",
+                            defaults: actConf?.dailyActiveRole ? [actConf.dailyActiveRole] : [],
+                            type: "role"
+                        })
+                    ),
+                new ActionRowBuilder<RoleSelectMenuBuilder>()
+                    .addComponents(
+                        client.Pages.generateSelectMenu({
+                            customId: client.createCustomId({ 
+                                customId: RoleSM.customId, valueOne: pageId, valueTwo: "weeklyActiveRole", ownerId: pageOwner.id 
+                            }),
+                            placeholder: "Weekly Active Role",
+                            defaults: actConf?.weeklyActiveRole ? [actConf.weeklyActiveRole] : [],
+                            type: "role"
                         })
                     )
             );

@@ -25,7 +25,6 @@ export const ActivityMonthlySchedule: Schedule = {
             await saveVoice(client, guildId, userVoiceState.userId, secondsSinceLastUpdate);
         }
 
-        await grantMostActiveRole(client, guildId, "monthly");
         var actConf = await getActivityConfig(client, guildId);
         if (actConf?.logChannel) await sendVoiceLeaderboard(client, guildId, actConf.logChannel, "monthly");
         

@@ -7,14 +7,13 @@ import {
 import { KiwiClient } from "../../../client";
 import { CustomOptions, SelectMenu } from "../../../types/component";
 
+import { getPage } from "../utils/getPage";
+
 /**
  * @type {SelectMenu}
  */
 export const ConfigChannelSelectMenu: SelectMenu = {
     customId: 'config-channel',
-    config: new ChannelSelectMenuBuilder()
-        .setMinValues(0)
-        .setChannelTypes(ChannelType.GuildText),
     execute: async (interaction: ChannelSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
         switch (options.optionOne) {
             case "activity": {
@@ -26,14 +25,6 @@ export const ConfigChannelSelectMenu: SelectMenu = {
                         actConf.logChannel = interaction.values[0];
                     } else {
                         actConf.logChannel = null;
-                    }
-                }
-
-                if (options.optionTwo == "mostActiveRole") {
-                    if (interaction.values[0]) {
-                        actConf.mostActiveRole = interaction.values[0];
-                    } else {
-                        actConf.mostActiveRole = null;
                     }
                 }
 
@@ -58,7 +49,11 @@ export const ConfigChannelSelectMenu: SelectMenu = {
             }
         }
 
-        //var page = await client.PageManager.generateConfigPage(options.optionOne, interaction);
-        //interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
+        var page = await getPage(client, { 
+            guildId: interaction.guildId,
+            pageId: options.optionOne,
+            pageOwner: interaction.user 
+        });
+        interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
     }
 }

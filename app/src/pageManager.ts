@@ -4,6 +4,7 @@ import {
     ButtonBuilder,
     ButtonStyle,
     ChannelSelectMenuBuilder,
+    ChannelType,
     EmbedBuilder,
     MessageComponentInteraction,
     RoleSelectMenuBuilder,
@@ -43,10 +44,11 @@ export class PageManager {
         maxValues?: number;
         minValues?: number;
         options?: Array<{ label: string; value: string; description?: string; }>;
+        channelTypes?: ChannelType[];
         defaults?: string[];
         type: "string" | "channel" | "role";
     }) {
-        const { customId, placeholder, maxValues, minValues = 0, options, defaults, type } = menuConfig;
+        const { customId, placeholder, maxValues, minValues, options, channelTypes, defaults, type } = menuConfig;
 
         let selectMenu;
         switch (type) {
@@ -65,7 +67,7 @@ export class PageManager {
 
         selectMenu.setCustomId(customId).setPlaceholder(placeholder);
         if (maxValues) selectMenu.setMaxValues(maxValues);
-        if (minValues) selectMenu.setMinValues(minValues);
+        if (minValues) selectMenu.setMinValues(minValues); else selectMenu.setMinValues(0);
 
         if (type === "string") {
             options.forEach((option) => {
@@ -81,6 +83,7 @@ export class PageManager {
             selectMenu.setDefaultRoles(defaults);
         } else if (type === "channel") {
             selectMenu.setDefaultChannels(defaults);
+            if (channelTypes) selectMenu.setChannelTypes(channelTypes);
         }
 
         return selectMenu;
