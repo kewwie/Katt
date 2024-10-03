@@ -2,8 +2,8 @@ import { KiwiClient } from "../../../client";
 
 import { getActivityConfig } from "./getActivityConfig";
 
-const grantMostActiveRole = async (
-    client: KiwiClient, guildId: string, type: string
+export const grantMostActiveRole = async (
+    client: KiwiClient, guildId: string, type?: string
 ) => {
     var activeUserVoice = await client.db.repos.activityVoice
             .findOne({ where: { guildId: guildId }, order: { dailySeconds: "DESC" } });
@@ -18,9 +18,14 @@ const grantMostActiveRole = async (
     var activeMember = await guild.members.fetch(activeUserVoice.userId);
     if (!activeMember) return;
     
-    var mostActiveRole = await guild.roles.fetch(actConf.mostActiveRole);
+    var mostActiveRole;
+    if (type === "daily") mostActiveRole = guild.roles.cache.get(actConf.dailyMostActiveRole);
+    if (type === "weekly") mostActiveRole = guild.roles.cache.get(actConf.weeklyMostActiveRole);
+    if (type === "monthly") mostActiveRole = guild.roles.cache.get(actConf.monthlyMostActiveRole);
+    if (!type) mostActiveRole = guild.roles.cache.get(actConf.mostActiveRole);
+
     if (!mostActiveRole) return;
-    mostActiveRole.members.forEach(member => member.roles.remove(mostActiveRole).catch());
+    mostActiveRole.members.forEach(async (member) => await member.roles.remove(mostActiveRole).catch());
 
     activeMember.roles.add(mostActiveRole).catch();
 }

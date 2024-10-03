@@ -6,6 +6,7 @@ import { KiwiClient } from "../../../client";
 import { getActivityConfig } from "../utils/getActivityConfig";
 import { updateVoiceState } from "../utils/updateVoiceState";
 import { saveVoice } from "../utils/saveVoice";
+import { grantMostActiveRole } from "../utils/grantMostActiveRole";
 import { sendVoiceLeaderboard } from "../utils/sendVoiceLeaderboard";
 
 var timeRule = new RecurrenceRule();
@@ -24,7 +25,7 @@ export const ActivityDailySchedule: Schedule = {
             await saveVoice(client, guildId, userVoiceState.userId, secondsSinceLastUpdate);
         }
 
-        await grantMostActiveRole(client, guildId);
+        await grantMostActiveRole(client, guildId, "daily");
         var actConf = await getActivityConfig(client, guildId);
         if (actConf?.logChannel) await sendVoiceLeaderboard(client, guildId, actConf.logChannel, "daily");
 
@@ -35,26 +36,4 @@ export const ActivityDailySchedule: Schedule = {
         });
 
     }
-}
-
-
-const grantMostActiveRole = async (client: KiwiClient, guildId: string) => {
-    var activeUserVoice = await client.db.repos.activityVoice
-            .findOne({ where: { guildId: guildId }, order: { dailySeconds: "DESC" } });
-    if (!activeUserVoice) return;
-
-    var actConf = await getActivityConfig(client, guildId);
-    if (!actConf) return;
-
-    var guild = await client.guilds.fetch(guildId);
-    if (!guild) return;
-
-    var activeMember = await guild.members.fetch(activeUserVoice.userId);
-    if (!activeMember) return;
-    
-    var mostActiveRole = await guild.roles.fetch(actConf.mostActiveRole);
-    if (!mostActiveRole) return;
-    mostActiveRole.members.forEach(member => member.roles.remove(mostActiveRole).catch());
-
-    activeMember.roles.add(mostActiveRole).catch();
 }
