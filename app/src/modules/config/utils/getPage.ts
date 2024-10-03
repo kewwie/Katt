@@ -1,8 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, User } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ChannelSelectMenuBuilder, StringSelectMenuBuilder, User } from "discord.js";
 import { KiwiClient } from "../../../client";
 import { Emojis } from "../../../emojis";
 
 import { ConfigSelectMenu } from "../selectmenus/configType"
+import { ConfigChannelSelectMenu } from "../selectmenus/configChannel";
+import { ConfigRoleSelectMenu } from "../selectmenus/configRole";
 
 import { generateModuleButtons } from "./generateModuleButtons";
 
@@ -47,8 +49,23 @@ export const getPage = async (
                 `${Emojis.ReplyBottom} **Monthly Active Role:** ${actConf?.monthlyMostActiveRole ? `<@&${actConf.monthlyMostActiveRole}>` : 'None'}`,                
             ];
 
-            rows.push(new ActionRowBuilder<ButtonBuilder>()
-                .addComponents(generateModuleButtons(client, { pageId, pageOwner }))
+            rows.push(
+                new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(generateModuleButtons(client, { pageId, pageOwner })),
+                new ActionRowBuilder<ChannelSelectMenuBuilder>()
+                    .addComponents(
+                        client.Pages.generateSelectMenu({
+                            customId: client.createCustomId({ 
+                                customId: ConfigChannelSelectMenu.customId, 
+                                optionOne: pageId,
+                                optionTwo: "logChannel",
+                                ownerId: pageOwner.id 
+                            }),
+                            placeholder: "Log Channel",
+                            defaults: [actConf?.logChannel],
+                            type: "channel"
+                        })
+                    )
             );
             break;
         }

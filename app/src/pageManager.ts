@@ -46,7 +46,7 @@ export class PageManager {
         defaults?: string[];
         type: "string" | "channel" | "role";
     }) {
-        const { customId, placeholder, maxValues, minValues, options, defaults, type } = menuConfig;
+        const { customId, placeholder, maxValues, minValues = 0, options, defaults, type } = menuConfig;
 
         let selectMenu;
         switch (type) {
@@ -68,7 +68,7 @@ export class PageManager {
         if (minValues) selectMenu.setMinValues(minValues);
 
         if (type === "string") {
-            menuConfig.options.forEach((option) => {
+            options.forEach((option) => {
                 let isDefault = defaults?.includes(option.value) ? true : false;
                 selectMenu.addOptions({
                     label: option.label,
