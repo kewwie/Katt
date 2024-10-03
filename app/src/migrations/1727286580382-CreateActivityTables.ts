@@ -27,6 +27,27 @@ export class CreateActivityTables1727286580382 implements MigrationInterface {
                         isNullable: true,
                         unsigned: true,
                         default: null
+                    },
+                    {
+                        name: 'daily_most_active_role',
+                        type: 'bigint',
+                        isNullable: true,
+                        unsigned: true,
+                        default: null
+                    },
+                    {
+                        name: 'weekly_most_active_role',
+                        type: 'bigint',
+                        isNullable: true,
+                        unsigned: true,
+                        default: null
+                    },
+                    {
+                        name: 'monthly_most_active_role',
+                        type: 'bigint',
+                        isNullable: true,
+                        unsigned: true,
+                        default: null
                     }
                 ]
             }), true
