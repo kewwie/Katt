@@ -17,20 +17,16 @@ export const ActivitySelectMenu: SelectMenu = {
         .setPlaceholder('Activity Type')
         .addOptions(
             new StringSelectMenuOptionBuilder()
-                .setLabel('Status')
-                .setDescription('...')
+                .setLabel('Status Activity')
                 .setValue('status'),
             new StringSelectMenuOptionBuilder()
-                .setLabel('Presence')
-                .setDescription('...')
+                .setLabel('Presence Activity')
                 .setValue('precense'),
             new StringSelectMenuOptionBuilder()
-                .setLabel('Voice')
-                .setDescription('...')
+                .setLabel('Voice Activity')
                 .setValue('voice'),
             new StringSelectMenuOptionBuilder()
-                .setLabel('Message')
-                .setDescription('...')
+                .setLabel('Message Activity')
                 .setValue('message')
         ),
     execute: async (interaction: StringSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
