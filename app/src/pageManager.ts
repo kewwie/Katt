@@ -91,25 +91,22 @@ export class PageManager {
 
     generateEmbed(options: 
         {
+            author?: { name: string, iconURL: string },
             title?: string,
             description?: string,
             thumbnail?: string,
             fields?: Array<{ name: string, value: string, inline?: boolean }>,
-            user?: User,
+            footer?: { text: string, iconURL: string },
         }
     ) {
         const embed = new EmbedBuilder().setColor(this.client.Settings.color);
 
+        if (options.author) embed.setAuthor({ name: options.author?.name, iconURL: options.author?.iconURL });
         if (options.title) embed.setTitle(this.client.capitalize(options.title));
         if (options.description) embed.setDescription(options.description);
         if (options.thumbnail) embed.setThumbnail(options.thumbnail);
         if (options.fields) embed.addFields(options.fields);
-        if (options.user) {
-            embed.setFooter({
-                text: `${this.client.capitalize(options.user.displayName)} (${options.user.username})`,
-                iconURL: options.user.avatarURL(),
-            });
-        }
+        if (options.footer) embed.setFooter({ text: options.footer?.text, iconURL: options.footer?.iconURL });
 
         return embed;
     }

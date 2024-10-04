@@ -94,7 +94,10 @@ export const getPage = async (
             title: "Server Configuration",
             description: embedDescription.join("\n"),
             thumbnail: guild.iconURL(),
-            user: pageOwner,
+            footer: {
+                text: `Requested by ${client.capitalize(pageOwner.username)}`,
+                iconURL: pageOwner.displayAvatarURL()
+            }
         })
     );
 
