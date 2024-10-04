@@ -7,7 +7,7 @@ import { VoiceStateUpdate } from "./events/voiceStateUpdate";
 import { ActivitySlash } from "./commands/activity";
 
 // Select Menus
-import { ActivitySelectMenu } from "./selectmenus/activity";
+import { ActivitySelectMenu } from "./selectmenus/activityType";
 
 // Schedules
 import { ActivityDailySchedule } from "./schedules/activity-daily";

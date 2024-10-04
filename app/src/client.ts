@@ -87,11 +87,13 @@ export class KiwiClient extends Client {
             customId: string,
             valueOne?: string,
             valueTwo?: string,
+            userId?: string,
             ownerId?: string
         }): string {
             var optionOne = options.valueOne || "";
             var optionTwo = options.valueTwo || "";
+            var userId = options.userId || "";
             var ownerId = options.ownerId || "";
-        return `+${options.customId}+?${optionOne}?&${optionTwo}&=${ownerId}=`;
+        return `+${options.customId}+?${optionOne}?&${optionTwo}&%${userId}%=${ownerId}=`;
     }
 };

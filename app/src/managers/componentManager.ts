@@ -32,6 +32,7 @@ export class ComponentManager {
             var customId = interaction.customId.split("+")[1];
             var optionOne = interaction.customId.split("?")[1];
             var optionTwo = interaction.customId.split("&")[1];
+            var userId = interaction.customId.split("%")[1];
             var ownerId = interaction.customId.split("=")[1];
 
             let selectMenu = this.SelectMenus.get(customId);
@@ -52,7 +53,7 @@ export class ComponentManager {
             }
 
             try {
-                await selectMenu.execute(interaction, { customId, optionOne, optionTwo, ownerId }, this.client);
+                await selectMenu.execute(interaction, { customId, optionOne, optionTwo, userId, ownerId }, this.client);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ content: 'There is an issue!', ephemeral: true });
@@ -62,6 +63,7 @@ export class ComponentManager {
             var customId = interaction.customId.split("+")[1];
             var optionOne = interaction.customId.split("?")[1];
             var optionTwo = interaction.customId.split("&")[1];
+            var userId = interaction.customId.split("%")[1];
             var ownerId = interaction.customId.split("=")[1];
 
             let button = this.Buttons.get(customId);
@@ -82,7 +84,7 @@ export class ComponentManager {
             }
 
             try {
-                await button.execute(interaction, { customId, optionOne, optionTwo, ownerId }, this.client);
+                await button.execute(interaction, { customId, optionOne, optionTwo, userId, ownerId }, this.client);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ content: 'There is an issue!', ephemeral: true });

@@ -32,5 +32,6 @@ export interface CustomOptions {
     customId: string;
     optionOne?: string;
     optionTwo?: string;
+    userId?: string;
     ownerId?: string;
 }

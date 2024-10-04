@@ -27,7 +27,6 @@ export const VoiceStateUpdate: Event = {
     */
     async execute(client: KiwiClient, oldVoiceState: VoiceState, newVoiceState: VoiceState) {
         if (newVoiceState.member.user.bot) return;
-        console.log("Voice State Update");
 
         var userVoiceState = await client.db.repos.activityVoicestates
             .findOneBy({ userId: oldVoiceState.id, guildId: oldVoiceState.guild.id });
