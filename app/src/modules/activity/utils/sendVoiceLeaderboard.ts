@@ -15,10 +15,6 @@ export const sendVoiceLeaderboard = async (
 
     var leaderboard = [];
 
-    var em = new EmbedBuilder()
-        .setColor(client.Settings.color)
-        .setTimestamp(new Date());
-
     switch (type) {
         case "daily":
             var users = await client.db.repos.activityVoice.find({
@@ -27,7 +23,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
-            leaderboard.push("## Daily Voice Activity Leaderboard");
+            leaderboard.push("## Daily Voice Leaderboard");
             break;
 
         case "weekly":
@@ -37,7 +33,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
-            leaderboard.push("## Weekly Voice Activity Leaderboard");
+            leaderboard.push("## Weekly Voice Leaderboard");
             break;
 
         case "monthly":
@@ -47,7 +43,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
-            leaderboard.push("## Monthly Voice Activity Leaderboard");
+            leaderboard.push("## Monthly Voice Leaderboard");
             break;
 
         case "total":
@@ -57,7 +53,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
-            leaderboard.push("## Voice Activity Leaderboard");
+            leaderboard.push("## Voice Leaderboard");
             break;
     }
 
