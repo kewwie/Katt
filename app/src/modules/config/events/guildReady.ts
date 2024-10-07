@@ -14,5 +14,7 @@ export const GuildReady: Event = {
     */
     async execute(client: KiwiClient, guild: Guild) {
         await client.db.generateConfigs(guild.id);
+
+        console.log(`Guild ${guild.name} is ready!`);
     }
 }
