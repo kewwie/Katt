@@ -18,6 +18,9 @@ export const sendVoiceLeaderboard = async (
     switch (type) {
         case "daily":
             var users = await client.db.repos.activityVoice.find({
+                where: {
+                    guildId: guildId
+                },
                 order: {
                     dailySeconds: "DESC"
                 },
@@ -28,6 +31,9 @@ export const sendVoiceLeaderboard = async (
 
         case "weekly":
             var users = await client.db.repos.activityVoice.find({
+                where: {
+                    guildId: guildId
+                },
                 order: {
                     weeklySeconds: "DESC"
                 },
@@ -38,6 +44,9 @@ export const sendVoiceLeaderboard = async (
 
         case "monthly":
             var users = await client.db.repos.activityVoice.find({
+                where: {
+                    guildId: guildId
+                },
                 order: {
                     monthlySeconds: "DESC"
                 },
@@ -48,6 +57,9 @@ export const sendVoiceLeaderboard = async (
 
         case "total":
             var users = await client.db.repos.activityVoice.find({
+                where: {
+                    guildId: guildId
+                },
                 order: {
                     totalSeconds: "DESC"
                 },
@@ -56,6 +68,8 @@ export const sendVoiceLeaderboard = async (
             leaderboard.push("## Voice Leaderboard");
             break;
     }
+    
+    if (!users || users.length === 0) return;
 
     var leaderboardUsers = users.map((user, i) => {
         return `${i + 1}. **${client.capitalize(user.userName)}** - ${lb.format(user[type + "Seconds"] / (60 * 60))} hours`;
