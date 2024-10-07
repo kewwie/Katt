@@ -25,5 +25,5 @@ export const grantMostActiveRole = async (
     if (!mostActiveRole) return;
     mostActiveRole.members.forEach(async (member) => await member.roles.remove(mostActiveRole).catch());
 
-    activeMember.roles.add(mostActiveRole).catch();
+    activeMember.roles.add(mostActiveRole).catch(e => console.log(e));
 }

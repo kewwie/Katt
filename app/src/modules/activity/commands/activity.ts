@@ -8,8 +8,6 @@ import {
 } from "discord.js";
 import { SlashCommand } from "../../../types/command";
 
-import { ActivitySelectMenu } from "../selectmenus/activityType";
-import { sendVoiceLeaderboard } from "../utils/sendVoiceLeaderboard";
 import { getPage } from "../utils/getPage";
 
 /**
