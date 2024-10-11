@@ -17,10 +17,10 @@ export const LeaderboardTypeSelectMenu: SelectMenu = {
         .setPlaceholder('Select Leaderboard Type')
         .addOptions(
             new StringSelectMenuOptionBuilder()
-                .setLabel('Voice Leaderboard')
+                .setLabel('Voice')
                 .setValue('voice'),
             new StringSelectMenuOptionBuilder()
-                .setLabel('Message Leaderboard')
+                .setLabel('Message')
                 .setValue('message')
         ),
     execute: async (interaction: StringSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
