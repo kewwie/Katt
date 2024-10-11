@@ -1,10 +1,9 @@
 import { EmbedBuilder, TextChannel } from "discord.js";
 import { KiwiClient } from "../../../client";
 
-export const sendVoiceLeaderboard = async (
+export const createVoiceLeaderboard = async (
     client: KiwiClient,
     guildId: string,
-    channelId: string,
     type: string
 ) => {
 
@@ -26,6 +25,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
+            users = users.filter(user => user.dailySeconds > 0);
             leaderboard.push("## Daily Voice Leaderboard");
             break;
 
@@ -39,6 +39,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
+            users = users.filter(user => user.weeklySeconds > 0);
             leaderboard.push("## Weekly Voice Leaderboard");
             break;
 
@@ -52,6 +53,7 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
+            users = users.filter(user => user.monthlySeconds > 0);
             leaderboard.push("## Monthly Voice Leaderboard");
             break;
 
@@ -65,18 +67,19 @@ export const sendVoiceLeaderboard = async (
                 },
                 take: 10
             });
+            users = users.filter(user => user.totalSeconds > 0);
             leaderboard.push("## Voice Leaderboard");
             break;
     }
     
-    if (!users || users.length === 0) return;
+    if (!users || users.length === 0) {
+        leaderboard.push("No users found.");
+    } else {
+        var leaderboardUsers = users.map((user, i) => {
+            return `${i + 1}. **${client.capitalize(user.userName)}** - ${lb.format(user[type + "Seconds"] / (60 * 60))} hours`;
+        }); 
+        leaderboard.push(leaderboardUsers.join("\n"));
+    }
 
-    var leaderboardUsers = users.map((user, i) => {
-        return `${i + 1}. **${client.capitalize(user.userName)}** - ${lb.format(user[type + "Seconds"] / (60 * 60))} hours`;
-    }); 
-    leaderboard.push(leaderboardUsers.join("\n"));
-
-    var channel = await client.channels.fetch(channelId) as TextChannel;
-    if (!channel) return;
-    channel.send(leaderboard.join("\n")).catch();
+    return { content: leaderboard.join("\n") };
 }

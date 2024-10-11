@@ -9,7 +9,7 @@ import { Emojis } from "../../../emojis";
 import { ActivitySelectMenu as ActivitySM } from "../selectmenus/activityType"
 import { getVoice } from "./getVoice";
 
-export const getPage = async (
+export const getActivityPage = async (
     client: KiwiClient,
     config: {
         guildId: string;

@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import { SlashCommand } from "../../../types/command";
 
-import { getActivityPage } from "../utils/getActivityPage";
+import { getLeaderboardPage } from "../utils/getLeaderboardPage";
 
 /**
  * @type {SlashCommand}
@@ -30,12 +30,12 @@ export const ActivitySlash: SlashCommand = {
      */
     async execute(interaction: ChatInputCommandInteraction, client: KiwiClient): Promise<void> {
         var user = interaction.options.getUser("user") || interaction.user;
-        var page = await getActivityPage(client, { 
+        var page = await getLeaderboardPage(client, { 
             guildId: interaction.guildId,
-            pageId: "status",
+            pageId: "voice",
             pageOwner: interaction.user,
             user
         });
-        interaction.reply({ embeds: [...page.embeds], components: [...page.rows] });
+        interaction.reply({ content: page.content, components: [...page.rows] });
     },
 }

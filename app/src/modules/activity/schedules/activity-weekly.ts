@@ -1,4 +1,5 @@
 import { RecurrenceRule } from "node-schedule";
+import { TextChannel } from "discord.js";
 import { Schedule } from "../../../types/schedule";
 import { KiwiClient } from "../../../client";
 
@@ -6,7 +7,7 @@ import { getActivityConfig } from "../utils/getActivityConfig";
 import { updateVoiceState } from "../utils/updateVoiceState";
 import { saveVoice } from "../utils/saveVoice";
 import { grantMostActiveRole } from "../utils/grantMostActiveRole";
-import { sendVoiceLeaderboard } from "../utils/sendVoiceLeaderboard";
+import { createVoiceLeaderboard } from "../utils/createVoiceLeaderboard";
 
 var timeRule = new RecurrenceRule();
 timeRule.tz = 'UTC';
@@ -27,7 +28,13 @@ export const ActivityWeeklySchedule: Schedule = {
 
         await grantMostActiveRole(client, guildId, "weekly");
         var actConf = await getActivityConfig(client, guildId);
-        if (actConf?.logChannel) await sendVoiceLeaderboard(client, guildId, actConf.logChannel, "weekly");
+        if (actConf?.logChannel) {
+            let lb = await createVoiceLeaderboard(client, guildId, "weekly");
+            var channel = client.channels.cache.get(actConf.logChannel) as TextChannel;
+            if (channel) {
+                channel.send(lb.content);
+            }
+        }
         
         client.db.repos.activityVoice.update({
             guildId: guildId

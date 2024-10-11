@@ -6,36 +6,30 @@ import {
 import { KiwiClient } from "../../../client";
 import { CustomOptions, SelectMenu } from "../../../types/component";
 
-import { getActivityPage } from "../utils/getActivityPage";
+import { getLeaderboardPage } from "../utils/getLeaderboardPage";
 
 /**
  * @type {SelectMenu}
  */
-export const ActivitySelectMenu: SelectMenu = {
-    customId: 'activity-type',
+export const LeaderboardSelectMenu: SelectMenu = {
+    customId: 'leaderboard-type',
     config: new StringSelectMenuBuilder()
-        .setPlaceholder('Activity Type')
+        .setPlaceholder('Leaderboard')
         .addOptions(
             new StringSelectMenuOptionBuilder()
-                .setLabel('Status Activity')
-                .setValue('status'),
-            new StringSelectMenuOptionBuilder()
-                .setLabel('Presence Activity')
-                .setValue('precense'),
-            new StringSelectMenuOptionBuilder()
-                .setLabel('Voice Activity')
+                .setLabel('Voice Leaderboard')
                 .setValue('voice'),
             new StringSelectMenuOptionBuilder()
-                .setLabel('Message Activity')
+                .setLabel('Message Leaderboard')
                 .setValue('message')
         ),
     execute: async (interaction: StringSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
-        var page = await getActivityPage(client, { 
+        var page = await getLeaderboardPage(client, { 
             guildId: interaction.guildId,
             pageId: interaction.values[0],
             pageOwner: interaction.user,
             user: await client.users.fetch(options.userId)
         });
-        interaction.update({ embeds: [...page.embeds], components: [...page.rows] });
+        interaction.update({ content: page.content, components: [...page.rows] });
     }
 }
