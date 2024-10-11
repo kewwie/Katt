@@ -38,5 +38,11 @@ export const ActivityMonthlySchedule: Schedule = {
         }, {
             monthlySeconds: 0
         })
+
+        client.db.repos.activityMessages.update({
+            guildId: guildId
+        }, {
+            monthlyMessages: 0
+        });
     }
 }

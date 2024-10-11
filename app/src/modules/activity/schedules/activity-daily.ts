@@ -17,7 +17,6 @@ timeRule.minute = 0
 export const ActivityDailySchedule: Schedule = {
     rule: timeRule,
     execute: async (client: KiwiClient, guildId: string) => {
-        console.log("Daily Activity");
         var voiceStates = await client.db.repos.activityVoicestates.findBy({ guildId: guildId });
         for (var userVoiceState of voiceStates) {
             var secondsSinceLastUpdate = (new Date().getTime() - userVoiceState.joinedAt.getTime()) / 1000;
@@ -41,5 +40,10 @@ export const ActivityDailySchedule: Schedule = {
             dailySeconds: 0
         });
 
+        client.db.repos.activityMessages.update({
+            guildId: guildId
+        }, {
+            dailyMessages: 0
+        });
     }
 }

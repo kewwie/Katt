@@ -41,5 +41,11 @@ export const ActivityWeeklySchedule: Schedule = {
         }, {
             weeklySeconds: 0
         })
+
+        client.db.repos.activityMessages.update({
+            guildId: guildId
+        }, {
+            weeklyMessages: 0
+        });
     }
 }
