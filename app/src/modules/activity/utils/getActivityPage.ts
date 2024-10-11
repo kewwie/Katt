@@ -61,10 +61,10 @@ export const getActivityPage = async (
                 .findOneBy({ guildId: guildId, userId: user.id });
             var embedDescription = [
                 `### Message Activity`,
-                `${Emojis.ReplyTop} **Total:** ${userMessages.totalMessages}`,
-                `${Emojis.ReplyMiddle} **Daily:** ${userMessages.dailyMessages}`,
-                `${Emojis.ReplyMiddle} **Weekly:** ${userMessages.weeklyMessages}`,
-                `${Emojis.ReplyBottom} **Monthly:** ${userMessages.monthlyMessages}`
+                `${Emojis.ReplyTop} **Total:** ${userMessages.totalMessages} messages`,
+                `${Emojis.ReplyMiddle} **Daily:** ${userMessages.dailyMessages} messages`,
+                `${Emojis.ReplyMiddle} **Weekly:** ${userMessages.weeklyMessages} messages`,
+                `${Emojis.ReplyBottom} **Monthly:** ${userMessages.monthlyMessages} messages`
             ];
             break
         }
