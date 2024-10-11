@@ -8,6 +8,9 @@ export class ActivityMessageEntity {
     @PrimaryColumn({ name: "user_id", type: 'bigint', unsigned: true })
     userId: string;
 
+    @Column({ name: "user_name", type: 'varchar', length: 32 })
+    userName: string;
+
     @Column({ name: "total_messages", type: 'int', default: 0 })
     totalMessages: number;
 

@@ -150,6 +150,12 @@ export class CreateActivityTables1727286580382 implements MigrationInterface {
                         unsigned: true
                     },
                     {
+                        name: "user_name",
+                        type: "varchar",
+                        length: "32",
+                        isNullable: false
+                    },
+                    {
                         name: "total_messages",
                         type: "int",
                         isNullable: false,
