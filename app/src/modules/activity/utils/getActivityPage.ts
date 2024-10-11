@@ -55,6 +55,19 @@ export const getActivityPage = async (
             ];
             break;
         }
+
+        case "message": {
+            var userMessages = await client.db.repos.activityMessages
+                .findOneBy({ guildId: guildId, userId: user.id });
+            var embedDescription = [
+                `### Message Activity`,
+                `${Emojis.ReplyTop} **Total:** ${userMessages.totalMessages}`,
+                `${Emojis.ReplyMiddle} **Daily:** ${userMessages.dailyMessages}`,
+                `${Emojis.ReplyMiddle} **Weekly:** ${userMessages.weeklyMessages}`,
+                `${Emojis.ReplyBottom} **Monthly:** ${userMessages.monthlyMessages}`
+            ];
+            break
+        }
     }
 
     embeds.push(
