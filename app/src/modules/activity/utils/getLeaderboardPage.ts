@@ -7,7 +7,9 @@ import { KiwiClient } from "../../../client";
 
 import { LeaderboardTypeSelectMenu as LeaderboardTypeSM } from "../selectmenus/leaderboardType"
 import { LeaderboardTimeSelectMenu as LeaderboardTimeSM } from "../selectmenus/leaderboardTime"
+
 import { createVoiceLeaderboard } from "./createVoiceLeaderboard";
+import { createMessageLeaderboard } from "./createMessageLeaderboard";
 
 export const getLeaderboardPage = async (
     client: KiwiClient,
@@ -25,6 +27,11 @@ export const getLeaderboardPage = async (
     switch (pageId) {
         case "voice": {
             var content = (await createVoiceLeaderboard(client, guildId, time)).content;
+            break;
+        }
+
+        case "message": {
+            var content = (await createMessageLeaderboard(client, guildId, time)).content;
             break;
         }
     }
