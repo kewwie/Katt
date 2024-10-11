@@ -11,23 +11,23 @@ import { getLeaderboardPage } from "../utils/getLeaderboardPage";
 /**
  * @type {SelectMenu}
  */
-export const LeaderboardTypeSelectMenu: SelectMenu = {
-    customId: 'leaderboard-type',
+export const LeaderboardTimeSelectMenu: SelectMenu = {
+    customId: 'leaderboard-time',
     config: new StringSelectMenuBuilder()
-        .setPlaceholder('Select Leaderboard Type')
+        .setPlaceholder('Select Leaderboard Time')
         .addOptions(
             new StringSelectMenuOptionBuilder()
-                .setLabel('Voice Leaderboard')
-                .setValue('voice'),
+                .setLabel('Total')
+                .setValue('total'),
             new StringSelectMenuOptionBuilder()
-                .setLabel('Message Leaderboard')
-                .setValue('message')
+                .setLabel('Daily')
+                .setValue('daily')
         ),
     execute: async (interaction: StringSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
         var page = await getLeaderboardPage(client, { 
             guildId: interaction.guildId,
-            pageId: interaction.values[0],
-            time: options.optionTwo,
+            pageId: options.optionOne,
+            time: interaction.values[0],
             pageOwner: interaction.user,
             user: await client.users.fetch(options.userId)
         });

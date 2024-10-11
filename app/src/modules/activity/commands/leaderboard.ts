@@ -1,10 +1,8 @@
 import { KiwiClient } from "../../../client";
 
 import {
-    ActionRowBuilder,
     ChatInputCommandInteraction,
-    SlashCommandBuilder,
-    StringSelectMenuBuilder
+    SlashCommandBuilder
 } from "discord.js";
 import { SlashCommand } from "../../../types/command";
 
@@ -13,16 +11,10 @@ import { getLeaderboardPage } from "../utils/getLeaderboardPage";
 /**
  * @type {SlashCommand}
  */
-export const ActivitySlash: SlashCommand = {
+export const LeaderboardSlash: SlashCommand = {
     config: new SlashCommandBuilder()
-        .setName("activity")
-        .setDescription("View your's or someone else activity")
-        .addUserOption(option =>
-            option
-                .setName("user")
-                .setDescription("The user to view")
-                .setRequired(false)
-        ),
+        .setName("leaderboard")
+        .setDescription("View server leaderboards"),
     
     /**
      * @param {ChatInputCommandInteraction} interaction
@@ -33,6 +25,7 @@ export const ActivitySlash: SlashCommand = {
         var page = await getLeaderboardPage(client, { 
             guildId: interaction.guildId,
             pageId: "voice",
+            time: "total",
             pageOwner: interaction.user,
             user
         });

@@ -5,7 +5,8 @@ import {
 } from "discord.js";
 import { KiwiClient } from "../../../client";
 
-import { ActivitySelectMenu as ActivitySM } from "../selectmenus/activityType"
+import { LeaderboardTypeSelectMenu as LeaderboardTypeSM } from "../selectmenus/leaderboardType"
+import { LeaderboardTimeSelectMenu as LeaderboardTimeSM } from "../selectmenus/leaderboardTime"
 import { createVoiceLeaderboard } from "./createVoiceLeaderboard";
 
 export const getLeaderboardPage = async (
@@ -13,36 +14,47 @@ export const getLeaderboardPage = async (
     config: {
         guildId: string;
         pageId: string;
+        time: string;
         pageOwner: User;
         user: User;
     }
 ) => {
-    const { guildId, pageId, pageOwner, user } = config;
-    var guild = await client.guilds.fetch(guildId);
+    const { guildId, pageId, time, pageOwner, user } = config;
 
-    const hours = new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 2
-    });
-    const minutes = new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    });
-
-    var embeds = [];
     var rows = [];
 
     switch (pageId) {
         case "voice": {
-            var content = (await createVoiceLeaderboard(client, guildId, "daily")).content;
+            var content = (await createVoiceLeaderboard(client, guildId, time)).content;
             break;
         }
     }
 
-    var { options } = ActivitySM.config as StringSelectMenuBuilder;
-    var moduleSelectMenu = client.Pages.generateSelectMenu({
-        customId: client.createCustomId({ customId: ActivitySM.customId, ownerId: pageOwner.id, userId: user.id }),
-        placeholder: "Select an Leaderboard Type",
+    var { options } = LeaderboardTypeSM.config as StringSelectMenuBuilder;
+    var typeSelectMenu = client.Pages.generateSelectMenu({
+        customId: client.createCustomId({ 
+            customId: LeaderboardTypeSM.customId,
+            valueOne: time,
+            ownerId: pageOwner.id,
+            userId: user.id 
+        }),
+        placeholder: LeaderboardTypeSM.config.data.placeholder,
+        options: options.map(option => { 
+            return { label: option.data.label, value: option.data.value, description: option.data.description } 
+        }),
+        defaults: [pageId],
+        type: "string",
+    })
+
+    var { options } = LeaderboardTimeSM.config as StringSelectMenuBuilder;
+    var timeSelectMenu = client.Pages.generateSelectMenu({
+        customId: client.createCustomId({ 
+            customId: LeaderboardTimeSM.customId,
+            valueOne: pageId,
+            ownerId: pageOwner.id,
+            userId: user.id 
+        }),
+        placeholder: LeaderboardTimeSM.config.data.placeholder,
         options: options.map(option => { 
             return { label: option.data.label, value: option.data.value, description: option.data.description } 
         }),
@@ -52,7 +64,9 @@ export const getLeaderboardPage = async (
 
     rows.push(
         new ActionRowBuilder<StringSelectMenuBuilder>()
-            .addComponents(moduleSelectMenu)
+            .addComponents(typeSelectMenu),
+        new ActionRowBuilder<StringSelectMenuBuilder>()
+            .addComponents(timeSelectMenu)
     );
 
     return { content, rows };

@@ -5,9 +5,12 @@ import { VoiceStateUpdate } from "./events/voiceStateUpdate";
 
 // Slash Commands
 import { ActivitySlash } from "./commands/activity";
+import { LeaderboardSlash } from "./commands/leaderboard";
 
 // Select Menus
 import { ActivitySelectMenu } from "./selectmenus/activityType";
+import { LeaderboardTypeSelectMenu } from "./selectmenus/leaderboardType";
+import { LeaderboardTimeSelectMenu } from "./selectmenus/leaderboardTime";
 
 // Schedules
 import { ActivityDailySchedule } from "./schedules/activity-daily";
@@ -20,10 +23,13 @@ export const ActivityModule: Module = {
         VoiceStateUpdate
     ],
     slashCommands: [
-        ActivitySlash
+        ActivitySlash,
+        LeaderboardSlash
     ],
     selectMenus: [
-        ActivitySelectMenu
+        ActivitySelectMenu,
+        LeaderboardTypeSelectMenu,
+        LeaderboardTimeSelectMenu
     ],
     schedules: [
         ActivityDailySchedule,
