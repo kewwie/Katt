@@ -16,10 +16,9 @@ export const getLeaderboardPage = async (
         pageId: string;
         time: string;
         pageOwner: User;
-        user: User;
     }
 ) => {
-    const { guildId, pageId, time, pageOwner, user } = config;
+    const { guildId, pageId, time, pageOwner } = config;
 
     var rows = [];
 
@@ -35,8 +34,7 @@ export const getLeaderboardPage = async (
         customId: client.createCustomId({ 
             customId: LeaderboardTypeSM.customId,
             valueOne: time,
-            ownerId: pageOwner.id,
-            userId: user.id 
+            ownerId: pageOwner.id
         }),
         placeholder: LeaderboardTypeSM.config.data.placeholder,
         options: options.map(option => { 
@@ -51,14 +49,13 @@ export const getLeaderboardPage = async (
         customId: client.createCustomId({ 
             customId: LeaderboardTimeSM.customId,
             valueOne: pageId,
-            ownerId: pageOwner.id,
-            userId: user.id 
+            ownerId: pageOwner.id
         }),
         placeholder: LeaderboardTimeSM.config.data.placeholder,
         options: options.map(option => { 
             return { label: option.data.label, value: option.data.value, description: option.data.description } 
         }),
-        defaults: [pageId],
+        defaults: [time],
         type: "string",
     })
 
