@@ -7,10 +7,15 @@ export const createVoiceLeaderboard = async (
     type: string
 ) => {
 
-    const lb = new Intl.NumberFormat("en-US", {
+    const hours = new Intl.NumberFormat("en-US", {
         minimumFractionDigits: 1,
         maximumFractionDigits: 2
     });
+    const minutes = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
+
 
     var leaderboard = [];
 
@@ -76,7 +81,9 @@ export const createVoiceLeaderboard = async (
         leaderboard.push("No users found.");
     } else {
         var leaderboardUsers = users.map((user, i) => {
-            return `${i + 1}. **${client.capitalize(user.userName)}** - ${lb.format(user[type + "Seconds"] / (60 * 60))} hours`;
+            return `${i + 1}. **${client.capitalize(user.userName)}** - ` +
+                `${hours.format(user[type + "Seconds"] / (60 * 60))} hours / ` +
+                `${minutes.format(user[type + "Seconds"] / 60)} minutes`;
         }); 
         leaderboard.push(leaderboardUsers.join("\n"));
     }
