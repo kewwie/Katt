@@ -2,6 +2,7 @@ import { Module } from "../../types/module";
 
 // Events
 import { VoiceStateUpdate } from "./events/voiceStateUpdate";
+import { MessageCreate } from "./events/messageCreate";
 
 // Slash Commands
 import { ActivitySlash } from "./commands/activity";
@@ -20,7 +21,8 @@ import { ActivityMonthlySchedule } from "./schedules/activity-monthly";
 export const ActivityModule: Module = {
     id: "activity",
     events: [
-        VoiceStateUpdate
+        VoiceStateUpdate,
+        MessageCreate
     ],
     slashCommands: [
         ActivitySlash,

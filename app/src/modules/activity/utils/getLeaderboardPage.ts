@@ -47,6 +47,7 @@ export const getLeaderboardPage = async (
         options: options.map(option => { 
             return { label: option.data.label, value: option.data.value, description: option.data.description } 
         }),
+        minValues: 1,
         defaults: [pageId],
         type: "string",
     })
@@ -62,6 +63,7 @@ export const getLeaderboardPage = async (
         options: options.map(option => { 
             return { label: option.data.label, value: option.data.value, description: option.data.description } 
         }),
+        minValues: 1,
         defaults: [time],
         type: "string",
     })

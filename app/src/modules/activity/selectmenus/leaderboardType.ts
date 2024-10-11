@@ -27,7 +27,7 @@ export const LeaderboardTypeSelectMenu: SelectMenu = {
         var page = await getLeaderboardPage(client, { 
             guildId: interaction.guildId,
             pageId: interaction.values[0],
-            time: options.optionTwo,
+            time: options.optionOne,
             pageOwner: interaction.user
         });
         interaction.update({ content: page.content, components: [...page.rows] });

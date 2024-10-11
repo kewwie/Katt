@@ -7,8 +7,7 @@ export const createMessageLeaderboard = async (
 ) => {
 
     const lb = new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 0
     });
 
     var leaderboard = [];
@@ -75,7 +74,7 @@ export const createMessageLeaderboard = async (
         leaderboard.push("No users found.");
     } else {
         var leaderboardUsers = users.map((user, i) => {
-            return `${i + 1}. **${client.capitalize(user.userName)}** - ${lb.format(user[type + "Messages"] / (60 * 60))} messages`;
+            return `${i + 1}. **${client.capitalize(user.userName)}** - ${lb.format(user[type + "Messages"])} messages`;
         }); 
         leaderboard.push(leaderboardUsers.join("\n"));
     }

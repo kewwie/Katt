@@ -132,6 +132,7 @@ export const getPage = async (
         options: options.map(option => { 
             return { label: option.data.label, value: option.data.value, description: option.data.description } 
         }),
+        minValues: 1,
         defaults: [pageId],
         type: "string",
     })
