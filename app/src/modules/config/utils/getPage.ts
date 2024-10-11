@@ -50,7 +50,7 @@ export const getPage = async (
 
         case "activity": {
             var actConf = await client.db.repos.activityConfig
-                    .findOneBy({ guildId: guildId });
+                .findOneBy({ guildId: guildId });
             var embedDescription = [
                 `### Activity Module`,
                 `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
@@ -101,13 +101,28 @@ export const getPage = async (
         }
 
         case "list": {
+            var listConf = await client.db.repos.listConfig
+                .findOneBy({ guildId: guildId });
             var embedDescription = [
                 `### List Module`,
                 `${Emojis.ReplyTop} **Enabled:** ${isEnabled ? 'True' : 'False'}`,
+                `${Emojis.ReplyBottom} **Log Channel:** ${listConf?.logChannel ? `<#${listConf.logChannel}>` : 'None'}`,
             ];
             rows.push(
                 new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents(generateModuleButtons(client, { pageId, pageOwner }))
+                    .addComponents(generateModuleButtons(client, { pageId, pageOwner })),
+                new ActionRowBuilder<ChannelSelectMenuBuilder>()
+                    .addComponents(
+                        client.Pages.generateSelectMenu({
+                            customId: client.createCustomId({ 
+                                customId: ChannelSM.customId, valueOne: pageId, valueTwo: "logChannel", ownerId: pageOwner.id 
+                            }),
+                            placeholder: "Log Channel",
+                            channelTypes: [ChannelType.GuildText],
+                            defaults: listConf?.logChannel ? [listConf.logChannel] : [],
+                            type: "channel"
+                        })
+                    ),
             );
             break;
         }
