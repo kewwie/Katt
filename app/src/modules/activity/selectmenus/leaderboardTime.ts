@@ -21,15 +21,20 @@ export const LeaderboardTimeSelectMenu: SelectMenu = {
                 .setValue('total'),
             new StringSelectMenuOptionBuilder()
                 .setLabel('Daily')
-                .setValue('daily')
+                .setValue('daily'),
+            new StringSelectMenuOptionBuilder()
+                .setLabel('Weekly')
+                .setValue('weekly'),
+            new StringSelectMenuOptionBuilder()
+                .setLabel('Monthly')
+                .setValue('monthly')
         ),
     execute: async (interaction: StringSelectMenuInteraction, options: CustomOptions, client: KiwiClient) => {
         var page = await getLeaderboardPage(client, { 
             guildId: interaction.guildId,
             pageId: options.optionOne,
             time: interaction.values[0],
-            pageOwner: interaction.user,
-            user: await client.users.fetch(options.userId)
+            pageOwner: interaction.user
         });
         interaction.update({ content: page.content, components: [...page.rows] });
     }
